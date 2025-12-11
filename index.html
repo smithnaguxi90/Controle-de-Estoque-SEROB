@@ -287,23 +287,36 @@
           </p>
 
           <form onsubmit="app.performLogin(event)" class="w-full space-y-4">
-            <div class="relative password-field">
-              <div
-                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
-              >
-                <i
-                  data-lucide="lock"
-                  class="h-4 w-4 text-slate-400 transition-colors"
-                ></i>
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <label class="text-xs font-medium text-slate-600">Senha</label>
+                <button
+                  type="button"
+                  onclick="app.requestNewPassword()"
+                  class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors"
+                  tabindex="-1"
+                >
+                  Definir nova senha?
+                </button>
               </div>
-              <input
-                type="password"
-                id="loginPassword"
-                class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm transition-all shadow-sm"
-                placeholder="Senha"
-                required
-                autofocus
-              />
+              <div class="relative password-field">
+                <div
+                  class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+                >
+                  <i
+                    data-lucide="lock"
+                    class="h-4 w-4 text-slate-400 transition-colors"
+                  ></i>
+                </div>
+                <input
+                  type="password"
+                  id="loginPassword"
+                  class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm transition-all shadow-sm"
+                  placeholder="••••••"
+                  required
+                  autofocus
+                />
+              </div>
             </div>
 
             <button
@@ -362,12 +375,12 @@
                     class="text-base font-semibold leading-6 text-slate-900"
                     id="modal-title"
                   >
-                    Registar Movimentação
+                    Registrar Movimentação
                   </h3>
                   <div class="mt-2">
                     <p class="text-sm text-slate-500 mb-4">
                       Selecione o material e o tipo de operação para atualizar o
-                      stock.
+                      estoque.
                     </p>
 
                     <form
@@ -517,6 +530,8 @@
         </a>
         <a
           href="#"
+          onclick="app.navigate('reports')"
+          id="nav-reports"
           class="nav-item flex items-center gap-3 px-3 py-2.5 text-slate-400 hover:text-slate-100 hover:bg-slate-800/50 rounded-lg border border-transparent transition-all"
         >
           <i data-lucide="file-bar-chart-2" class="w-4 h-4"></i>
@@ -558,6 +573,22 @@
           >
             <i data-lucide="log-out" class="w-3 h-3"></i> Sair
           </button>
+        </div>
+      </div>
+
+      <!-- Footer Indicator -->
+      <div class="p-2 border-t border-slate-700/50 bg-slate-900 text-center">
+        <div
+          id="connectionStatus"
+          class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700"
+        >
+          <div
+            class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"
+            id="statusDot"
+          ></div>
+          <span class="text-[10px] text-slate-400 font-medium" id="statusText"
+            >A Conectar...</span
+          >
         </div>
       </div>
     </aside>
@@ -872,13 +903,14 @@
           id="viewMovements"
           class="hidden flex-col gap-6 h-full overflow-hidden animate-fade-in"
         >
+          <!-- ... existing movements content ... -->
           <div class="flex items-center justify-between shrink-0">
             <div>
               <h2 class="text-lg font-bold text-slate-800">
                 Histórico de Movimentações
               </h2>
               <p class="text-xs text-slate-500">
-                Registo completo de entradas e saídas de stock.
+                Registro completo de entradas e saídas de estoque.
               </p>
             </div>
             <div class="flex gap-2">
@@ -951,12 +983,253 @@
             </div>
           </div>
         </div>
+
+        <!-- VIEW: REPORTS (Hidden by default) -->
+        <div
+          id="viewReports"
+          class="hidden flex-col gap-6 h-full overflow-y-auto custom-scrollbar animate-fade-in pb-10"
+        >
+          <div class="flex items-center justify-between shrink-0">
+            <div>
+              <h2 class="text-lg font-bold text-slate-800">
+                Relatórios de Gestão
+              </h2>
+              <p class="text-xs text-slate-500">
+                Análise de inventário e indicadores de desempenho.
+              </p>
+            </div>
+            <button
+              onclick="app.renderReports(this)"
+              class="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-600 px-3 py-2 rounded-lg border border-slate-200 shadow-sm text-xs font-medium transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                data-lucide="refresh-cw"
+                class="lucide lucide-refresh-cw w-3 h-3"
+              >
+                <path
+                  d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
+                ></path>
+                <path d="M21 3v5h-5"></path>
+                <path
+                  d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
+                ></path>
+                <path d="M8 16H3v5"></path>
+              </svg>
+              Atualizar Dados
+            </button>
+          </div>
+
+          <!-- Report Grid -->
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <!-- Chart: Categorias -->
+            <div
+              class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm"
+            >
+              <h3
+                class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  data-lucide="pie-chart"
+                  class="lucide lucide-pie-chart w-4 h-4 text-blue-500"
+                >
+                  <path
+                    d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"
+                  ></path>
+                  <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
+                </svg>
+                Distribuição por Grupo
+              </h3>
+              <div id="reportCategories" class="space-y-4">
+                <!-- Injected via JS -->
+              </div>
+            </div>
+
+            <!-- Table: Top Críticos -->
+            <div
+              class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col"
+            >
+              <h3
+                class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  data-lucide="alert-triangle"
+                  class="lucide lucide-alert-triangle w-4 h-4 text-red-500"
+                >
+                  <path
+                    d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
+                  ></path>
+                  <path d="M12 9v4"></path>
+                  <path d="M12 17h.01"></path>
+                </svg>
+                Prioridade de Reposição
+              </h3>
+              <div class="flex-1 overflow-auto min-h-[200px]">
+                <table class="w-full text-left border-collapse">
+                  <thead class="bg-slate-50 text-xs text-slate-500 uppercase">
+                    <tr>
+                      <th class="px-3 py-2 border-b border-slate-200">Item</th>
+                      <th
+                        class="px-3 py-2 border-b border-slate-200 text-right"
+                      >
+                        Qtd
+                      </th>
+                      <th
+                        class="px-3 py-2 border-b border-slate-200 text-center"
+                      >
+                        Status
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody
+                    id="reportCriticalBody"
+                    class="text-xs divide-y divide-slate-100"
+                  >
+                    <!-- Injected via JS -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+            <!-- Stats: Movimentações -->
+            <div
+              class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2"
+            >
+              <h3
+                class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  data-lucide="activity"
+                  class="lucide lucide-activity w-4 h-4 text-purple-500"
+                >
+                  <path
+                    d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
+                  ></path>
+                </svg>
+                Resumo de Atividade (Global)
+              </h3>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div class="bg-slate-50 p-4 rounded-lg border border-slate-100">
+                  <p class="text-xs text-slate-500 uppercase font-semibold">
+                    Total Movimentações
+                  </p>
+                  <p
+                    id="repTotalMoves"
+                    class="text-2xl font-bold text-slate-800 mt-1"
+                  >
+                    0
+                  </p>
+                </div>
+                <div
+                  class="bg-emerald-50 p-4 rounded-lg border border-emerald-100"
+                >
+                  <p class="text-xs text-emerald-600 uppercase font-semibold">
+                    Entradas Registradas
+                  </p>
+                  <p
+                    id="repTotalIn"
+                    class="text-2xl font-bold text-emerald-700 mt-1"
+                  >
+                    0
+                  </p>
+                </div>
+                <div
+                  class="bg-orange-50 p-4 rounded-lg border border-orange-100"
+                >
+                  <p class="text-xs text-orange-600 uppercase font-semibold">
+                    Saídas Registradas
+                  </p>
+                  <p
+                    id="repTotalOut"
+                    class="text-2xl font-bold text-orange-700 mt-1"
+                  >
+                    0
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </main>
     </div>
 
-    <script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+      import {
+        getAuth,
+        signInAnonymously,
+        signInWithCustomToken,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+      import {
+        getFirestore,
+        collection,
+        doc,
+        getDocs,
+        setDoc,
+        updateDoc,
+        addDoc,
+        onSnapshot,
+        writeBatch,
+      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+      // --- CONFIGURAÇÃO HÍBRIDA (CLOUD + LOCAL FALLBACK) ---
+      let db = null;
+      let auth = null;
+      let appId = "local-app-id";
+      let isOffline = true; // Por defeito assume offline até conectar
+
+      try {
+        if (typeof __firebase_config !== "undefined") {
+          const firebaseConfig = JSON.parse(__firebase_config);
+          const firebaseApp = initializeApp(firebaseConfig);
+          auth = getAuth(firebaseApp);
+          db = getFirestore(firebaseApp);
+          appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
+          isOffline = false;
+        }
+      } catch (e) {
+        console.warn(
+          "Firebase não detetado/configurado. A utilizar LocalStorage."
+        );
+      }
+
       /**
-       * DATABASE MOCK
+       * DATABASE MOCK (Seed Data - FULL LIST)
        */
       const RAW_SOURCE_DATA = [
         {
@@ -974,6 +1247,22 @@
           name: "BOTIJÁO DE GÁS P-13 (VASILHAME)",
           category: "DEP. C4 - GÁS",
           quantity: 30,
+        },
+        {
+          id: 1003,
+          contractCode: "***",
+          sku: "***",
+          name: "GÁS EM USO",
+          category: "DEP. C4 - GÁS",
+          quantity: 0,
+        },
+        {
+          id: 1004,
+          contractCode: "****",
+          sku: "****",
+          name: "GÁS VAZIO",
+          category: "DEP. C4 - GÁS",
+          quantity: 0,
         },
         {
           id: 2001,
@@ -1024,12 +1313,76 @@
           quantity: 264,
         },
         {
+          id: 2007,
+          contractCode: "B.02.01.002",
+          sku: "18389",
+          name: "MANTA ANTIRAIZ",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
+          id: 2008,
+          contractCode: "B.02.05.003",
+          sku: "39789",
+          name: "PAPEL KRAFT PARA IMPERMEABILIZAÇÃO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
+          id: 2009,
+          contractCode: "B.02.04.003",
+          sku: "16493",
+          name: "PRIMER ASFÁLTICO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
+          id: 2010,
+          contractCode: "B.02.02.003",
+          sku: "27574",
+          name: "SELANTE BRANCO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
+          id: 2011,
+          contractCode: "B.02.02.001",
+          sku: "30314",
+          name: "SELANTE CINZA",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
+          id: 2012,
+          contractCode: "B.02.02.002",
+          sku: "27575",
+          name: "SELANTE PRETO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
+          id: 2013,
+          contractCode: "B.02.04.006",
+          sku: "39685",
+          name: "TINTA ASFÁLTICA ANTIRRAIZ",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+        },
+        {
           id: 3001,
           contractCode: "B.10.03.003",
           sku: "25068",
           name: "FUNDO PARA AÇO GALVANIZADO",
           category: "DEP. 02 - TINTA ESMALTE",
           quantity: 67,
+        },
+        {
+          id: 3002,
+          contractCode: "SEM CONTRATO",
+          sku: "27558",
+          name: "REMOVEDOR EM GEL",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 20,
         },
         {
           id: 3003,
@@ -1070,6 +1423,94 @@
           name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO AZUL MAR",
           category: "DEP. 02 - TINTA ESMALTE",
           quantity: 46,
+        },
+        {
+          id: 3008,
+          contractCode: "B.10.02.002",
+          sku: "4092",
+          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO BRANCO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3009,
+          contractCode: "B.10.02.003",
+          sku: "29090",
+          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO BRANCO GELO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3010,
+          contractCode: "B.10.02.005",
+          sku: "37914",
+          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO CINZA MÉDIO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3011,
+          contractCode: "B.10.02.009",
+          sku: "4128",
+          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO PRETO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3012,
+          contractCode: "B.10.02.001",
+          sku: "27439",
+          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO VERDE COLONIAL",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3013,
+          contractCode: "B.10.02.010",
+          sku: "4071",
+          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO VERMELHO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3014,
+          contractCode: "B.10.02.022",
+          sku: "14790",
+          name: "TINTA ESMALTE SINTÉTICO FOSCO PRETO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3015,
+          contractCode: "B.10.03.001",
+          sku: "35974",
+          name: "TINTA ESMALTE SINTÉTICO GRAFITE ESCURO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3016,
+          contractCode: "B.10.02.023",
+          sku: "29096",
+          name: "TINTA ESMALTE SINTÉTICO MARTELADO CINZA CLARO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3017,
+          contractCode: "B.10.03.006",
+          sku: "20914",
+          name: "TINTA SPRAY BRANCO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
+        },
+        {
+          id: 3018,
+          contractCode: "B.10.03.004",
+          sku: "4159",
+          name: "TINTA SPRAY PRETO FOSCO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 0,
         },
         {
           id: 4001,
@@ -1118,6 +1559,22 @@
           name: "SOLVENTE THINNER",
           category: "DEP. 03 - COLA FÓRMICA",
           quantity: 4167,
+        },
+        {
+          id: 4007,
+          contractCode: "B.07.01.004",
+          sku: "29098",
+          name: "TINTA TRÁFEGO AMARELA",
+          category: "DEP. 03 - COLA FÓRMICA",
+          quantity: 7,
+        },
+        {
+          id: 4008,
+          contractCode: "B.07.01.005",
+          sku: "29097",
+          name: "TINTA TRÁFEGO BRANCA",
+          category: "DEP. 03 - COLA FÓRMICA",
+          quantity: 0,
         },
         {
           id: 5001,
@@ -1174,6 +1631,30 @@
           name: "PISO SEMIFLEXÍVEL MADEIRA",
           category: "DEP. 12 - PISO VINÍLICO",
           quantity: 3422,
+        },
+        {
+          id: 6006,
+          contractCode: "B.08.01.006",
+          sku: "29864",
+          name: "PISO VERDE-ITAMARATY",
+          category: "DEP. 12 - PISO VINÍLICO",
+          quantity: 0,
+        },
+        {
+          id: 6007,
+          contractCode: "B.08.01.001",
+          sku: "37736",
+          name: "PISO VINÍLICO AUTOPORTANTE",
+          category: "DEP. 12 - PISO VINÍLICO",
+          quantity: 0,
+        },
+        {
+          id: 6008,
+          contractCode: "B.08.01.004",
+          sku: "35969",
+          name: "RODAPÉ SEMIFLEXÍVEL",
+          category: "DEP. 12 - PISO VINÍLICO",
+          quantity: 0,
         },
         {
           id: 7001,
@@ -1256,6 +1737,94 @@
           quantity: 84,
         },
         {
+          id: 7011,
+          contractCode: "B.10.05.004",
+          sku: "26670",
+          name: "ROLO DE LÃ 9 CM",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7012,
+          contractCode: "B.10.05.002",
+          sku: "29101",
+          name: "ROLO PARA PINTURA EPÓXI",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7013,
+          contractCode: "B.10.01.001",
+          sku: "27650",
+          name: "TINTA ACRÍLICA FOSCA BRANCO NEVE",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7014,
+          contractCode: "B.10.01.004",
+          sku: "27651",
+          name: "TINTA ACRÍLICA FOSCA CONCRETO",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7015,
+          contractCode: "B.10.01.002",
+          sku: "23150",
+          name: "TINTA ACRÍLICA SEMIBRILHO BRANCO GELO",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7016,
+          contractCode: "B.10.01.003",
+          sku: "22924",
+          name: "TINTA ACRÍLICA SEMIBRILHO BRANCO NEVE",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7017,
+          contractCode: "B.10.01.005",
+          sku: "19342",
+          name: "TINTA LÁTEX ACRÍLICA PISO CINZA",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7018,
+          contractCode: "B.10.01.006",
+          sku: "19341",
+          name: "TINTA LÁTEX ACRÍLICA PISO PRETO",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7019,
+          contractCode: "B.10.05.009",
+          sku: "4136",
+          name: 'TRINCHA MACIA 1"',
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7020,
+          contractCode: "B.10.05.010",
+          sku: "4134",
+          name: 'TRINCHA MACIA 1.1/2"',
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
+          id: 7021,
+          contractCode: "B.10.05.011",
+          sku: "4137",
+          name: 'TRINCHA MACIA 2"',
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 0,
+        },
+        {
           id: 8001,
           contractCode: "B.04.05.012",
           sku: "2511",
@@ -1294,6 +1863,14 @@
           name: 'CANTONEIRA AÇO 3/4 x 3/4 x 1/8"',
           category: "DEMAP - 01 ao 11",
           quantity: 939,
+        },
+        {
+          id: 8048,
+          contractCode: "B.04.02.016",
+          sku: "14947",
+          name: "TUBO METALON 50 x 50 MM Nº 16",
+          category: "DEMAP - 01 ao 11",
+          quantity: 0,
         },
       ];
 
@@ -1338,9 +1915,9 @@
             critical: 15,
             warning: 40,
           },
+          storageKeyUser: "serob_current_user_v1",
           storageKeyData: "serob_inventory_data_v1",
           storageKeyMovements: "serob_inventory_moves_v1",
-          storageKeyUser: "serob_current_user_v1",
         },
 
         // State
@@ -1369,12 +1946,31 @@
         init() {
           lucide.createIcons();
 
-          // Verifica login
-          this.checkLogin();
+          // Inicializa Auth se estivermos com Firebase, senão apenas local
+          if (!isOffline && db) {
+            this.initAuth();
+          } else {
+            this.checkLogin(); // Local Check
+          }
 
-          // Carregar dados
-          this.loadData();
-          this.populateDatalist();
+          // Carregar dados (Híbrido)
+          if (!isOffline) {
+            this.setupListeners();
+            // Fallback UI update
+            document.getElementById("statusText").textContent =
+              "Online (Nuvem)";
+            document.getElementById("statusDot").className =
+              "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
+          } else {
+            this.loadDataLocal();
+            // Fallback UI update
+            const statusEl = document.getElementById("statusText");
+            if (statusEl) {
+              statusEl.textContent = "Modo Offline (Local)";
+              document.getElementById("statusDot").className =
+                "w-1.5 h-1.5 rounded-full bg-slate-500";
+            }
+          }
 
           // Listeners
           document.addEventListener("keydown", (e) => {
@@ -1400,11 +1996,21 @@
           document
             .getElementById("searchInputMobile")
             .addEventListener("input", searchHandler);
-
-          this.processData();
         },
 
-        // --- AUTHENTICATION ---
+        // --- FIREBASE AUTHENTICATION ---
+        async initAuth() {
+          if (
+            typeof __initial_auth_token !== "undefined" &&
+            __initial_auth_token
+          ) {
+            await signInWithCustomToken(auth, __initial_auth_token);
+          } else {
+            await signInAnonymously(auth);
+          }
+          this.checkLogin();
+        },
+
         checkLogin() {
           const storedUser = localStorage.getItem(this.config.storageKeyUser);
           if (storedUser) {
@@ -1413,7 +2019,6 @@
             document.getElementById("loginOverlay").classList.add("hidden");
           } else {
             document.getElementById("loginOverlay").classList.remove("hidden");
-            // Reset UI state
             this.backToUserSelect();
           }
         },
@@ -1455,6 +2060,27 @@
           document.getElementById("loginStep2").classList.add("hidden");
           document.getElementById("loginStep2").classList.remove("flex");
           document.getElementById("loginStep1").classList.remove("hidden");
+        },
+
+        requestNewPassword() {
+          if (!this.tempLoginUser) return;
+
+          // Solicita ao utilizador que defina a senha manualmente
+          const newPass = prompt(
+            `Definir nova senha para ${this.tempLoginUser.name}:`
+          );
+
+          if (newPass && newPass.trim().length > 0) {
+            // Atualiza a senha do utilizador selecionado em memória (sessão atual apenas)
+            // Em produção real, isto iria para a BD de users
+            this.tempLoginUser.password = newPass.trim();
+
+            // Preenche automaticamente o campo para facilitar
+            document.getElementById("loginPassword").value = newPass.trim();
+            document.getElementById("loginPassword").focus();
+
+            this.showToast("Senha definida com sucesso!", "success");
+          }
         },
 
         performLogin(e) {
@@ -1543,8 +2169,68 @@
           this.render();
         },
 
-        // --- PERSISTÊNCIA ---
-        loadData() {
+        // --- DATA LOADING & SAVING (HYBRID) ---
+
+        setupListeners() {
+          if (!db) return;
+          this.showLoading(true);
+
+          // Materials
+          const matsRef = collection(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "materials"
+          );
+          onSnapshot(
+            matsRef,
+            (snapshot) => {
+              const items = [];
+              snapshot.forEach((doc) => items.push(doc.data()));
+              this.data = items;
+
+              if (items.length === 0) {
+                this.seedDatabase();
+              } else {
+                this.processData();
+              }
+            },
+            (error) => {
+              console.warn("Firestore offline/erro. Fallback local.");
+              // If fails, load local
+              isOffline = true;
+              this.loadDataLocal();
+              document.getElementById("statusText").textContent =
+                "Modo Offline (Erro)";
+            }
+          );
+
+          // Movements
+          const movesRef = collection(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "movements"
+          );
+          onSnapshot(movesRef, (snapshot) => {
+            const moves = [];
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              data.date = new Date(data.date);
+              moves.push(data);
+            });
+            moves.sort((a, b) => b.date - a.date);
+            this.movements = moves;
+
+            if (this.currentView === "movements") this.renderMovements();
+          });
+        },
+
+        loadDataLocal() {
           const storedData = localStorage.getItem(this.config.storageKeyData);
           const storedMovements = localStorage.getItem(
             this.config.storageKeyMovements
@@ -1553,6 +2239,13 @@
           if (storedData) {
             try {
               this.data = JSON.parse(storedData);
+              // Data Migration: Ensure maxQuantity exists for legacy data
+              this.data.forEach((item) => {
+                if (!item.maxQuantity) {
+                  item.maxQuantity =
+                    item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100;
+                }
+              });
             } catch (e) {
               this.initializeDefaultData();
             }
@@ -1571,10 +2264,10 @@
             this.movements = [];
           }
 
-          this.filteredData = [...this.data];
+          this.processData();
         },
 
-        saveData() {
+        saveDataLocal() {
           try {
             localStorage.setItem(
               this.config.storageKeyData,
@@ -1585,20 +2278,44 @@
               JSON.stringify(this.movements)
             );
           } catch (e) {
-            this.showToast("Erro ao salvar dados.", "error");
+            this.showToast("Erro ao salvar dados localmente.", "error");
           }
         },
 
-        initializeDefaultData() {
-          this.data = RAW_SOURCE_DATA.map((item) => ({
-            ...item,
-            maxQuantity:
-              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
-          }));
+        async seedDatabase() {
+          if (!db) return;
+          const batch = writeBatch(db);
+          const matsRef = collection(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "materials"
+          );
+
+          // Take first 450 items to fit in batch (Firestore limit 500)
+          const itemsToSeed = RAW_SOURCE_DATA.slice(0, 450);
+
+          itemsToSeed.forEach((item) => {
+            const itemData = {
+              ...item,
+              maxQuantity:
+                item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
+            };
+            const docRef = doc(matsRef, String(item.id));
+            batch.set(docRef, itemData);
+          });
+
+          try {
+            await batch.commit();
+            this.showToast("Base de dados na nuvem inicializada.", "success");
+          } catch (e) {
+            console.error("Error seeding", e);
+          }
         },
 
-        resetSystem() {
-          // Double check permissions (frontend only security)
+        async resetSystem() {
           if (this.currentUser?.role !== "admin") {
             this.showToast("Ação não autorizada.", "error");
             return;
@@ -1609,23 +2326,67 @@
               "ATENÇÃO: Isto apagará todos os dados e histórico. Continuar?"
             )
           ) {
-            localStorage.removeItem(this.config.storageKeyData);
-            localStorage.removeItem(this.config.storageKeyMovements);
-            // Mantém o login (storageKeyUser)
-            location.reload();
+            this.showLoading(true);
+
+            if (!isOffline && db) {
+              try {
+                // Delete cloud data
+                const matsRef = collection(
+                  db,
+                  "artifacts",
+                  appId,
+                  "public",
+                  "data",
+                  "materials"
+                );
+                const mSnap = await getDocs(matsRef);
+                const batch1 = writeBatch(db);
+                mSnap.forEach((d) => batch1.delete(d.ref));
+                await batch1.commit();
+
+                const movesRef = collection(
+                  db,
+                  "artifacts",
+                  appId,
+                  "public",
+                  "data",
+                  "movements"
+                );
+                const movSnap = await getDocs(movesRef);
+                const batch2 = writeBatch(db);
+                movSnap.forEach((d) => batch2.delete(d.ref));
+                await batch2.commit();
+
+                this.showToast("Sistema na nuvem reiniciado.", "success");
+              } catch (e) {
+                this.showToast("Erro ao resetar nuvem.", "error");
+              } finally {
+                this.showLoading(false);
+              }
+            } else {
+              // Delete local data
+              localStorage.removeItem(this.config.storageKeyData);
+              localStorage.removeItem(this.config.storageKeyMovements);
+              location.reload();
+            }
           }
         },
 
         // --- UTILS & HELPERS ---
         populateDatalist() {
-          const datalist = document.getElementById("materialList");
-          datalist.innerHTML = "";
-          this.data.forEach((item) => {
-            const option = document.createElement("option");
-            option.value = item.sku;
-            option.textContent = `${item.name} (${item.quantity} un)`;
-            datalist.appendChild(option);
-          });
+          // Wait for data to populate
+          setTimeout(() => {
+            const datalist = document.getElementById("materialList");
+            if (datalist) {
+              datalist.innerHTML = "";
+              this.data.forEach((item) => {
+                const option = document.createElement("option");
+                option.value = item.sku;
+                option.textContent = `${item.name} (${item.quantity} un)`;
+                datalist.appendChild(option);
+              });
+            }
+          }, 1000);
         },
 
         navigate(viewName) {
@@ -1635,18 +2396,153 @@
             .forEach((el) => el.classList.remove("active"));
           document.getElementById(`nav-${viewName}`).classList.add("active");
 
+          // Hide all views
+          document.getElementById("viewDashboard").classList.add("hidden");
+          document.getElementById("viewMovements").classList.add("hidden");
+          document.getElementById("viewReports").classList.add("hidden");
+
+          document.getElementById("viewMovements").classList.remove("flex");
+          document.getElementById("viewReports").classList.remove("flex");
+
+          // Show selected view
           if (viewName === "dashboard") {
             document.getElementById("viewDashboard").classList.remove("hidden");
-            document.getElementById("viewMovements").classList.add("hidden");
             this.render();
           } else if (viewName === "movements") {
-            document.getElementById("viewDashboard").classList.add("hidden");
             document.getElementById("viewMovements").classList.remove("hidden");
             document.getElementById("viewMovements").classList.add("flex");
             this.renderMovements();
+          } else if (viewName === "reports") {
+            document.getElementById("viewReports").classList.remove("hidden");
+            document.getElementById("viewReports").classList.add("flex");
+            // Trigger initial render for reports
+            this.renderReports();
           }
         },
 
+        // --- REPORTS LOGIC ---
+        renderReports(btnElement = null) {
+          // Visual Feedback (Spin Icon)
+          let icon;
+          if (btnElement) {
+            icon =
+              btnElement.querySelector("svg") || btnElement.querySelector("i");
+            if (icon) icon.classList.add("animate-spin");
+            btnElement.disabled = true;
+          }
+
+          // Simulate calculation time for UX
+          setTimeout(() => {
+            try {
+              // 1. Group Distribution
+              const groups = {};
+              this.data.forEach((item) => {
+                const cat = item.category
+                  ? item.category.replace("DEP.", "").trim()
+                  : "Outros";
+                groups[cat] = (groups[cat] || 0) + 1;
+              });
+
+              const sortedGroups = Object.entries(groups)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+              const totalItems = Math.max(1, this.data.length);
+              const catContainer = document.getElementById("reportCategories");
+              if (catContainer) {
+                catContainer.innerHTML = "";
+
+                sortedGroups.forEach(([name, count]) => {
+                  const pct = Math.round((count / totalItems) * 100);
+                  catContainer.innerHTML += `
+                            <div>
+                                <div class="flex justify-between text-xs mb-1">
+                                    <span class="font-medium text-slate-700 truncate w-3/4">${name}</span>
+                                    <span class="text-slate-500">${count} itens (${pct}%)</span>
+                                </div>
+                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
+                                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%" onload="this.style.width='${pct}%'"></div>
+                                </div>
+                            </div>
+                        `;
+                  // Animate width after insertion
+                  setTimeout(() => {
+                    const bars = catContainer.querySelectorAll(".bg-blue-500");
+                    const lastBar = bars[bars.length - 1];
+                    if (lastBar) lastBar.style.width = `${pct}%`;
+                  }, 50);
+                });
+              }
+
+              // 2. Critical Items (Top 10 by lowest % capacity)
+              const criticalItems = this.data
+                .map((item) => {
+                  const max = item.maxQuantity || 100;
+                  return { ...item, pct: (item.quantity / max) * 100 };
+                })
+                .filter((item) => item.pct <= this.config.thresholds.warning)
+                .sort((a, b) => a.pct - b.pct)
+                .slice(0, 8);
+
+              const critBody = document.getElementById("reportCriticalBody");
+              if (critBody) {
+                critBody.innerHTML = "";
+
+                if (criticalItems.length === 0) {
+                  critBody.innerHTML =
+                    '<tr><td colspan="3" class="px-3 py-4 text-center text-slate-400 italic">Nenhum item em estado crítico.</td></tr>';
+                } else {
+                  criticalItems.forEach((item) => {
+                    const status = this.getStockStatus(item);
+                    critBody.innerHTML += `
+                                <tr>
+                                    <td class="px-3 py-2 border-b border-slate-50">
+                                        <div class="font-medium text-slate-700 truncate max-w-[180px]" title="${item.name}">${item.name}</div>
+                                        <div class="text-[10px] text-slate-400 font-mono">${item.sku}</div>
+                                    </td>
+                                    <td class="px-3 py-2 text-right border-b border-slate-50 font-bold text-slate-600">${item.quantity}</td>
+                                    <td class="px-3 py-2 text-center border-b border-slate-50">
+                                        <span class="inline-block w-2 h-2 rounded-full ${status.dot}" title="${status.label}"></span>
+                                    </td>
+                                </tr>
+                            `;
+                  });
+                }
+              }
+
+              // 3. Movement Stats
+              const totalMoves = this.movements ? this.movements.length : 0;
+              const totalIn = this.movements
+                ? this.movements.filter((m) => m.type === "in").length
+                : 0;
+              const totalOut = this.movements
+                ? this.movements.filter((m) => m.type === "out").length
+                : 0;
+
+              const elTotalMoves = document.getElementById("repTotalMoves");
+              const elTotalIn = document.getElementById("repTotalIn");
+              const elTotalOut = document.getElementById("repTotalOut");
+
+              if (elTotalMoves) elTotalMoves.textContent = totalMoves;
+              if (elTotalIn) elTotalIn.textContent = totalIn;
+              if (elTotalOut) elTotalOut.textContent = totalOut;
+
+              if (btnElement)
+                this.showToast(
+                  "Relatórios atualizados com sucesso.",
+                  "success"
+                );
+            } catch (error) {
+              console.error("Erro ao gerar relatórios:", error);
+              this.showToast("Erro ao atualizar dados.", "error");
+            } finally {
+              if (icon) icon.classList.remove("animate-spin");
+              if (btnElement) btnElement.disabled = false;
+            }
+          }, 600);
+        },
+
+        // Modal Logic
         openModal() {
           const modal = document.getElementById("movementModal");
           const backdrop = document.getElementById("modalBackdrop");
@@ -1693,7 +2589,7 @@
           }
         },
 
-        saveMovement(e) {
+        async saveMovement(e) {
           e.preventDefault();
 
           const form = document.getElementById("movementForm");
@@ -1716,35 +2612,81 @@
 
           if (type === "out" && targetItem.quantity < qty) {
             this.showToast(
-              `Stock insuficiente. Disponível: ${targetItem.quantity}`,
+              `Estoque insuficiente. Disponível: ${targetItem.quantity}`,
               "error"
             );
             return;
           }
 
-          if (type === "in") targetItem.quantity += qty;
-          else targetItem.quantity -= qty;
+          // --- UPDATE LOGIC (Hybrid) ---
+          const newQuantity =
+            type === "in"
+              ? targetItem.quantity + qty
+              : targetItem.quantity - qty;
 
-          this.movements.unshift({
-            id: Date.now().toString(),
-            date: new Date(),
-            itemId: targetItem.id,
-            itemSku: targetItem.sku,
-            itemName: targetItem.name,
-            type: type,
-            quantity: qty,
-            user: this.currentUser ? this.currentUser.name : "Desconhecido",
-          });
+          if (!isOffline && db) {
+            // CLOUD SAVE
+            try {
+              const matsRef = collection(
+                db,
+                "artifacts",
+                appId,
+                "public",
+                "data",
+                "materials"
+              );
+              const itemDoc = doc(matsRef, String(targetItem.id));
+              await updateDoc(itemDoc, { quantity: newQuantity });
 
-          this.saveData();
-          this.processData();
-          this.populateDatalist();
-          this.closeModal();
+              const movesRef = collection(
+                db,
+                "artifacts",
+                appId,
+                "public",
+                "data",
+                "movements"
+              );
+              await addDoc(movesRef, {
+                id: Date.now().toString(),
+                date: new Date().toISOString(),
+                itemId: targetItem.id,
+                itemSku: targetItem.sku,
+                itemName: targetItem.name,
+                type: type,
+                quantity: qty,
+                user: this.currentUser ? this.currentUser.name : "Desconhecido",
+              });
 
-          const typeLabel = type === "in" ? "Entrada" : "Saída";
-          this.showToast(`${typeLabel} registada com sucesso!`, "success");
-
-          if (this.currentView === "movements") this.renderMovements();
+              this.closeModal();
+              const typeLabel = type === "in" ? "Entrada" : "Saída";
+              this.showToast(`${typeLabel} registrada com sucesso!`, "success");
+            } catch (e) {
+              console.error(e);
+              this.showToast("Erro ao gravar na nuvem.", "error");
+            }
+          } else {
+            // LOCAL SAVE
+            targetItem.quantity = newQuantity;
+            this.movements.unshift({
+              id: Date.now().toString(),
+              date: new Date(),
+              itemId: targetItem.id,
+              itemSku: targetItem.sku,
+              itemName: targetItem.name,
+              type: type,
+              quantity: qty,
+              user: this.currentUser
+                ? this.currentUser.name
+                : "Desconhecido (Offline)",
+            });
+            this.saveDataLocal();
+            this.processData();
+            this.populateDatalist();
+            this.closeModal();
+            const typeLabel = type === "in" ? "Entrada" : "Saída";
+            this.showToast(`${typeLabel} registrada (Local).`, "success");
+            if (this.currentView === "movements") this.renderMovements();
+          }
         },
 
         showToast(msg, type = "info") {
@@ -1808,7 +2750,7 @@
           if (displayMovements.length === 0) {
             const msg = this.activeMovementFilter
               ? "Nenhuma movimentação encontrada com este filtro."
-              : "Ainda não existem registos no histórico.";
+              : "Ainda não existem registros no histórico.";
 
             const icon = this.activeMovementFilter
               ? "filter-x"
@@ -1958,8 +2900,8 @@
           this.processData();
         },
 
-        editMaxCapacity(id) {
-          // Permissão: Apenas Admin pode editar configurações
+        async editMaxCapacity(id) {
+          // Permissão: Apenas Admin
           if (this.currentUser?.role !== "admin") {
             this.showToast(
               "Apenas administradores podem alterar configurações.",
@@ -1979,22 +2921,39 @@
           if (newMax !== null) {
             const val = parseInt(newMax);
             if (!isNaN(val) && val > 0) {
-              item.maxQuantity = val;
-              this.saveData();
-              this.processData();
-              this.showToast(`Ressuprimento ajustado para ${val}`, "success");
+              if (!isOffline && db) {
+                try {
+                  const matsRef = collection(
+                    db,
+                    "artifacts",
+                    appId,
+                    "public",
+                    "data",
+                    "materials"
+                  );
+                  const itemDoc = doc(matsRef, String(item.id));
+                  await updateDoc(itemDoc, { maxQuantity: val });
+                  this.showToast(
+                    `Ressuprimento ajustado para ${val}`,
+                    "success"
+                  );
+                } catch (e) {
+                  this.showToast("Erro ao salvar.", "error");
+                }
+              } else {
+                item.maxQuantity = val;
+                this.saveDataLocal();
+                this.processData();
+                this.showToast(`Ressuprimento ajustado (Local).`, "success");
+              }
             } else {
               this.showToast("Valor inválido.", "error");
             }
           }
         },
 
-        editQuantity(id) {
-          const item = this.data.find((i) => i.id === id);
-          if (!item) return;
-
-          // Permissão: Admin tem acesso total. Usuários padrão podem ajustar?
-          // Normalmente Ajuste de Inventário (Balanço) é Admin. Vamos restringir.
+        async editQuantity(id) {
+          // Permissão: Apenas Admin
           if (this.currentUser?.role !== "admin") {
             this.showToast(
               "Apenas administradores podem realizar ajustes de balanço.",
@@ -2002,6 +2961,9 @@
             );
             return;
           }
+
+          const item = this.data.find((i) => i.id === id);
+          if (!item) return;
 
           const newQtyStr = prompt(
             `AJUSTE DE SALDO (Balanço):\n${item.name}\n\nQuantidade Atual: ${item.quantity}\n\nNova Quantidade Real:`,
@@ -2012,29 +2974,67 @@
             const newQty = parseInt(newQtyStr);
             if (!isNaN(newQty) && newQty >= 0) {
               const diff = newQty - item.quantity;
-
               if (diff === 0) return;
 
               const oldQty = item.quantity;
-              item.quantity = newQty;
 
-              this.movements.unshift({
-                id: Date.now().toString(),
-                date: new Date(),
-                itemId: item.id,
-                itemSku: item.sku,
-                itemName: item.name,
-                type: diff > 0 ? "in" : "out",
-                quantity: Math.abs(diff),
-                user: `${this.currentUser.name} (Ajuste)`,
-              });
+              if (!isOffline && db) {
+                try {
+                  // Update Material
+                  const matsRef = collection(
+                    db,
+                    "artifacts",
+                    appId,
+                    "public",
+                    "data",
+                    "materials"
+                  );
+                  const itemDoc = doc(matsRef, String(item.id));
+                  await updateDoc(itemDoc, { quantity: newQty });
 
-              this.saveData();
-              this.processData();
-              this.showToast(
-                `Saldo corrigido de ${oldQty} para ${newQty}.`,
-                "success"
-              );
+                  // Log Movement
+                  const movesRef = collection(
+                    db,
+                    "artifacts",
+                    appId,
+                    "public",
+                    "data",
+                    "movements"
+                  );
+                  await addDoc(movesRef, {
+                    id: Date.now().toString(),
+                    date: new Date().toISOString(),
+                    itemId: item.id,
+                    itemSku: item.sku,
+                    itemName: item.name,
+                    type: diff > 0 ? "in" : "out",
+                    quantity: Math.abs(diff),
+                    user: `${this.currentUser.name} (Ajuste)`,
+                  });
+
+                  this.showToast(
+                    `Saldo corrigido de ${oldQty} para ${newQty}.`,
+                    "success"
+                  );
+                } catch (e) {
+                  this.showToast("Erro ao gravar ajuste.", "error");
+                }
+              } else {
+                item.quantity = newQty;
+                this.movements.unshift({
+                  id: Date.now().toString(),
+                  date: new Date(),
+                  itemId: item.id,
+                  itemSku: item.sku,
+                  itemName: item.name,
+                  type: diff > 0 ? "in" : "out",
+                  quantity: Math.abs(diff),
+                  user: `${this.currentUser.name} (Ajuste Local)`,
+                });
+                this.saveDataLocal();
+                this.processData();
+                this.showToast(`Saldo corrigido (Local).`, "success");
+              }
             } else {
               this.showToast("Valor inválido.", "error");
             }
@@ -2070,9 +3070,8 @@
         },
 
         getStockStatus(item) {
-          const percentage = Math.round(
-            (item.quantity / item.maxQuantity) * 100
-          );
+          const max = item.maxQuantity || 100; // Safeguard against missing data
+          const percentage = Math.round((item.quantity / max) * 100);
 
           if (percentage <= this.config.thresholds.critical) {
             return {
@@ -2111,11 +3110,12 @@
 
           const count = data.length;
           const groups = new Set(data.map((i) => i.category)).size;
-          const critical = data.filter(
-            (i) =>
-              (i.quantity / i.maxQuantity) * 100 <=
-              this.config.thresholds.critical
-          ).length;
+
+          // Ensure calculations use safety fallback for maxQuantity
+          const critical = data.filter((i) => {
+            const max = i.maxQuantity || 100;
+            return (i.quantity / max) * 100 <= this.config.thresholds.critical;
+          }).length;
 
           animate("statTotalItems", count);
           animate("statGroups", groups);
@@ -2302,6 +3302,7 @@
         },
       };
 
+      window.app = app;
       // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         app.init();
