@@ -587,7 +587,7 @@
             id="statusDot"
           ></div>
           <span class="text-[10px] text-slate-400 font-medium" id="statusText"
-            >A Conectar...</span
+            >A Iniciar...</span
           >
         </div>
       </div>
@@ -1980,43 +1980,61 @@
           document
             .getElementById("searchInputMobile")
             .addEventListener("input", searchHandler);
-
-          // Initial process
-          this.processData();
         },
 
-        // --- AUTHENTICATION ---
+        // --- FIREBASE AUTHENTICATION ---
         async initAuth() {
+          // Proteção contra travamento: Timeout de 4 segundos
+          const timeoutPromise = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error("Connection Timeout")), 4000)
+          );
+
           try {
+            let authPromise;
             if (
               typeof __initial_auth_token !== "undefined" &&
               __initial_auth_token
             ) {
-              await signInWithCustomToken(auth, __initial_auth_token);
+              authPromise = signInWithCustomToken(auth, __initial_auth_token);
             } else {
-              await signInAnonymously(auth);
+              authPromise = signInAnonymously(auth);
             }
+
+            // Corrida: Autenticação vs Timeout
+            await Promise.race([authPromise, timeoutPromise]);
+
             // SUCESSO: Agora configura listeners
             this.setupListeners();
-            // Fallback UI update
+
+            // UI Update
             const statusEl = document.getElementById("statusText");
             if (statusEl) {
               statusEl.textContent = "Online (Nuvem)";
-              document.getElementById("statusDot").className =
-                "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
+              const dot = document.getElementById("statusDot");
+              if (dot) {
+                dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500"; // Solid green
+                dot.classList.remove("animate-pulse");
+              }
             }
           } catch (e) {
-            console.error("Auth Error:", e);
-            // Fallback to offline mode on auth failure
+            console.warn(
+              "Auth falhou ou demorou. Entrando em Modo Offline.",
+              e
+            );
+            // Fallback to offline mode on auth failure/timeout
             this.isOffline = true;
             this.loadLocalData();
-            this.showToast("Modo Offline (Erro Autenticação)", "warning");
+            this.showToast("Modo Offline ativado (Sem conexão).", "warning");
+
             // Fallback UI update
             const statusEl = document.getElementById("statusText");
             if (statusEl) {
-              statusEl.textContent = "Modo Offline (Erro Auth)";
-              document.getElementById("statusDot").className =
-                "w-1.5 h-1.5 rounded-full bg-red-500";
+              statusEl.textContent = "Modo Offline (Local)";
+              const dot = document.getElementById("statusDot");
+              if (dot) {
+                dot.className = "w-1.5 h-1.5 rounded-full bg-slate-500";
+                dot.classList.remove("animate-pulse");
+              }
             }
           }
         },
@@ -2341,7 +2359,7 @@
 
           if (
             confirm(
-              "ATENÇÃO: Isto apagará todos os dados e histórico. Continuar?"
+              "ATENÇÃO: Isto apagará todos os dados e histórico na nuvem. Continuar?"
             )
           ) {
             this.showLoading(true);
@@ -2403,6 +2421,14 @@
               });
             }
           }, 500);
+        },
+
+        initializeDefaultData() {
+          this.data = RAW_SOURCE_DATA.map((item) => ({
+            ...item,
+            maxQuantity:
+              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
+          }));
         },
 
         navigate(viewName) {
