@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
-    <title>Gestor de Inventário Enterprise 2025</title>
+    <title>Gestão de Materiais | DETEC - COENG</title>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -142,28 +142,185 @@
         color: #60a5fa;
       }
 
-      /* Modal Animation */
-      .modal-enter {
-        opacity: 0;
-        transform: scale(0.95);
+      /* Login Screen Overlay */
+      #loginOverlay {
+        z-index: 100;
+        background-image: radial-gradient(
+          circle at center,
+          #f1f5f9 0%,
+          #e2e8f0 100%
+        );
       }
-      .modal-enter-active {
-        opacity: 1;
-        transform: scale(1);
-        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
-      }
-      .modal-exit {
-        opacity: 1;
-        transform: scale(1);
-      }
-      .modal-exit-active {
-        opacity: 0;
-        transform: scale(0.95);
-        transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+
+      /* Input Password Toggle */
+      .password-field:focus-within i {
+        color: #3b82f6;
       }
     </style>
   </head>
   <body class="flex h-screen h-dvh overflow-hidden bg-slate-50">
+    <!-- LOGIN SCREEN -->
+    <div
+      id="loginOverlay"
+      class="fixed inset-0 flex items-center justify-center p-4"
+    >
+      <div
+        class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200 relative overflow-hidden"
+      >
+        <!-- STEP 1: SELECT USER -->
+        <div id="loginStep1" class="transition-all duration-300">
+          <div class="text-center mb-8">
+            <div
+              class="bg-blue-600 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-blue-500/30"
+            >
+              <i data-lucide="boxes" class="w-6 h-6 text-white"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-slate-800">
+              Bem-vindo ao SEROB
+            </h2>
+            <p class="text-sm text-slate-500 mt-1">
+              Selecione o seu utilizador para entrar
+            </p>
+          </div>
+
+          <div class="space-y-3">
+            <!-- User 1 -->
+            <button
+              onclick="app.selectUserForLogin(1)"
+              class="w-full flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md hover:bg-blue-50/50 transition-all group text-left"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-sm group-hover:bg-blue-600 group-hover:text-white transition-colors"
+              >
+                JA
+              </div>
+              <div>
+                <p
+                  class="text-sm font-semibold text-slate-700 group-hover:text-blue-700"
+                >
+                  Jefferson de Araújo Silva
+                </p>
+                <p class="text-xs text-slate-500">Administrador</p>
+              </div>
+              <i
+                data-lucide="chevron-right"
+                class="w-4 h-4 ml-auto text-slate-300 group-hover:text-blue-500"
+              ></i>
+            </button>
+
+            <!-- User 2 -->
+            <button
+              onclick="app.selectUserForLogin(2)"
+              class="w-full flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md hover:bg-blue-50/50 transition-all group text-left"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center font-bold text-sm group-hover:bg-emerald-600 group-hover:text-white transition-colors"
+              >
+                JS
+              </div>
+              <div>
+                <p
+                  class="text-sm font-semibold text-slate-700 group-hover:text-blue-700"
+                >
+                  Jessé Souza dos Anjos
+                </p>
+                <p class="text-xs text-slate-500">Usuário Padrão</p>
+              </div>
+              <i
+                data-lucide="chevron-right"
+                class="w-4 h-4 ml-auto text-slate-300 group-hover:text-blue-500"
+              ></i>
+            </button>
+
+            <!-- User 3 -->
+            <button
+              onclick="app.selectUserForLogin(3)"
+              class="w-full flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md hover:bg-blue-50/50 transition-all group text-left"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-bold text-sm group-hover:bg-purple-600 group-hover:text-white transition-colors"
+              >
+                AP
+              </div>
+              <div>
+                <p
+                  class="text-sm font-semibold text-slate-700 group-hover:text-blue-700"
+                >
+                  Antônio Pinto Melo Sousa Jr.
+                </p>
+                <p class="text-xs text-slate-500">Usuário Padrão</p>
+              </div>
+              <i
+                data-lucide="chevron-right"
+                class="w-4 h-4 ml-auto text-slate-300 group-hover:text-blue-500"
+              ></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2: ENTER PASSWORD -->
+        <div
+          id="loginStep2"
+          class="hidden flex-col items-center transition-all duration-300"
+        >
+          <button
+            onclick="app.backToUserSelect()"
+            class="self-start mb-6 text-xs font-medium text-slate-400 hover:text-slate-600 flex items-center gap-1 transition-colors"
+          >
+            <i data-lucide="arrow-left" class="w-3 h-3"></i> Voltar
+          </button>
+
+          <div
+            id="selectedUserAvatar"
+            class="w-16 h-16 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold text-xl mb-3 shadow-inner"
+          >
+            US
+          </div>
+          <h3
+            id="selectedUserName"
+            class="text-lg font-bold text-slate-800 text-center"
+          >
+            Nome do Usuário
+          </h3>
+          <p class="text-xs text-slate-500 mb-6">
+            Introduza a sua senha para continuar
+          </p>
+
+          <form onsubmit="app.performLogin(event)" class="w-full space-y-4">
+            <div class="relative password-field">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
+              >
+                <i
+                  data-lucide="lock"
+                  class="h-4 w-4 text-slate-400 transition-colors"
+                ></i>
+              </div>
+              <input
+                type="password"
+                id="loginPassword"
+                class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm transition-all shadow-sm"
+                placeholder="Senha"
+                required
+                autofocus
+              />
+            </div>
+
+            <button
+              type="submit"
+              class="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all active:scale-[0.98]"
+            >
+              Entrar no Sistema
+            </button>
+          </form>
+        </div>
+
+        <p class="text-center text-xs text-slate-400 mt-8">
+          SEROB Inventory System v2.5
+        </p>
+      </div>
+    </div>
+
     <!-- MODAL DE MOVIMENTAÇÃO -->
     <div
       id="movementModal"
@@ -324,8 +481,13 @@
     <aside
       class="hidden md:flex flex-col w-64 bg-slate-850 border-r border-slate-800 text-white shrink-0"
     >
-      <div class="p-6 flex items-center gap-3 border-b border-slate-700/50">
-        <div class="bg-blue-600 p-2 rounded-lg shrink-0">
+      <div
+        onclick="app.navigate('dashboard')"
+        class="p-6 flex items-center gap-3 border-b border-slate-700/50 cursor-pointer hover:bg-slate-800/50 transition-colors group"
+      >
+        <div
+          class="bg-blue-600 p-2 rounded-lg shrink-0 group-hover:scale-105 transition-transform"
+        >
           <i data-lucide="boxes" class="w-5 h-5 text-white"></i>
         </div>
         <div>
@@ -363,16 +525,39 @@
       </nav>
 
       <div class="p-4 border-t border-slate-700/50">
-        <div class="flex items-center gap-3 px-3 py-2">
+        <div class="flex items-center gap-3 px-3 py-2 mb-3">
           <div
+            id="userAvatar"
             class="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-xs font-bold shadow-lg"
           >
             AD
           </div>
           <div class="min-w-0">
-            <p class="text-sm font-medium truncate">Admin User</p>
-            <p class="text-xs text-slate-500 truncate">admin@empresa.com</p>
+            <p id="userName" class="text-sm font-medium truncate">Usuário</p>
+            <p id="userEmail" class="text-xs text-slate-500 truncate">
+              email@dominio.com
+            </p>
           </div>
+        </div>
+
+        <div class="flex gap-2">
+          <!-- Botão de Reset (Admin Only) -->
+          <button
+            id="btnResetSystem"
+            onclick="app.resetSystem()"
+            class="hidden flex-1 items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
+            title="Restaurar Padrão"
+          >
+            <i data-lucide="trash-2" class="w-3 h-3"></i>
+          </button>
+          <!-- Botão Logout -->
+          <button
+            onclick="app.logout()"
+            class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
+            title="Sair"
+          >
+            <i data-lucide="log-out" class="w-3 h-3"></i> Sair
+          </button>
         </div>
       </div>
     </aside>
@@ -1112,16 +1297,50 @@
         },
       ];
 
+      // DEFINIÇÃO DE UTILIZADORES COM SENHAS
+      const USERS = [
+        {
+          id: 1,
+          name: "Jefferson de Araújo Silva",
+          email: "jefferson.araujo@camara.leg.br",
+          role: "admin",
+          initials: "JA",
+          color: "blue",
+          password: "serob.admin",
+        },
+        {
+          id: 2,
+          name: "Jessé Souza dos Anjos",
+          email: "jesse.anjos@camara.leg.br",
+          role: "user",
+          initials: "JS",
+          color: "emerald",
+          password: "serob.user",
+        },
+        {
+          id: 3,
+          name: "Antônio Pinto Melo Sousa Júnior",
+          email: "antoniosousa.junior@camara.leg.br",
+          role: "user",
+          initials: "AP",
+          color: "purple",
+          password: "serob.user",
+        },
+      ];
+
       /**
        * APP LOGIC
        */
       const app = {
-        // Configuração Centralizada de Níveis de Estoque (EM PERCENTAGEM)
+        // Configuração Centralizada
         config: {
           thresholds: {
-            critical: 15, // Alerta Vermelho se <= 15%
-            warning: 40, // Alerta Amarelo se <= 40% (Atenção)
+            critical: 15,
+            warning: 40,
           },
+          storageKeyData: "serob_inventory_data_v1",
+          storageKeyMovements: "serob_inventory_moves_v1",
+          storageKeyUser: "serob_current_user_v1",
         },
 
         // State
@@ -1131,6 +1350,8 @@
         movements: [],
         currentView: "dashboard",
         activeMovementFilter: null,
+        currentUser: null,
+        tempLoginUser: null, // Temp storage for login flow
 
         // Pagination State
         currentPage: 1,
@@ -1148,24 +1369,14 @@
         init() {
           lucide.createIcons();
 
-          // Inicializa os dados e calcula um "Estoque Máximo" Simulado
-          // para permitir o cálculo da percentagem
-          this.data = RAW_SOURCE_DATA.map((item) => ({
-            ...item,
-            // Simula um stock máximo baseado na quantidade inicial + margem,
-            // ou um valor fixo se estiver zerado, para efeitos de demonstração.
-            maxQuantity:
-              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
-          }));
+          // Verifica login
+          this.checkLogin();
 
-          this.filteredData = [...this.data];
-
-          // O Histórico inicia vazio (Removido generateMockMovements)
-          // this.generateMockMovements();
-
+          // Carregar dados
+          this.loadData();
           this.populateDatalist();
 
-          // Setup Keyboard Shortcuts
+          // Listeners
           document.addEventListener("keydown", (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "k") {
               e.preventDefault();
@@ -1176,7 +1387,6 @@
             }
           });
 
-          // Setup Search Listeners
           const searchHandler = (e) => {
             clearTimeout(this.searchDebounceTimer);
             this.searchDebounceTimer = setTimeout(() => {
@@ -1194,6 +1404,219 @@
           this.processData();
         },
 
+        // --- AUTHENTICATION ---
+        checkLogin() {
+          const storedUser = localStorage.getItem(this.config.storageKeyUser);
+          if (storedUser) {
+            this.currentUser = JSON.parse(storedUser);
+            this.updateUIForUser();
+            document.getElementById("loginOverlay").classList.add("hidden");
+          } else {
+            document.getElementById("loginOverlay").classList.remove("hidden");
+            // Reset UI state
+            this.backToUserSelect();
+          }
+        },
+
+        selectUserForLogin(userId) {
+          const user = USERS.find((u) => u.id === userId);
+          if (user) {
+            this.tempLoginUser = user;
+
+            // Update Step 2 UI
+            document.getElementById("selectedUserName").textContent = user.name;
+            const colors = {
+              blue: "bg-blue-100 text-blue-600",
+              emerald: "bg-emerald-100 text-emerald-600",
+              purple: "bg-purple-100 text-purple-600",
+            };
+            const colorClass = colors[user.color] || colors.blue;
+
+            const avatar = document.getElementById("selectedUserAvatar");
+            avatar.className = `w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-inner ${colorClass}`;
+            avatar.textContent = user.initials;
+
+            // Switch Steps
+            document.getElementById("loginStep1").classList.add("hidden");
+            document.getElementById("loginStep2").classList.remove("hidden");
+            document.getElementById("loginStep2").classList.add("flex");
+
+            // Focus password
+            setTimeout(
+              () => document.getElementById("loginPassword").focus(),
+              100
+            );
+          }
+        },
+
+        backToUserSelect() {
+          this.tempLoginUser = null;
+          document.getElementById("loginPassword").value = "";
+          document.getElementById("loginStep2").classList.add("hidden");
+          document.getElementById("loginStep2").classList.remove("flex");
+          document.getElementById("loginStep1").classList.remove("hidden");
+        },
+
+        performLogin(e) {
+          e.preventDefault();
+          const pwdInput = document.getElementById("loginPassword");
+          const password = pwdInput.value;
+
+          if (this.tempLoginUser && password === this.tempLoginUser.password) {
+            this.currentUser = this.tempLoginUser;
+            localStorage.setItem(
+              this.config.storageKeyUser,
+              JSON.stringify(this.currentUser)
+            );
+
+            this.updateUIForUser();
+            document.getElementById("loginOverlay").classList.add("hidden");
+            this.showToast(
+              `Bem-vindo, ${this.currentUser.name.split(" ")[0]}!`,
+              "success"
+            );
+
+            // Reset form
+            pwdInput.value = "";
+            this.tempLoginUser = null;
+          } else {
+            this.showToast("Senha incorreta. Tente novamente.", "error");
+            pwdInput.value = "";
+            pwdInput.focus();
+            pwdInput.classList.add("ring-2", "ring-red-500", "border-red-500");
+            setTimeout(
+              () =>
+                pwdInput.classList.remove(
+                  "ring-2",
+                  "ring-red-500",
+                  "border-red-500"
+                ),
+              2000
+            );
+          }
+        },
+
+        logout() {
+          this.currentUser = null;
+          localStorage.removeItem(this.config.storageKeyUser);
+
+          // Show Login Screen Reset
+          document.getElementById("loginOverlay").classList.remove("hidden");
+          this.backToUserSelect();
+
+          this.showToast("Sessão terminada.", "info");
+        },
+
+        updateUIForUser() {
+          if (!this.currentUser) return;
+
+          // Atualizar Sidebar
+          document.getElementById("userName").textContent =
+            this.currentUser.name;
+          document.getElementById("userEmail").textContent =
+            this.currentUser.email;
+          document.getElementById("userAvatar").textContent =
+            this.currentUser.initials;
+
+          // Cor do Avatar baseada no utilizador
+          const colors = {
+            blue: "from-blue-500 to-indigo-500",
+            emerald: "from-emerald-500 to-teal-500",
+            purple: "from-purple-500 to-fuchsia-500",
+          };
+          const colorClass = colors[this.currentUser.color] || colors.blue;
+          document.getElementById(
+            "userAvatar"
+          ).className = `w-8 h-8 rounded-full bg-gradient-to-tr ${colorClass} flex items-center justify-center text-xs font-bold shadow-lg text-white`;
+
+          // Mostrar/Esconder botões Admin
+          const btnReset = document.getElementById("btnResetSystem");
+          if (this.currentUser.role === "admin") {
+            btnReset.classList.remove("hidden");
+            btnReset.classList.add("flex");
+          } else {
+            btnReset.classList.add("hidden");
+            btnReset.classList.remove("flex");
+          }
+
+          // Re-renderizar tabela para atualizar permissões de edição nas linhas
+          this.render();
+        },
+
+        // --- PERSISTÊNCIA ---
+        loadData() {
+          const storedData = localStorage.getItem(this.config.storageKeyData);
+          const storedMovements = localStorage.getItem(
+            this.config.storageKeyMovements
+          );
+
+          if (storedData) {
+            try {
+              this.data = JSON.parse(storedData);
+            } catch (e) {
+              this.initializeDefaultData();
+            }
+          } else {
+            this.initializeDefaultData();
+          }
+
+          if (storedMovements) {
+            try {
+              this.movements = JSON.parse(storedMovements);
+              this.movements.forEach((m) => (m.date = new Date(m.date)));
+            } catch (e) {
+              this.movements = [];
+            }
+          } else {
+            this.movements = [];
+          }
+
+          this.filteredData = [...this.data];
+        },
+
+        saveData() {
+          try {
+            localStorage.setItem(
+              this.config.storageKeyData,
+              JSON.stringify(this.data)
+            );
+            localStorage.setItem(
+              this.config.storageKeyMovements,
+              JSON.stringify(this.movements)
+            );
+          } catch (e) {
+            this.showToast("Erro ao salvar dados.", "error");
+          }
+        },
+
+        initializeDefaultData() {
+          this.data = RAW_SOURCE_DATA.map((item) => ({
+            ...item,
+            maxQuantity:
+              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
+          }));
+        },
+
+        resetSystem() {
+          // Double check permissions (frontend only security)
+          if (this.currentUser?.role !== "admin") {
+            this.showToast("Ação não autorizada.", "error");
+            return;
+          }
+
+          if (
+            confirm(
+              "ATENÇÃO: Isto apagará todos os dados e histórico. Continuar?"
+            )
+          ) {
+            localStorage.removeItem(this.config.storageKeyData);
+            localStorage.removeItem(this.config.storageKeyMovements);
+            // Mantém o login (storageKeyUser)
+            location.reload();
+          }
+        },
+
+        // --- UTILS & HELPERS ---
         populateDatalist() {
           const datalist = document.getElementById("materialList");
           datalist.innerHTML = "";
@@ -1205,17 +1628,13 @@
           });
         },
 
-        // Navigation Logic
         navigate(viewName) {
           this.currentView = viewName;
-
-          // Update Sidebar Active State
           document
             .querySelectorAll(".nav-item")
             .forEach((el) => el.classList.remove("active"));
           document.getElementById(`nav-${viewName}`).classList.add("active");
 
-          // Toggle Views
           if (viewName === "dashboard") {
             document.getElementById("viewDashboard").classList.remove("hidden");
             document.getElementById("viewMovements").classList.add("hidden");
@@ -1228,14 +1647,12 @@
           }
         },
 
-        // Modal Logic
         openModal() {
           const modal = document.getElementById("movementModal");
           const backdrop = document.getElementById("modalBackdrop");
           const panel = document.getElementById("modalPanel");
 
           modal.classList.remove("hidden");
-          // Animate In
           setTimeout(() => {
             backdrop.classList.remove("opacity-0");
             panel.classList.remove("opacity-0", "scale-95");
@@ -1243,7 +1660,7 @@
           }, 10);
 
           document.getElementById("movementForm").reset();
-          this.toggleModalType("in"); // Reset to entry
+          this.toggleModalType("in");
         },
 
         closeModal() {
@@ -1257,7 +1674,7 @@
 
           setTimeout(() => {
             modal.classList.add("hidden");
-          }, 200); // Wait for transition
+          }, 200);
         },
 
         toggleModalType(type) {
@@ -1290,18 +1707,13 @@
             return;
           }
 
-          // Find Item
           const targetItem = this.data.find((i) => i.sku === skuInput);
 
           if (!targetItem) {
-            this.showToast(
-              "Material não encontrado. Verifique o SKU.",
-              "error"
-            );
+            this.showToast("Material não encontrado.", "error");
             return;
           }
 
-          // Check Stock for Exit
           if (type === "out" && targetItem.quantity < qty) {
             this.showToast(
               `Stock insuficiente. Disponível: ${targetItem.quantity}`,
@@ -1310,14 +1722,9 @@
             return;
           }
 
-          // Update Data
-          if (type === "in") {
-            targetItem.quantity += qty;
-          } else {
-            targetItem.quantity -= qty;
-          }
+          if (type === "in") targetItem.quantity += qty;
+          else targetItem.quantity -= qty;
 
-          // Add to History
           this.movements.unshift({
             id: Date.now().toString(),
             date: new Date(),
@@ -1326,23 +1733,18 @@
             itemName: targetItem.name,
             type: type,
             quantity: qty,
-            user: "Admin",
+            user: this.currentUser ? this.currentUser.name : "Desconhecido",
           });
 
-          // UI Updates
-          this.processData(); // Refresh tables
-          this.populateDatalist(); // Update qty in list
+          this.saveData();
+          this.processData();
+          this.populateDatalist();
           this.closeModal();
 
           const typeLabel = type === "in" ? "Entrada" : "Saída";
-          this.showToast(
-            `${typeLabel} de ${qty} un. registada com sucesso!`,
-            "success"
-          );
+          this.showToast(`${typeLabel} registada com sucesso!`, "success");
 
-          if (this.currentView === "movements") {
-            this.renderMovements();
-          }
+          if (this.currentView === "movements") this.renderMovements();
         },
 
         showToast(msg, type = "info") {
@@ -1365,11 +1767,9 @@
         },
 
         toggleMovementFilter(type) {
-          if (this.activeMovementFilter === type) {
+          if (this.activeMovementFilter === type)
             this.activeMovementFilter = null;
-          } else {
-            this.activeMovementFilter = type;
-          }
+          else this.activeMovementFilter = type;
 
           this.updateMovementFilterUI();
           this.renderMovements();
@@ -1394,30 +1794,6 @@
           }
         },
 
-        generateMockMovements() {
-          const types = ["in", "out"];
-          const users = ["Admin", "João Silva", "Maria Santos", "Sistema"];
-
-          this.movements = Array.from({ length: 50 }, () => {
-            const item =
-              this.data[Math.floor(Math.random() * this.data.length)];
-            const type = types[Math.floor(Math.random() * types.length)];
-            const date = new Date();
-            date.setDate(date.getDate() - Math.floor(Math.random() * 30));
-
-            return {
-              id: Math.random().toString(36).substr(2, 9),
-              date: date,
-              itemId: item.id,
-              itemSku: item.sku,
-              itemName: item.name,
-              type: type,
-              quantity: Math.floor(Math.random() * 50) + 1,
-              user: users[Math.floor(Math.random() * users.length)],
-            };
-          }).sort((a, b) => b.date - a.date);
-        },
-
         renderMovements() {
           const tbody = document.getElementById("movementsBody");
           tbody.innerHTML = "";
@@ -1430,7 +1806,6 @@
           }
 
           if (displayMovements.length === 0) {
-            // Mensagem personalizada dependendo se há filtro ou se está tudo vazio
             const msg = this.activeMovementFilter
               ? "Nenhuma movimentação encontrada com este filtro."
               : "Ainda não existem registos no histórico.";
@@ -1513,12 +1888,10 @@
           lucide.createIcons();
         },
 
-        // Logic: Process (Search -> Sort -> Pagination -> Render)
         processData() {
           this.showLoading(true);
 
           setTimeout(() => {
-            // 1. Filter
             const query = this.searchQuery.toLowerCase();
             if (query) {
               this.filteredData = this.data.filter(
@@ -1532,7 +1905,6 @@
               this.filteredData = [...this.data];
             }
 
-            // 2. Sort
             this.filteredData.sort((a, b) => {
               let valA = a[this.sortConfig.key];
               let valB = b[this.sortConfig.key];
@@ -1547,7 +1919,6 @@
 
             this.updateKPIs(this.filteredData);
 
-            // 3. Pagination
             this.totalPages = Math.ceil(
               this.filteredData.length / this.itemsPerPage
             );
@@ -1588,10 +1959,18 @@
         },
 
         editMaxCapacity(id) {
+          // Permissão: Apenas Admin pode editar configurações
+          if (this.currentUser?.role !== "admin") {
+            this.showToast(
+              "Apenas administradores podem alterar configurações.",
+              "error"
+            );
+            return;
+          }
+
           const item = this.data.find((i) => i.id === id);
           if (!item) return;
 
-          // Prompt simples para edição rápida
           const newMax = prompt(
             `Definir Ponto de Ressuprimento para:\n${item.name}`,
             item.maxQuantity
@@ -1600,25 +1979,29 @@
           if (newMax !== null) {
             const val = parseInt(newMax);
             if (!isNaN(val) && val > 0) {
-              // Validação básica: Capacidade não pode ser menor que a quantidade atual?
-              // Normalmente pode (estoque excedente), então permitimos, mas o status ficará > 100%
-
               item.maxQuantity = val;
-              this.processData(); // Atualiza a tabela e KPIs
+              this.saveData();
+              this.processData();
               this.showToast(`Ressuprimento ajustado para ${val}`, "success");
             } else {
-              this.showToast(
-                "Valor inválido. Insira um número maior que 0.",
-                "error"
-              );
+              this.showToast("Valor inválido.", "error");
             }
           }
         },
 
-        // NOVA FUNÇÃO: Atualizar Saldo (Ajuste de Inventário)
         editQuantity(id) {
           const item = this.data.find((i) => i.id === id);
           if (!item) return;
+
+          // Permissão: Admin tem acesso total. Usuários padrão podem ajustar?
+          // Normalmente Ajuste de Inventário (Balanço) é Admin. Vamos restringir.
+          if (this.currentUser?.role !== "admin") {
+            this.showToast(
+              "Apenas administradores podem realizar ajustes de balanço.",
+              "error"
+            );
+            return;
+          }
 
           const newQtyStr = prompt(
             `AJUSTE DE SALDO (Balanço):\n${item.name}\n\nQuantidade Atual: ${item.quantity}\n\nNova Quantidade Real:`,
@@ -1630,12 +2013,11 @@
             if (!isNaN(newQty) && newQty >= 0) {
               const diff = newQty - item.quantity;
 
-              if (diff === 0) return; // Sem alteração
+              if (diff === 0) return;
 
               const oldQty = item.quantity;
               item.quantity = newQty;
 
-              // Regista o movimento de ajuste automaticamente para rastreabilidade
               this.movements.unshift({
                 id: Date.now().toString(),
                 date: new Date(),
@@ -1644,19 +2026,17 @@
                 itemName: item.name,
                 type: diff > 0 ? "in" : "out",
                 quantity: Math.abs(diff),
-                user: "Admin (Ajuste)",
+                user: `${this.currentUser.name} (Ajuste)`,
               });
 
+              this.saveData();
               this.processData();
               this.showToast(
                 `Saldo corrigido de ${oldQty} para ${newQty}.`,
                 "success"
               );
             } else {
-              this.showToast(
-                "Valor inválido. Insira um número maior ou igual a 0.",
-                "error"
-              );
+              this.showToast("Valor inválido.", "error");
             }
           }
         },
@@ -1690,7 +2070,6 @@
         },
 
         getStockStatus(item) {
-          // Cálculo da percentagem de ocupação
           const percentage = Math.round(
             (item.quantity / item.maxQuantity) * 100
           );
@@ -1701,16 +2080,16 @@
               color: "text-red-700 bg-red-50 border-red-100",
               dot: "bg-red-500",
               pct: percentage,
-              note: "Risco de Rutura", // Nota para nível crítico
+              note: "Risco de Rutura",
             };
           }
           if (percentage <= this.config.thresholds.warning) {
             return {
-              label: "Pedir Compra", // Mudou de "Atenção" para algo mais acionável
+              label: "Pedir Compra",
               color: "text-amber-700 bg-amber-50 border-amber-100",
               dot: "bg-amber-500",
               pct: percentage,
-              note: "Entrega: 45 dias", // Alerta de prazo solicitado
+              note: "Entrega: 45 dias",
             };
           }
           return {
@@ -1718,7 +2097,7 @@
             color: "text-emerald-700 bg-emerald-50 border-emerald-100",
             dot: "bg-emerald-500",
             pct: percentage,
-            note: `${percentage}% da Meta`, // Nota padrão
+            note: `${percentage}% da Meta`,
           };
         },
 
@@ -1732,8 +2111,6 @@
 
           const count = data.length;
           const groups = new Set(data.map((i) => i.category)).size;
-
-          // Agora conta "críticos" baseado na percentagem real (< 15%)
           const critical = data.filter(
             (i) =>
               (i.quantity / i.maxQuantity) * 100 <=
@@ -1771,6 +2148,7 @@
           document.getElementById("emptyState").classList.remove("flex");
 
           const fragment = document.createDocumentFragment();
+          const isAdmin = this.currentUser?.role === "admin";
 
           this.paginatedData.forEach((item) => {
             const tr = document.createElement("tr");
@@ -1778,8 +2156,13 @@
               "hover:bg-slate-50 group border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
 
             const catColor = this.getCategoryColor(item.category);
-            // Agora passamos o objeto inteiro 'item'
             const status = this.getStockStatus(item);
+
+            // Cursor e title dependentes de permissão
+            const qtyCursor = isAdmin ? "cursor-pointer" : "cursor-default";
+            const editCursor = isAdmin ? "cursor-pointer" : "cursor-default";
+            const qtyTitle = isAdmin ? "Clique para ajustar saldo" : "";
+            const editTitle = isAdmin ? "Clique para editar" : "";
 
             tr.innerHTML = `
             <td class="px-6 py-4 whitespace-nowrap">
@@ -1806,24 +2189,36 @@
               }">${item.name}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right">
-              <div class="flex items-center justify-end gap-2 group/qty cursor-pointer" onclick="app.editQuantity(${
-                item.id
-              })" title="Clique para ajustar saldo (Balanço)">
-                <span class="text-xs font-bold text-slate-700 border-b border-dashed border-transparent group-hover/qty:border-slate-300 transition-colors">${
-                  item.quantity
-                }</span>
+              <div class="flex items-center justify-end gap-2 group/qty ${qtyCursor}" onclick="app.editQuantity(${
+              item.id
+            })" title="${qtyTitle}">
+                <span class="text-xs font-bold text-slate-700 border-b border-dashed border-transparent ${
+                  isAdmin ? "group-hover/qty:border-slate-300" : ""
+                } transition-colors">${item.quantity}</span>
                 <span class="text-[10px] text-slate-400">un</span>
-                <i data-lucide="refresh-ccw" class="w-3 h-3 text-slate-300 opacity-0 group-hover/qty:opacity-100 transition-opacity"></i>
+                ${
+                  isAdmin
+                    ? '<i data-lucide="refresh-ccw" class="w-3 h-3 text-slate-300 opacity-0 group-hover/qty:opacity-100 transition-opacity"></i>'
+                    : ""
+                }
               </div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap text-right">
-              <div class="flex items-center justify-end gap-2 group/edit cursor-pointer" onclick="app.editMaxCapacity(${
-                item.id
-              })">
-                <span class="text-xs font-medium text-slate-600 border-b border-dashed border-slate-300 group-hover/edit:border-blue-400 group-hover/edit:text-blue-600 transition-colors" title="Clique para editar">${
-                  item.maxQuantity
-                }</span>
-                <i data-lucide="edit-2" class="w-3 h-3 text-slate-300 opacity-0 group-hover/edit:opacity-100 transition-opacity"></i>
+              <div class="flex items-center justify-end gap-2 group/edit ${editCursor}" onclick="app.editMaxCapacity(${
+              item.id
+            })">
+                <span class="text-xs font-medium text-slate-600 border-b border-dashed border-slate-300 ${
+                  isAdmin
+                    ? "group-hover/edit:border-blue-400 group-hover/edit:text-blue-600"
+                    : ""
+                } transition-colors" title="${editTitle}">${
+              item.maxQuantity
+            }</span>
+                ${
+                  isAdmin
+                    ? '<i data-lucide="edit-2" class="w-3 h-3 text-slate-300 opacity-0 group-hover/edit:opacity-100 transition-opacity"></i>'
+                    : ""
+                }
               </div>
             </td>
              <td class="px-6 py-4 whitespace-nowrap text-center">
