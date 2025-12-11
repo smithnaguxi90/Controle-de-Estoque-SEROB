@@ -1223,9 +1223,9 @@
           isOffline = false;
         }
       } catch (e) {
-        console.warn(
-          "Firebase não detetado/configurado. A utilizar LocalStorage."
-        );
+        console.warn("Modo Offline Ativado:", e.message);
+        isOffline = true;
+        // Não mostramos erro, apenas ativamos fallback silencioso
       }
 
       /**
@@ -1916,11 +1916,12 @@
             warning: 40,
           },
           storageKeyUser: "serob_current_user_v1",
-          storageKeyData: "serob_inventory_data_v1",
-          storageKeyMovements: "serob_inventory_moves_v1",
+          storageKeyData: "serob_local_data_v1",
+          storageKeyMovements: "serob_local_moves_v1",
         },
 
         // State
+        isOffline: isOffline, // Use global flag
         data: [],
         filteredData: [],
         paginatedData: [],
@@ -1943,15 +1944,16 @@
         searchDebounceTimer: null,
 
         // Init
-        async init() {
+        init() {
           lucide.createIcons();
 
-          // Inicializa Auth se estivermos com Firebase, senão apenas local
-          if (!isOffline && db) {
-            await this.initAuth();
+          // Verifica login (funciona offline também)
+          this.checkLogin();
+
+          if (!this.isOffline) {
+            this.initAuth(); // Se estiver online, tenta Auth Firebase
           } else {
-            this.checkLogin(); // Local Check
-            this.loadDataLocal(); // Load local data if offline
+            this.loadLocalData(); // Se já estiver offline, carrega local
           }
 
           // Listeners
@@ -1978,9 +1980,12 @@
           document
             .getElementById("searchInputMobile")
             .addEventListener("input", searchHandler);
+
+          // Initial process
+          this.processData();
         },
 
-        // --- FIREBASE AUTHENTICATION ---
+        // --- AUTHENTICATION ---
         async initAuth() {
           try {
             if (
@@ -1991,28 +1996,27 @@
             } else {
               await signInAnonymously(auth);
             }
-            // Auth success, proceed to check login state and setup listeners
-            this.checkLogin();
+            // SUCESSO: Agora configura listeners
             this.setupListeners();
-
-            // UI update for online mode
+            // Fallback UI update
             const statusEl = document.getElementById("statusText");
             if (statusEl) {
               statusEl.textContent = "Online (Nuvem)";
               document.getElementById("statusDot").className =
                 "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
             }
-          } catch (error) {
-            console.error("Auth failed:", error);
-            isOffline = true;
-            this.checkLogin();
-            this.loadDataLocal();
-            // UI update for offline mode
+          } catch (e) {
+            console.error("Auth Error:", e);
+            // Fallback to offline mode on auth failure
+            this.isOffline = true;
+            this.loadLocalData();
+            this.showToast("Modo Offline (Erro Autenticação)", "warning");
+            // Fallback UI update
             const statusEl = document.getElementById("statusText");
             if (statusEl) {
-              statusEl.textContent = "Modo Offline (Local)";
+              statusEl.textContent = "Modo Offline (Erro Auth)";
               document.getElementById("statusDot").className =
-                "w-1.5 h-1.5 rounded-full bg-slate-500";
+                "w-1.5 h-1.5 rounded-full bg-red-500";
             }
           }
         },
@@ -2077,7 +2081,8 @@
           );
 
           if (newPass && newPass.trim().length > 0) {
-            // Atualiza a senha do utilizador selecionado em memória
+            // Atualiza a senha do utilizador selecionado em memória (sessão atual apenas)
+            // Em produção real, isto iria para a BD de users
             this.tempLoginUser.password = newPass.trim();
 
             // Preenche automaticamente o campo para facilitar
@@ -2174,68 +2179,10 @@
           this.render();
         },
 
-        // --- DATA LOADING & SAVING (HYBRID) ---
+        // --- DATA MANAGEMENT (OFFLINE/ONLINE) ---
 
-        setupListeners() {
-          if (!db) return;
-          this.showLoading(true);
-
-          // Materials
-          const matsRef = collection(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "materials"
-          );
-          onSnapshot(
-            matsRef,
-            (snapshot) => {
-              const items = [];
-              snapshot.forEach((doc) => items.push(doc.data()));
-              this.data = items;
-
-              if (items.length === 0) {
-                this.seedDatabase();
-              } else {
-                this.processData();
-              }
-            },
-            (error) => {
-              console.warn("Firestore offline/erro. Fallback local.", error);
-              // If fails, load local
-              isOffline = true;
-              this.loadDataLocal();
-              const statusEl = document.getElementById("statusText");
-              if (statusEl) statusEl.textContent = "Modo Offline (Erro)";
-            }
-          );
-
-          // Movements
-          const movesRef = collection(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "movements"
-          );
-          onSnapshot(movesRef, (snapshot) => {
-            const moves = [];
-            snapshot.forEach((doc) => {
-              const data = doc.data();
-              data.date = new Date(data.date);
-              moves.push(data);
-            });
-            moves.sort((a, b) => b.date - a.date);
-            this.movements = moves;
-
-            if (this.currentView === "movements") this.renderMovements();
-          });
-        },
-
-        loadDataLocal() {
+        // Load Local Data (Offline Mode Fallback)
+        loadLocalData() {
           const storedData = localStorage.getItem(this.config.storageKeyData);
           const storedMovements = localStorage.getItem(
             this.config.storageKeyMovements
@@ -2270,29 +2217,88 @@
           }
 
           this.processData();
-        },
+          this.populateDatalist();
+          this.showLoading(false);
 
-        saveDataLocal() {
-          try {
-            localStorage.setItem(
-              this.config.storageKeyData,
-              JSON.stringify(this.data)
-            );
-            localStorage.setItem(
-              this.config.storageKeyMovements,
-              JSON.stringify(this.movements)
-            );
-          } catch (e) {
-            this.showToast("Erro ao salvar dados localmente.", "error");
+          // CORREÇÃO: Atualizar indicador visual para Offline
+          const statusEl = document.getElementById("statusText");
+          if (statusEl) {
+            statusEl.textContent = "Modo Offline (Local)";
+            const dot = document.getElementById("statusDot");
+            if (dot) {
+              dot.className = "w-1.5 h-1.5 rounded-full bg-slate-500";
+              dot.classList.remove("animate-pulse");
+            }
           }
         },
 
-        initializeDefaultData() {
-          this.data = RAW_SOURCE_DATA.map((item) => ({
-            ...item,
-            maxQuantity:
-              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
-          }));
+        saveLocalData() {
+          localStorage.setItem(
+            this.config.storageKeyData,
+            JSON.stringify(this.data)
+          );
+          localStorage.setItem(
+            this.config.storageKeyMovements,
+            JSON.stringify(this.movements)
+          );
+        },
+
+        // --- FIREBASE LISTENERS ---
+        setupListeners() {
+          if (!db) return;
+          this.showLoading(true);
+
+          const matsRef = collection(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "materials"
+          );
+          onSnapshot(
+            matsRef,
+            (snapshot) => {
+              const items = [];
+              snapshot.forEach((doc) => items.push(doc.data()));
+              this.data = items;
+
+              if (items.length === 0) {
+                this.seedDatabase();
+              } else {
+                this.processData();
+                this.populateDatalist();
+              }
+              this.showLoading(false);
+            },
+            (error) => {
+              console.error("Firebase Read Error:", error);
+              // Switch to offline mode
+              this.isOffline = true;
+              this.loadLocalData();
+              this.showToast("Modo Offline ativado.", "warning");
+            }
+          );
+
+          const movesRef = collection(
+            db,
+            "artifacts",
+            appId,
+            "public",
+            "data",
+            "movements"
+          );
+          onSnapshot(movesRef, (snapshot) => {
+            const moves = [];
+            snapshot.forEach((doc) => {
+              const data = doc.data();
+              data.date = new Date(data.date);
+              moves.push(data);
+            });
+            moves.sort((a, b) => b.date - a.date);
+            this.movements = moves;
+            if (this.currentView === "movements") this.renderMovements();
+          });
         },
 
         async seedDatabase() {
@@ -2307,8 +2313,7 @@
             "materials"
           );
 
-          // Take first 450 items to fit in batch (Firestore limit 500)
-          const itemsToSeed = RAW_SOURCE_DATA.slice(0, 450);
+          const itemsToSeed = RAW_SOURCE_DATA.slice(0, 450); // Batch limit safety
 
           itemsToSeed.forEach((item) => {
             const itemData = {
@@ -2341,9 +2346,13 @@
           ) {
             this.showLoading(true);
 
-            if (!isOffline && db) {
+            if (this.isOffline) {
+              localStorage.removeItem(this.config.storageKeyData);
+              localStorage.removeItem(this.config.storageKeyMovements);
+              location.reload();
+            } else {
               try {
-                // Delete cloud data
+                // Firebase Reset
                 const matsRef = collection(
                   db,
                   "artifacts",
@@ -2370,24 +2379,18 @@
                 movSnap.forEach((d) => batch2.delete(d.ref));
                 await batch2.commit();
 
-                this.showToast("Sistema na nuvem reiniciado.", "success");
+                this.showToast("Sistema reiniciado.", "success");
               } catch (e) {
-                this.showToast("Erro ao resetar nuvem.", "error");
+                this.showToast("Erro ao resetar sistema.", "error");
               } finally {
                 this.showLoading(false);
               }
-            } else {
-              // Delete local data
-              localStorage.removeItem(this.config.storageKeyData);
-              localStorage.removeItem(this.config.storageKeyMovements);
-              location.reload();
             }
           }
         },
 
         // --- UTILS & HELPERS ---
         populateDatalist() {
-          // Wait for data to populate
           setTimeout(() => {
             const datalist = document.getElementById("materialList");
             if (datalist) {
@@ -2399,7 +2402,7 @@
                 datalist.appendChild(option);
               });
             }
-          }, 1000);
+          }, 500);
         },
 
         navigate(viewName) {
@@ -2637,8 +2640,25 @@
               ? targetItem.quantity + qty
               : targetItem.quantity - qty;
 
-          if (!isOffline && db) {
-            // CLOUD SAVE
+          if (this.isOffline) {
+            // Local Update
+            targetItem.quantity = newQuantity;
+            this.movements.unshift({
+              id: Date.now().toString(),
+              date: new Date(),
+              itemId: targetItem.id,
+              itemSku: targetItem.sku,
+              itemName: targetItem.name,
+              type: type,
+              quantity: qty,
+              user: this.currentUser ? this.currentUser.name : "Offline User",
+            });
+            this.saveLocalData();
+            this.processData();
+            this.closeModal();
+            this.showToast("Movimentação salva localmente.", "success");
+          } else {
+            // Firebase Update
             try {
               const matsRef = collection(
                 db,
@@ -2675,30 +2695,8 @@
               this.showToast(`${typeLabel} registrada com sucesso!`, "success");
             } catch (e) {
               console.error(e);
-              this.showToast("Erro ao gravar na nuvem.", "error");
+              this.showToast("Erro ao gravar dados na nuvem.", "error");
             }
-          } else {
-            // LOCAL SAVE
-            targetItem.quantity = newQuantity;
-            this.movements.unshift({
-              id: Date.now().toString(),
-              date: new Date(),
-              itemId: targetItem.id,
-              itemSku: targetItem.sku,
-              itemName: targetItem.name,
-              type: type,
-              quantity: qty,
-              user: this.currentUser
-                ? this.currentUser.name
-                : "Desconhecido (Offline)",
-            });
-            this.saveDataLocal();
-            this.processData();
-            this.populateDatalist();
-            this.closeModal();
-            const typeLabel = type === "in" ? "Entrada" : "Saída";
-            this.showToast(`${typeLabel} registrada (Local).`, "success");
-            if (this.currentView === "movements") this.renderMovements();
           }
         },
 
@@ -2706,6 +2704,7 @@
           let bg = "#3b82f6";
           if (type === "success") bg = "#10b981";
           if (type === "error") bg = "#ef4444";
+          if (type === "warning") bg = "#f59e0b";
 
           Toastify({
             text: msg,
@@ -2914,7 +2913,6 @@
         },
 
         async editMaxCapacity(id) {
-          // Permissão: Apenas Admin
           if (this.currentUser?.role !== "admin") {
             this.showToast(
               "Apenas administradores podem alterar configurações.",
@@ -2934,7 +2932,15 @@
           if (newMax !== null) {
             const val = parseInt(newMax);
             if (!isNaN(val) && val > 0) {
-              if (!isOffline && db) {
+              if (this.isOffline) {
+                item.maxQuantity = val;
+                this.saveLocalData();
+                this.processData();
+                this.showToast(
+                  `Ressuprimento ajustado localmente para ${val}`,
+                  "success"
+                );
+              } else {
                 try {
                   const matsRef = collection(
                     db,
@@ -2953,11 +2959,6 @@
                 } catch (e) {
                   this.showToast("Erro ao salvar.", "error");
                 }
-              } else {
-                item.maxQuantity = val;
-                this.saveDataLocal();
-                this.processData();
-                this.showToast(`Ressuprimento ajustado (Local).`, "success");
               }
             } else {
               this.showToast("Valor inválido.", "error");
@@ -2966,7 +2967,6 @@
         },
 
         async editQuantity(id) {
-          // Permissão: Apenas Admin
           if (this.currentUser?.role !== "admin") {
             this.showToast(
               "Apenas administradores podem realizar ajustes de balanço.",
@@ -2991,7 +2991,25 @@
 
               const oldQty = item.quantity;
 
-              if (!isOffline && db) {
+              if (this.isOffline) {
+                item.quantity = newQty;
+                this.movements.unshift({
+                  id: Date.now().toString(),
+                  date: new Date(),
+                  itemId: item.id,
+                  itemSku: item.sku,
+                  itemName: item.name,
+                  type: diff > 0 ? "in" : "out",
+                  quantity: Math.abs(diff),
+                  user: `${this.currentUser.name} (Ajuste)`,
+                });
+                this.saveLocalData();
+                this.processData();
+                this.showToast(
+                  `Saldo corrigido localmente para ${newQty}.`,
+                  "success"
+                );
+              } else {
                 try {
                   // Update Material
                   const matsRef = collection(
@@ -3032,21 +3050,6 @@
                 } catch (e) {
                   this.showToast("Erro ao gravar ajuste.", "error");
                 }
-              } else {
-                item.quantity = newQty;
-                this.movements.unshift({
-                  id: Date.now().toString(),
-                  date: new Date(),
-                  itemId: item.id,
-                  itemSku: item.sku,
-                  itemName: item.name,
-                  type: diff > 0 ? "in" : "out",
-                  quantity: Math.abs(diff),
-                  user: `${this.currentUser.name} (Ajuste Local)`,
-                });
-                this.saveDataLocal();
-                this.processData();
-                this.showToast(`Saldo corrigido (Local).`, "success");
               }
             } else {
               this.showToast("Valor inválido.", "error");
