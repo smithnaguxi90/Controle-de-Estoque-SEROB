@@ -1943,33 +1943,15 @@
         searchDebounceTimer: null,
 
         // Init
-        init() {
+        async init() {
           lucide.createIcons();
 
           // Inicializa Auth se estivermos com Firebase, senão apenas local
           if (!isOffline && db) {
-            this.initAuth();
+            await this.initAuth();
           } else {
             this.checkLogin(); // Local Check
-          }
-
-          // Carregar dados (Híbrido)
-          if (!isOffline) {
-            this.setupListeners();
-            // Fallback UI update
-            document.getElementById("statusText").textContent =
-              "Online (Nuvem)";
-            document.getElementById("statusDot").className =
-              "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
-          } else {
-            this.loadDataLocal();
-            // Fallback UI update
-            const statusEl = document.getElementById("statusText");
-            if (statusEl) {
-              statusEl.textContent = "Modo Offline (Local)";
-              document.getElementById("statusDot").className =
-                "w-1.5 h-1.5 rounded-full bg-slate-500";
-            }
+            this.loadDataLocal(); // Load local data if offline
           }
 
           // Listeners
@@ -2000,15 +1982,39 @@
 
         // --- FIREBASE AUTHENTICATION ---
         async initAuth() {
-          if (
-            typeof __initial_auth_token !== "undefined" &&
-            __initial_auth_token
-          ) {
-            await signInWithCustomToken(auth, __initial_auth_token);
-          } else {
-            await signInAnonymously(auth);
+          try {
+            if (
+              typeof __initial_auth_token !== "undefined" &&
+              __initial_auth_token
+            ) {
+              await signInWithCustomToken(auth, __initial_auth_token);
+            } else {
+              await signInAnonymously(auth);
+            }
+            // Auth success, proceed to check login state and setup listeners
+            this.checkLogin();
+            this.setupListeners();
+
+            // UI update for online mode
+            const statusEl = document.getElementById("statusText");
+            if (statusEl) {
+              statusEl.textContent = "Online (Nuvem)";
+              document.getElementById("statusDot").className =
+                "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
+            }
+          } catch (error) {
+            console.error("Auth failed:", error);
+            isOffline = true;
+            this.checkLogin();
+            this.loadDataLocal();
+            // UI update for offline mode
+            const statusEl = document.getElementById("statusText");
+            if (statusEl) {
+              statusEl.textContent = "Modo Offline (Local)";
+              document.getElementById("statusDot").className =
+                "w-1.5 h-1.5 rounded-full bg-slate-500";
+            }
           }
-          this.checkLogin();
         },
 
         checkLogin() {
@@ -2071,8 +2077,7 @@
           );
 
           if (newPass && newPass.trim().length > 0) {
-            // Atualiza a senha do utilizador selecionado em memória (sessão atual apenas)
-            // Em produção real, isto iria para a BD de users
+            // Atualiza a senha do utilizador selecionado em memória
             this.tempLoginUser.password = newPass.trim();
 
             // Preenche automaticamente o campo para facilitar
@@ -2198,12 +2203,12 @@
               }
             },
             (error) => {
-              console.warn("Firestore offline/erro. Fallback local.");
+              console.warn("Firestore offline/erro. Fallback local.", error);
               // If fails, load local
               isOffline = true;
               this.loadDataLocal();
-              document.getElementById("statusText").textContent =
-                "Modo Offline (Erro)";
+              const statusEl = document.getElementById("statusText");
+              if (statusEl) statusEl.textContent = "Modo Offline (Erro)";
             }
           );
 
@@ -2282,6 +2287,14 @@
           }
         },
 
+        initializeDefaultData() {
+          this.data = RAW_SOURCE_DATA.map((item) => ({
+            ...item,
+            maxQuantity:
+              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
+          }));
+        },
+
         async seedDatabase() {
           if (!db) return;
           const batch = writeBatch(db);
@@ -2309,7 +2322,7 @@
 
           try {
             await batch.commit();
-            this.showToast("Base de dados na nuvem inicializada.", "success");
+            this.showToast("Base de dados inicializada.", "success");
           } catch (e) {
             console.error("Error seeding", e);
           }
