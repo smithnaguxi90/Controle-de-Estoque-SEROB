@@ -428,6 +428,56 @@
                         </label>
                       </div>
 
+                      <form id="form-cadastro">
+                        <h3>Adicionar Novo Item</h3>
+
+                        <div class="campos">
+                          <input
+                            type="number"
+                            id="inp-id"
+                            placeholder="ID (ex: 1001)"
+                            required
+                          />
+
+                          <input
+                            type="text"
+                            id="inp-contract"
+                            placeholder="Cód. Contrato (ex: B.16.04...)"
+                            required
+                          />
+                          <input
+                            type="text"
+                            id="inp-sku"
+                            placeholder="SKU (ex: 39201)"
+                            required
+                          />
+                          <input
+                            type="text"
+                            id="inp-name"
+                            placeholder="Nome do Produto"
+                            required
+                          />
+
+                          <input
+                            type="text"
+                            id="inp-category"
+                            placeholder="Categoria (ex: DEP. 01)"
+                            required
+                          />
+
+                          <input
+                            type="number"
+                            id="inp-quantity"
+                            placeholder="Quantidade"
+                            required
+                          />
+                        </div>
+
+                        <button type="submit" id="btn-salvar">
+                          Salvar Produto
+                        </button>
+                      </form>
+
                       <div>
                         <label
                           for="moveItem"

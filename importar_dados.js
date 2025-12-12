@@ -48,3 +48,47 @@ function carregarTabela() {
 
 // Inicia a aplicação
 carregarTabela();
+
+import { db, collection, addDoc } from "./firebase-config.js";
+
+// 1. Selecionamos o formulário
+const formCadastro = document.getElementById("form-cadastro");
+
+// 2. Adicionamos o evento de envio (submit)
+formCadastro.addEventListener("submit", async (event) => {
+  // Previne que a página recarregue (padrão do HTML)
+  event.preventDefault();
+
+  // Feedback visual (opcional)
+  const btnSalvar = document.getElementById("btn-salvar");
+  const textoOriginal = btnSalvar.innerText;
+  btnSalvar.innerText = "Salvando...";
+  btnSalvar.disabled = true;
+
+  // 3. Captura os valores dos inputs
+  // Convertemos Quantidade e ID para Número, o resto é Texto
+  const novoProduto = {
+    id: Number(document.getElementById("inp-id").value),
+    contractCode: document.getElementById("inp-contract").value,
+    sku: document.getElementById("inp-sku").value,
+    name: document.getElementById("inp-name").value.toUpperCase(), // Força letra maiúscula para padronizar
+    category: document.getElementById("inp-category").value,
+    quantity: Number(document.getElementById("inp-quantity").value),
+  };
+
+  try {
+    // 4. Envia para o Firebase (Coleção 'estoque')
+    await addDoc(collection(db, "estoque"), novoProduto);
+
+    // 5. Limpa o formulário após o sucesso
+    formCadastro.reset();
+    alert("Produto cadastrado com sucesso!");
+  } catch (erro) {
+    console.error("Erro ao cadastrar:", erro);
+    alert("Erro ao salvar. Verifique o console.");
+  } finally {
+    // Restaura o botão
+    btnSalvar.innerText = textoOriginal;
+    btnSalvar.disabled = false;
+  }
+});
