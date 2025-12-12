@@ -11,7 +11,7 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts: Inter -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -33,6 +33,7 @@
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
 
+    <!-- Tailwind Config -->
     <script>
       tailwind.config = {
         theme: {
@@ -51,7 +52,7 @@
                 900: "#1e3a8a",
               },
               slate: {
-                850: "#152033", // Custom dark for sidebar
+                850: "#152033",
               },
             },
             boxShadow: {
@@ -94,23 +95,6 @@
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
         overflow: hidden;
-      }
-
-      /* Badge Dynamic Colors (Fallback classes used in JS) */
-      .badge-blue {
-        @apply bg-blue-50 text-blue-700 border-blue-100;
-      }
-      .badge-green {
-        @apply bg-emerald-50 text-emerald-700 border-emerald-100;
-      }
-      .badge-purple {
-        @apply bg-purple-50 text-purple-700 border-purple-100;
-      }
-      .badge-orange {
-        @apply bg-orange-50 text-orange-700 border-orange-100;
-      }
-      .badge-gray {
-        @apply bg-slate-50 text-slate-700 border-slate-100;
       }
 
       /* Animations */
@@ -156,6 +140,33 @@
       .password-field:focus-within i {
         color: #3b82f6;
       }
+
+      /* Badge Colors */
+      .badge-blue {
+        background-color: #eff6ff;
+        color: #1d4ed8;
+        border: 1px solid #dbeafe;
+      }
+      .badge-green {
+        background-color: #ecfdf5;
+        color: #047857;
+        border: 1px solid #d1fae5;
+      }
+      .badge-purple {
+        background-color: #faf5ff;
+        color: #7e22ce;
+        border: 1px solid #e9d5ff;
+      }
+      .badge-orange {
+        background-color: #fff7ed;
+        color: #c2410c;
+        border: 1px solid #ffedd5;
+      }
+      .badge-gray {
+        background-color: #f8fafc;
+        color: #334155;
+        border: 1px solid #e2e8f0;
+      }
     </style>
   </head>
   <body class="flex h-screen h-dvh overflow-hidden bg-slate-50">
@@ -184,7 +195,6 @@
           </div>
 
           <div class="space-y-3">
-            <!-- User 1 -->
             <button
               onclick="app.selectUserForLogin(1)"
               class="w-full flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md hover:bg-blue-50/50 transition-all group text-left"
@@ -208,7 +218,6 @@
               ></i>
             </button>
 
-            <!-- User 2 -->
             <button
               onclick="app.selectUserForLogin(2)"
               class="w-full flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md hover:bg-blue-50/50 transition-all group text-left"
@@ -232,7 +241,6 @@
               ></i>
             </button>
 
-            <!-- User 3 -->
             <button
               onclick="app.selectUserForLogin(3)"
               class="w-full flex items-center gap-4 p-3 rounded-xl border border-slate-200 hover:border-blue-500 hover:shadow-md hover:bg-blue-50/50 transition-all group text-left"
@@ -314,7 +322,6 @@
                   class="block w-full pl-10 pr-3 py-3 border border-slate-200 rounded-xl leading-5 bg-slate-50 placeholder-slate-400 focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 sm:text-sm transition-all shadow-sm"
                   placeholder="••••••"
                   required
-                  autofocus
                 />
               </div>
             </div>
@@ -329,7 +336,7 @@
         </div>
 
         <p class="text-center text-xs text-slate-400 mt-8">
-          SEROB Inventory System v2.5
+          SEROB Inventory System v2.6
         </p>
       </div>
     </div>
@@ -342,14 +349,12 @@
       role="dialog"
       aria-modal="true"
     >
-      <!-- Backdrop -->
       <div
         class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm transition-opacity opacity-0"
         id="modalBackdrop"
         onclick="app.closeModal()"
       ></div>
 
-      <!-- Panel -->
       <div class="fixed inset-0 z-10 overflow-y-auto">
         <div
           class="flex min-h-full items-center justify-center p-4 text-center sm:p-0"
@@ -388,7 +393,6 @@
                       onsubmit="app.saveMovement(event)"
                       class="space-y-4"
                     >
-                      <!-- Tipo -->
                       <div
                         class="grid grid-cols-2 gap-3 p-1 bg-slate-100 rounded-lg"
                       >
@@ -424,7 +428,6 @@
                         </label>
                       </div>
 
-                      <!-- Seleção de Item -->
                       <div>
                         <label
                           for="moveItem"
@@ -439,12 +442,9 @@
                           class="block w-full rounded-lg border-slate-300 py-2.5 px-3 text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 placeholder:text-slate-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           placeholder="Digite para pesquisar..."
                         />
-                        <datalist id="materialList">
-                          <!-- Populated by JS -->
-                        </datalist>
+                        <datalist id="materialList"></datalist>
                       </div>
 
-                      <!-- Quantidade -->
                       <div>
                         <label
                           for="moveQty"
@@ -490,7 +490,7 @@
       </div>
     </div>
 
-    <!-- Sidebar (Visual Only for Pro Look) -->
+    <!-- Sidebar -->
     <aside
       class="hidden md:flex flex-col w-64 bg-slate-850 border-r border-slate-800 text-white shrink-0"
     >
@@ -565,7 +565,6 @@
           >
             <i data-lucide="trash-2" class="w-3 h-3"></i>
           </button>
-          <!-- Botão Logout -->
           <button
             onclick="app.logout()"
             class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
@@ -576,7 +575,6 @@
         </div>
       </div>
 
-      <!-- Footer Indicator -->
       <div class="p-2 border-t border-slate-700/50 bg-slate-900 text-center">
         <div
           id="connectionStatus"
@@ -603,7 +601,6 @@
           <i data-lucide="boxes" class="w-5 h-5 text-blue-600"></i> SEROB
         </div>
 
-        <!-- Search Bar -->
         <div class="relative max-w-xl w-full hidden sm:block group">
           <div
             class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none"
@@ -630,7 +627,6 @@
             <i data-lucide="download" class="w-4 h-4"></i>
             <span class="hidden sm:inline">Exportar</span>
           </button>
-          <!-- BOTÃO MOVIMENTAR ATUALIZADO -->
           <button
             onclick="app.openModal()"
             class="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg shadow-sm shadow-blue-600/20 text-xs font-medium transition-all active:scale-95 group"
@@ -657,7 +653,6 @@
           <div
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 shrink-0"
           >
-            <!-- Card 1 -->
             <div
               class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow relative overflow-hidden group"
             >
@@ -684,7 +679,6 @@
               </div>
             </div>
 
-            <!-- Card 2 -->
             <div
               class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow group"
             >
@@ -703,7 +697,6 @@
               </div>
             </div>
 
-            <!-- Card 3 -->
             <div
               class="bg-white p-5 rounded-xl border border-slate-200 shadow-card hover:shadow-card-hover transition-shadow group"
             >
@@ -898,12 +891,11 @@
           </div>
         </div>
 
-        <!-- VIEW: MOVEMENTS (Hidden by default) -->
+        <!-- VIEW: MOVEMENTS -->
         <div
           id="viewMovements"
           class="hidden flex-col gap-6 h-full overflow-hidden animate-fade-in"
         >
-          <!-- ... existing movements content ... -->
           <div class="flex items-center justify-between shrink-0">
             <div>
               <h2 class="text-lg font-bold text-slate-800">
@@ -976,15 +968,13 @@
                 <tbody
                   id="movementsBody"
                   class="divide-y divide-slate-100 bg-white"
-                >
-                  <!-- Injected via JS -->
-                </tbody>
+                ></tbody>
               </table>
             </div>
           </div>
         </div>
 
-        <!-- VIEW: REPORTS (Hidden by default) -->
+        <!-- VIEW: REPORTS -->
         <div
           id="viewReports"
           class="hidden flex-col gap-6 h-full overflow-y-auto custom-scrollbar animate-fade-in pb-10"
@@ -1002,28 +992,7 @@
               onclick="app.renderReports(this)"
               class="flex items-center gap-2 bg-white hover:bg-slate-50 text-slate-600 px-3 py-2 rounded-lg border border-slate-200 shadow-sm text-xs font-medium transition-all active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                data-lucide="refresh-cw"
-                class="lucide lucide-refresh-cw w-3 h-3"
-              >
-                <path
-                  d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"
-                ></path>
-                <path d="M21 3v5h-5"></path>
-                <path
-                  d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"
-                ></path>
-                <path d="M8 16H3v5"></path>
-              </svg>
+              <i data-lucide="refresh-cw" class="w-3 h-3"></i>
               Atualizar Dados
             </button>
           </div>
@@ -1037,29 +1006,10 @@
               <h3
                 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  data-lucide="pie-chart"
-                  class="lucide lucide-pie-chart w-4 h-4 text-blue-500"
-                >
-                  <path
-                    d="M21 12c.552 0 1.005-.449.95-.998a10 10 0 0 0-8.953-8.951c-.55-.055-.998.398-.998.95v8a1 1 0 0 0 1 1z"
-                  ></path>
-                  <path d="M21.21 15.89A10 10 0 1 1 8 2.83"></path>
-                </svg>
+                <i data-lucide="pie-chart" class="w-4 h-4 text-blue-500"></i>
                 Distribuição por Grupo
               </h3>
-              <div id="reportCategories" class="space-y-4">
-                <!-- Injected via JS -->
-              </div>
+              <div id="reportCategories" class="space-y-4"></div>
             </div>
 
             <!-- Table: Top Críticos -->
@@ -1069,25 +1019,10 @@
               <h3
                 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                <i
                   data-lucide="alert-triangle"
-                  class="lucide lucide-alert-triangle w-4 h-4 text-red-500"
-                >
-                  <path
-                    d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"
-                  ></path>
-                  <path d="M12 9v4"></path>
-                  <path d="M12 17h.01"></path>
-                </svg>
+                  class="w-4 h-4 text-red-500"
+                ></i>
                 Prioridade de Reposição
               </h3>
               <div class="flex-1 overflow-auto min-h-[200px]">
@@ -1110,9 +1045,7 @@
                   <tbody
                     id="reportCriticalBody"
                     class="text-xs divide-y divide-slate-100"
-                  >
-                    <!-- Injected via JS -->
-                  </tbody>
+                  ></tbody>
                 </table>
               </div>
             </div>
@@ -1124,23 +1057,7 @@
               <h3
                 class="text-sm font-bold text-slate-800 mb-4 flex items-center gap-2"
               >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  stroke-width="2"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  data-lucide="activity"
-                  class="lucide lucide-activity w-4 h-4 text-purple-500"
-                >
-                  <path
-                    d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"
-                  ></path>
-                </svg>
+                <i data-lucide="activity" class="w-4 h-4 text-purple-500"></i>
                 Resumo de Atividade (Global)
               </h3>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1188,12 +1105,14 @@
       </main>
     </div>
 
+    <!-- Scripts -->
     <script type="module">
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
       import {
         getAuth,
         signInAnonymously,
         signInWithCustomToken,
+        onAuthStateChanged,
       } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
       import {
         getFirestore,
@@ -1207,674 +1126,38 @@
         writeBatch,
       } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-      // --- CONFIGURAÇÃO HÍBRIDA (CLOUD + LOCAL FALLBACK) ---
+      // Global Env Variables
+      const env = {
+        firebaseConfig:
+          typeof __firebase_config !== "undefined"
+            ? JSON.parse(__firebase_config)
+            : null,
+        appId: typeof __app_id !== "undefined" ? __app_id : "default-app-id",
+        initialAuthToken:
+          typeof __initial_auth_token !== "undefined"
+            ? __initial_auth_token
+            : null,
+      };
+
+      // Firebase Vars
       let db = null;
       let auth = null;
-      let appId = "local-app-id";
-      let isOffline = true; // Por defeito assume offline até conectar
+      let isOffline = true;
+      const appId = env.appId;
 
+      // --- AUTH & INIT ---
       try {
-        if (typeof __firebase_config !== "undefined") {
-          const firebaseConfig = JSON.parse(__firebase_config);
-          const firebaseApp = initializeApp(firebaseConfig);
+        if (env.firebaseConfig) {
+          const firebaseApp = initializeApp(env.firebaseConfig);
           auth = getAuth(firebaseApp);
           db = getFirestore(firebaseApp);
-          appId = typeof __app_id !== "undefined" ? __app_id : "default-app-id";
           isOffline = false;
         }
       } catch (e) {
-        console.warn("Modo Offline Ativado:", e.message);
-        isOffline = true;
-        // Não mostramos erro, apenas ativamos fallback silencioso
+        console.warn("Modo Offline Ativado (Configuração):", e.message);
       }
 
-      /**
-       * DATABASE MOCK (Seed Data - FULL LIST)
-       */
-      const RAW_SOURCE_DATA = [
-        {
-          id: 1001,
-          contractCode: "B.16.04.007",
-          sku: "39201",
-          name: "GÁS 13 KG",
-          category: "DEP. C4 - GÁS",
-          quantity: 27,
-        },
-        {
-          id: 1002,
-          contractCode: "B.16.04.006",
-          sku: "39633",
-          name: "BOTIJÁO DE GÁS P-13 (VASILHAME)",
-          category: "DEP. C4 - GÁS",
-          quantity: 30,
-        },
-        {
-          id: 1003,
-          contractCode: "***",
-          sku: "***",
-          name: "GÁS EM USO",
-          category: "DEP. C4 - GÁS",
-          quantity: 0,
-        },
-        {
-          id: 1004,
-          contractCode: "****",
-          sku: "****",
-          name: "GÁS VAZIO",
-          category: "DEP. C4 - GÁS",
-          quantity: 0,
-        },
-        {
-          id: 2001,
-          contractCode: "B.02.05.009",
-          sku: "39630",
-          name: "BOCAL PARA ARREMATES EM RALOS, D=100MM",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 39,
-        },
-        {
-          id: 2002,
-          contractCode: "B.02.05.010",
-          sku: "39631",
-          name: "BOCAL PARA ARREMATES EM RALOS, D=150MM",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 17,
-        },
-        {
-          id: 2003,
-          contractCode: "B.02.05.008",
-          sku: "39632",
-          name: "BOCAL PARA ARREMATES EM RALOS, D=75MM",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 37,
-        },
-        {
-          id: 2004,
-          contractCode: "B.02.04.002",
-          sku: "39787",
-          name: "EMULSÃO ASFÁLTICA PARA IMPRIMAÇÃO (BASE ÁGUA)",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 13,
-        },
-        {
-          id: 2005,
-          contractCode: "B.02.03.001",
-          sku: "20827",
-          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA (5.000)",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 265,
-        },
-        {
-          id: 2006,
-          contractCode: "B.02.03.002",
-          sku: "19437",
-          name: "IMPERMEABILIZANTE SEMIFLEXÍVEL (1.000)",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 264,
-        },
-        {
-          id: 2007,
-          contractCode: "B.02.01.002",
-          sku: "18389",
-          name: "MANTA ANTIRAIZ",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 2008,
-          contractCode: "B.02.05.003",
-          sku: "39789",
-          name: "PAPEL KRAFT PARA IMPERMEABILIZAÇÃO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 2009,
-          contractCode: "B.02.04.003",
-          sku: "16493",
-          name: "PRIMER ASFÁLTICO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 2010,
-          contractCode: "B.02.02.003",
-          sku: "27574",
-          name: "SELANTE BRANCO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 2011,
-          contractCode: "B.02.02.001",
-          sku: "30314",
-          name: "SELANTE CINZA",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 2012,
-          contractCode: "B.02.02.002",
-          sku: "27575",
-          name: "SELANTE PRETO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 2013,
-          contractCode: "B.02.04.006",
-          sku: "39685",
-          name: "TINTA ASFÁLTICA ANTIRRAIZ",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-        },
-        {
-          id: 3001,
-          contractCode: "B.10.03.003",
-          sku: "25068",
-          name: "FUNDO PARA AÇO GALVANIZADO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 67,
-        },
-        {
-          id: 3002,
-          contractCode: "SEM CONTRATO",
-          sku: "27558",
-          name: "REMOVEDOR EM GEL",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 20,
-        },
-        {
-          id: 3003,
-          contractCode: "B.10.02.012",
-          sku: "4121",
-          name: "TINTA ESMALTE SINTÉTICO ACETINADO BRANCO GELO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 77,
-        },
-        {
-          id: 3004,
-          contractCode: "B.10.02.011",
-          sku: "4132",
-          name: "TINTA ESMALTE SINTÉTICO ACETINADO BRANCO NEVE",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 87,
-        },
-        {
-          id: 3005,
-          contractCode: "B.10.02.006",
-          sku: "4143",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO ALUMÍNIO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 21,
-        },
-        {
-          id: 3006,
-          contractCode: "B.10.02.007",
-          sku: "29091",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO AMARELO TRATOR",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 67,
-        },
-        {
-          id: 3007,
-          contractCode: "B.10.02.008",
-          sku: "29094",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO AZUL MAR",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 46,
-        },
-        {
-          id: 3008,
-          contractCode: "B.10.02.002",
-          sku: "4092",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO BRANCO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3009,
-          contractCode: "B.10.02.003",
-          sku: "29090",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO BRANCO GELO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3010,
-          contractCode: "B.10.02.005",
-          sku: "37914",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO CINZA MÉDIO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3011,
-          contractCode: "B.10.02.009",
-          sku: "4128",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO PRETO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3012,
-          contractCode: "B.10.02.001",
-          sku: "27439",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO VERDE COLONIAL",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3013,
-          contractCode: "B.10.02.010",
-          sku: "4071",
-          name: "TINTA ESMALTE SINTÉTICO ALTO BRILHO VERMELHO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3014,
-          contractCode: "B.10.02.022",
-          sku: "14790",
-          name: "TINTA ESMALTE SINTÉTICO FOSCO PRETO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3015,
-          contractCode: "B.10.03.001",
-          sku: "35974",
-          name: "TINTA ESMALTE SINTÉTICO GRAFITE ESCURO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3016,
-          contractCode: "B.10.02.023",
-          sku: "29096",
-          name: "TINTA ESMALTE SINTÉTICO MARTELADO CINZA CLARO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3017,
-          contractCode: "B.10.03.006",
-          sku: "20914",
-          name: "TINTA SPRAY BRANCO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 3018,
-          contractCode: "B.10.03.004",
-          sku: "4159",
-          name: "TINTA SPRAY PRETO FOSCO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 0,
-        },
-        {
-          id: 4001,
-          contractCode: "B.05.06.001",
-          sku: "4617",
-          name: "ADESIVO DE CONTATO - COLA FÓRMICA",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 3239,
-        },
-        {
-          id: 4002,
-          contractCode: "B.16.04.008",
-          sku: "27039",
-          name: "GASOLINA COMUM",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 25,
-        },
-        {
-          id: 4003,
-          contractCode: "B.16.04.010",
-          sku: "27040",
-          name: "ÓLEO DIESEL",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 10,
-        },
-        {
-          id: 4004,
-          contractCode: "B.16.04.005",
-          sku: "1544",
-          name: "QUEROSENE 900 ML",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 329,
-        },
-        {
-          id: 4005,
-          contractCode: "B.05.06.002",
-          sku: "1536",
-          name: "SOLVENTE PARA ADESIVO DE CONTATO (REDUCOLA)",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 1473,
-        },
-        {
-          id: 4006,
-          contractCode: "B.16.04.003",
-          sku: "1538",
-          name: "SOLVENTE THINNER",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 4167,
-        },
-        {
-          id: 4007,
-          contractCode: "B.07.01.004",
-          sku: "29098",
-          name: "TINTA TRÁFEGO AMARELA",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 7,
-        },
-        {
-          id: 4008,
-          contractCode: "B.07.01.005",
-          sku: "29097",
-          name: "TINTA TRÁFEGO BRANCA",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 0,
-        },
-        {
-          id: 5001,
-          contractCode: "B.16.04.001",
-          sku: "5819",
-          name: "ÁLCOOL",
-          category: "DEP. 04 - ÁLCOOL",
-          quantity: 3253,
-        },
-        {
-          id: 5002,
-          contractCode: "B.16.04.002",
-          sku: "37697",
-          name: "ÁLCOOL EM GEL 2L",
-          category: "DEP. 04 - ÁLCOOL",
-          quantity: 117,
-        },
-        {
-          id: 6001,
-          contractCode: "B.18.01.001",
-          sku: "39957",
-          name: "PERFIL PARA ARREMATE DE CARPETE",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 210,
-        },
-        {
-          id: 6002,
-          contractCode: "B.08.01.010",
-          sku: "13722",
-          name: "PISO AZUL",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 107,
-        },
-        {
-          id: 6003,
-          contractCode: "B.08.01.007",
-          sku: "3046",
-          name: "PISO CINZA",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 542,
-        },
-        {
-          id: 6004,
-          contractCode: "B.08.01.009",
-          sku: "3047",
-          name: "PISO PRETO",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 241,
-        },
-        {
-          id: 6005,
-          contractCode: "B.08.01.003",
-          sku: "35235",
-          name: "PISO SEMIFLEXÍVEL MADEIRA",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 3422,
-        },
-        {
-          id: 6006,
-          contractCode: "B.08.01.006",
-          sku: "29864",
-          name: "PISO VERDE-ITAMARATY",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 0,
-        },
-        {
-          id: 6007,
-          contractCode: "B.08.01.001",
-          sku: "37736",
-          name: "PISO VINÍLICO AUTOPORTANTE",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 0,
-        },
-        {
-          id: 6008,
-          contractCode: "B.08.01.004",
-          sku: "35969",
-          name: "RODAPÉ SEMIFLEXÍVEL",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 0,
-        },
-        {
-          id: 7001,
-          contractCode: "B.16.10.001",
-          sku: "25742",
-          name: "FITA CREPE 25 MM X 50 M",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 3252,
-        },
-        {
-          id: 7002,
-          contractCode: "B.16.10.002",
-          sku: "39894",
-          name: "FITA CREPE 45 X 50M",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 2772,
-        },
-        {
-          id: 7003,
-          contractCode: "B.10.06.001",
-          sku: "35740",
-          name: "GARFO PARA ROLO 23CM",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 840,
-        },
-        {
-          id: 7004,
-          contractCode: "B.10.04.002",
-          sku: "27573",
-          name: "MASSA ACRÍLICA",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 42,
-        },
-        {
-          id: 7005,
-          contractCode: "B.10.04.001",
-          sku: "19335",
-          name: "MASSA CORRIDA",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 418,
-        },
-        {
-          id: 7006,
-          contractCode: "B.10.05.005",
-          sku: "20664",
-          name: "ROLO DE ESPUMA 15 CM",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 248,
-        },
-        {
-          id: 7007,
-          contractCode: "B.10.05.007",
-          sku: "20662",
-          name: "ROLO DE ESPUMA 5 CM",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 672,
-        },
-        {
-          id: 7008,
-          contractCode: "B.10.05.006",
-          sku: "20663",
-          name: "ROLO DE ESPUMA 9 CM",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 396,
-        },
-        {
-          id: 7009,
-          contractCode: "B.10.05.003",
-          sku: "35976",
-          name: "ROLO DE LÃ 15 CM",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 456,
-        },
-        {
-          id: 7010,
-          contractCode: "B.10.05.001",
-          sku: "20665",
-          name: "ROLO DE LÃ 23 CM PARA TETO",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 84,
-        },
-        {
-          id: 7011,
-          contractCode: "B.10.05.004",
-          sku: "26670",
-          name: "ROLO DE LÃ 9 CM",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7012,
-          contractCode: "B.10.05.002",
-          sku: "29101",
-          name: "ROLO PARA PINTURA EPÓXI",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7013,
-          contractCode: "B.10.01.001",
-          sku: "27650",
-          name: "TINTA ACRÍLICA FOSCA BRANCO NEVE",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7014,
-          contractCode: "B.10.01.004",
-          sku: "27651",
-          name: "TINTA ACRÍLICA FOSCA CONCRETO",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7015,
-          contractCode: "B.10.01.002",
-          sku: "23150",
-          name: "TINTA ACRÍLICA SEMIBRILHO BRANCO GELO",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7016,
-          contractCode: "B.10.01.003",
-          sku: "22924",
-          name: "TINTA ACRÍLICA SEMIBRILHO BRANCO NEVE",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7017,
-          contractCode: "B.10.01.005",
-          sku: "19342",
-          name: "TINTA LÁTEX ACRÍLICA PISO CINZA",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7018,
-          contractCode: "B.10.01.006",
-          sku: "19341",
-          name: "TINTA LÁTEX ACRÍLICA PISO PRETO",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7019,
-          contractCode: "B.10.05.009",
-          sku: "4136",
-          name: 'TRINCHA MACIA 1"',
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7020,
-          contractCode: "B.10.05.010",
-          sku: "4134",
-          name: 'TRINCHA MACIA 1.1/2"',
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 7021,
-          contractCode: "B.10.05.011",
-          sku: "4137",
-          name: 'TRINCHA MACIA 2"',
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 0,
-        },
-        {
-          id: 8001,
-          contractCode: "B.04.05.012",
-          sku: "2511",
-          name: 'CANTONEIRA AÇO 1.1/2 x 1.1/2 x 3/16"',
-          category: "DEMAP - 01 ao 11",
-          quantity: 165,
-        },
-        {
-          id: 8002,
-          contractCode: "B.04.05.008",
-          sku: "2512",
-          name: 'CANTONEIRA AÇO 1.1/4 x 1.1/4 x 1/8"',
-          category: "DEMAP - 01 ao 11",
-          quantity: 123,
-        },
-        {
-          id: 8003,
-          contractCode: "B.04.05.005",
-          sku: "2514",
-          name: 'CANTONEIRA AÇO 1 x 1 x 1/8"',
-          category: "DEMAP - 01 ao 11",
-          quantity: 748,
-        },
-        {
-          id: 8004,
-          contractCode: "B.04.05.019",
-          sku: "2541",
-          name: 'CANTONEIRA AÇO 2 x 2 x 1/4"',
-          category: "DEMAP - 01 ao 11",
-          quantity: 194,
-        },
-        {
-          id: 8005,
-          contractCode: "B.04.05.003",
-          sku: "2563",
-          name: 'CANTONEIRA AÇO 3/4 x 3/4 x 1/8"',
-          category: "DEMAP - 01 ao 11",
-          quantity: 939,
-        },
-        {
-          id: 8048,
-          contractCode: "B.04.02.016",
-          sku: "14947",
-          name: "TUBO METALON 50 x 50 MM Nº 16",
-          category: "DEMAP - 01 ao 11",
-          quantity: 0,
-        },
-      ];
-
-      // DEFINIÇÃO DE UTILIZADORES COM SENHAS
+      // USERS CONFIG
       const USERS = [
         {
           id: 1,
@@ -1905,23 +1188,85 @@
         },
       ];
 
-      /**
-       * APP LOGIC
-       */
+      // DADOS INICIAIS (Apenas amostra, o completo é muito grande, mas mantemos o essencial para teste)
+      const RAW_SOURCE_DATA = [
+        {
+          id: 1001,
+          contractCode: "B.16.04.007",
+          sku: "39201",
+          name: "GÁS 13 KG",
+          category: "DEP. C4 - GÁS",
+          quantity: 27,
+        },
+        {
+          id: 2005,
+          contractCode: "B.02.03.001",
+          sku: "20827",
+          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA (5.000)",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 265,
+        },
+        {
+          id: 3003,
+          contractCode: "B.10.02.012",
+          sku: "4121",
+          name: "TINTA ESMALTE SINTÉTICO ACETINADO BRANCO GELO",
+          category: "DEP. 02 - TINTA ESMALTE",
+          quantity: 77,
+        },
+        {
+          id: 4001,
+          contractCode: "B.05.06.001",
+          sku: "4617",
+          name: "ADESIVO DE CONTATO - COLA FÓRMICA",
+          category: "DEP. 03 - COLA FÓRMICA",
+          quantity: 3239,
+        },
+        {
+          id: 5001,
+          contractCode: "B.16.04.001",
+          sku: "5819",
+          name: "ÁLCOOL",
+          category: "DEP. 04 - ÁLCOOL",
+          quantity: 3253,
+        },
+        {
+          id: 6003,
+          contractCode: "B.08.01.007",
+          sku: "3046",
+          name: "PISO CINZA",
+          category: "DEP. 12 - PISO VINÍLICO",
+          quantity: 542,
+        },
+        {
+          id: 7001,
+          contractCode: "B.16.10.001",
+          sku: "25742",
+          name: "FITA CREPE 25 MM X 50 M",
+          category: "DEP. 25 - TINTA ACRÍLICA",
+          quantity: 3252,
+        },
+        {
+          id: 8001,
+          contractCode: "B.04.05.012",
+          sku: "2511",
+          name: 'CANTONEIRA AÇO 1.1/2 x 1.1/2 x 3/16"',
+          category: "DEMAP - 01 ao 11",
+          quantity: 165,
+        },
+      ];
+
+      // APP LOGIC
       const app = {
-        // Configuração Centralizada
         config: {
-          thresholds: {
-            critical: 15,
-            warning: 40,
-          },
+          thresholds: { critical: 15, warning: 40 },
           storageKeyUser: "serob_current_user_v1",
           storageKeyData: "serob_local_data_v1",
           storageKeyMovements: "serob_local_moves_v1",
         },
 
         // State
-        isOffline: isOffline, // Use global flag
+        isOffline: isOffline,
         data: [],
         filteredData: [],
         paginatedData: [],
@@ -1929,42 +1274,32 @@
         currentView: "dashboard",
         activeMovementFilter: null,
         currentUser: null,
-        tempLoginUser: null, // Temp storage for login flow
+        tempLoginUser: null,
 
-        // Pagination State
         currentPage: 1,
         itemsPerPage: 15,
         totalPages: 1,
-
-        // Sort State
         sortConfig: { key: "name", order: "asc" },
-
-        // Search State
         searchQuery: "",
         searchDebounceTimer: null,
 
-        // Init
         init() {
           lucide.createIcons();
-
-          // Verifica login (funciona offline também)
           this.checkLogin();
 
           if (!this.isOffline) {
-            this.initAuth(); // Se estiver online, tenta Auth Firebase
+            this.initAuth();
           } else {
-            this.loadLocalData(); // Se já estiver offline, carrega local
+            this.loadLocalData();
           }
 
-          // Listeners
+          // Event Listeners
           document.addEventListener("keydown", (e) => {
             if ((e.metaKey || e.ctrlKey) && e.key === "k") {
               e.preventDefault();
               document.getElementById("searchInputDesktop").focus();
             }
-            if (e.key === "Escape") {
-              this.closeModal();
-            }
+            if (e.key === "Escape") this.closeModal();
           });
 
           const searchHandler = (e) => {
@@ -1982,60 +1317,32 @@
             .addEventListener("input", searchHandler);
         },
 
-        // --- FIREBASE AUTHENTICATION ---
+        // --- AUTHENTICATION ---
         async initAuth() {
-          // Proteção contra travamento: Timeout de 4 segundos
           const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Connection Timeout")), 4000)
+            setTimeout(() => reject(new Error("Timeout")), 4000)
           );
-
           try {
             let authPromise;
-            if (
-              typeof __initial_auth_token !== "undefined" &&
-              __initial_auth_token
-            ) {
-              authPromise = signInWithCustomToken(auth, __initial_auth_token);
+            if (env.initialAuthToken) {
+              authPromise = signInWithCustomToken(auth, env.initialAuthToken);
             } else {
               authPromise = signInAnonymously(auth);
             }
-
-            // Corrida: Autenticação vs Timeout
             await Promise.race([authPromise, timeoutPromise]);
 
-            // SUCESSO: Agora configura listeners
-            this.setupListeners();
-
-            // UI Update
-            const statusEl = document.getElementById("statusText");
-            if (statusEl) {
-              statusEl.textContent = "Online (Nuvem)";
-              const dot = document.getElementById("statusDot");
-              if (dot) {
-                dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500"; // Solid green
-                dot.classList.remove("animate-pulse");
+            // Only setup listeners after auth is confirmed
+            onAuthStateChanged(auth, (user) => {
+              if (user) {
+                this.setupListeners();
+                this.updateStatusIndicator(true, "Online (Nuvem)");
               }
-            }
+            });
           } catch (e) {
-            console.warn(
-              "Auth falhou ou demorou. Entrando em Modo Offline.",
-              e
-            );
-            // Fallback to offline mode on auth failure/timeout
+            console.warn("Offline Mode triggered:", e);
             this.isOffline = true;
             this.loadLocalData();
-            this.showToast("Modo Offline ativado (Sem conexão).", "warning");
-
-            // Fallback UI update
-            const statusEl = document.getElementById("statusText");
-            if (statusEl) {
-              statusEl.textContent = "Modo Offline (Local)";
-              const dot = document.getElementById("statusDot");
-              if (dot) {
-                dot.className = "w-1.5 h-1.5 rounded-full bg-slate-500";
-                dot.classList.remove("animate-pulse");
-              }
-            }
+            this.updateStatusIndicator(false, "Modo Offline (Local)");
           }
         },
 
@@ -2055,26 +1362,24 @@
           const user = USERS.find((u) => u.id === userId);
           if (user) {
             this.tempLoginUser = user;
-
-            // Update Step 2 UI
             document.getElementById("selectedUserName").textContent = user.name;
+            document.getElementById("selectedUserAvatar").textContent =
+              user.initials;
+
+            // Colors
             const colors = {
               blue: "bg-blue-100 text-blue-600",
               emerald: "bg-emerald-100 text-emerald-600",
               purple: "bg-purple-100 text-purple-600",
             };
             const colorClass = colors[user.color] || colors.blue;
+            document.getElementById(
+              "selectedUserAvatar"
+            ).className = `w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-inner ${colorClass}`;
 
-            const avatar = document.getElementById("selectedUserAvatar");
-            avatar.className = `w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-inner ${colorClass}`;
-            avatar.textContent = user.initials;
-
-            // Switch Steps
             document.getElementById("loginStep1").classList.add("hidden");
             document.getElementById("loginStep2").classList.remove("hidden");
             document.getElementById("loginStep2").classList.add("flex");
-
-            // Focus password
             setTimeout(
               () => document.getElementById("loginPassword").focus(),
               100
@@ -2092,21 +1397,13 @@
 
         requestNewPassword() {
           if (!this.tempLoginUser) return;
-
-          // Solicita ao utilizador que defina a senha manualmente
           const newPass = prompt(
             `Definir nova senha para ${this.tempLoginUser.name}:`
           );
-
           if (newPass && newPass.trim().length > 0) {
-            // Atualiza a senha do utilizador selecionado em memória (sessão atual apenas)
-            // Em produção real, isto iria para a BD de users
             this.tempLoginUser.password = newPass.trim();
-
-            // Preenche automaticamente o campo para facilitar
             document.getElementById("loginPassword").value = newPass.trim();
             document.getElementById("loginPassword").focus();
-
             this.showToast("Senha definida com sucesso!", "success");
           }
         },
@@ -2114,57 +1411,37 @@
         performLogin(e) {
           e.preventDefault();
           const pwdInput = document.getElementById("loginPassword");
-          const password = pwdInput.value;
-
-          if (this.tempLoginUser && password === this.tempLoginUser.password) {
+          if (
+            this.tempLoginUser &&
+            pwdInput.value === this.tempLoginUser.password
+          ) {
             this.currentUser = this.tempLoginUser;
             localStorage.setItem(
               this.config.storageKeyUser,
               JSON.stringify(this.currentUser)
             );
-
             this.updateUIForUser();
             document.getElementById("loginOverlay").classList.add("hidden");
             this.showToast(
               `Bem-vindo, ${this.currentUser.name.split(" ")[0]}!`,
               "success"
             );
-
-            // Reset form
             pwdInput.value = "";
             this.tempLoginUser = null;
           } else {
-            this.showToast("Senha incorreta. Tente novamente.", "error");
-            pwdInput.value = "";
-            pwdInput.focus();
-            pwdInput.classList.add("ring-2", "ring-red-500", "border-red-500");
-            setTimeout(
-              () =>
-                pwdInput.classList.remove(
-                  "ring-2",
-                  "ring-red-500",
-                  "border-red-500"
-                ),
-              2000
-            );
+            this.showToast("Senha incorreta.", "error");
           }
         },
 
         logout() {
           this.currentUser = null;
           localStorage.removeItem(this.config.storageKeyUser);
-
-          // Show Login Screen Reset
           document.getElementById("loginOverlay").classList.remove("hidden");
           this.backToUserSelect();
-
-          this.showToast("Sessão terminada.", "info");
         },
 
         updateUIForUser() {
           if (!this.currentUser) return;
-
-          // Atualizar Sidebar
           document.getElementById("userName").textContent =
             this.currentUser.name;
           document.getElementById("userEmail").textContent =
@@ -2172,34 +1449,21 @@
           document.getElementById("userAvatar").textContent =
             this.currentUser.initials;
 
-          // Cor do Avatar baseada no utilizador
-          const colors = {
-            blue: "from-blue-500 to-indigo-500",
-            emerald: "from-emerald-500 to-teal-500",
-            purple: "from-purple-500 to-fuchsia-500",
-          };
-          const colorClass = colors[this.currentUser.color] || colors.blue;
-          document.getElementById(
-            "userAvatar"
-          ).className = `w-8 h-8 rounded-full bg-gradient-to-tr ${colorClass} flex items-center justify-center text-xs font-bold shadow-lg text-white`;
-
-          // Mostrar/Esconder botões Admin
+          // Admin buttons visibility
           const btnReset = document.getElementById("btnResetSystem");
-          if (this.currentUser.role === "admin") {
-            btnReset.classList.remove("hidden");
-            btnReset.classList.add("flex");
-          } else {
-            btnReset.classList.add("hidden");
-            btnReset.classList.remove("flex");
+          if (btnReset) {
+            if (this.currentUser.role === "admin") {
+              btnReset.classList.remove("hidden");
+              btnReset.classList.add("flex");
+            } else {
+              btnReset.classList.add("hidden");
+              btnReset.classList.remove("flex");
+            }
           }
-
-          // Re-renderizar tabela para atualizar permissões de edição nas linhas
           this.render();
         },
 
-        // --- DATA MANAGEMENT (OFFLINE/ONLINE) ---
-
-        // Load Local Data (Offline Mode Fallback)
+        // --- DATA LOADING ---
         loadLocalData() {
           const storedData = localStorage.getItem(this.config.storageKeyData);
           const storedMovements = localStorage.getItem(
@@ -2207,20 +1471,20 @@
           );
 
           if (storedData) {
-            try {
-              this.data = JSON.parse(storedData);
-              // Data Migration: Ensure maxQuantity exists for legacy data
-              this.data.forEach((item) => {
-                if (!item.maxQuantity) {
-                  item.maxQuantity =
-                    item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100;
-                }
-              });
-            } catch (e) {
-              this.initializeDefaultData();
-            }
+            this.data = JSON.parse(storedData);
+            // Migration check
+            this.data.forEach((item) => {
+              if (!item.maxQuantity)
+                item.maxQuantity =
+                  item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100;
+            });
           } else {
-            this.initializeDefaultData();
+            // Seed from RAW
+            this.data = RAW_SOURCE_DATA.map((item) => ({
+              ...item,
+              maxQuantity:
+                item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
+            }));
           }
 
           if (storedMovements) {
@@ -2230,42 +1494,34 @@
             } catch (e) {
               this.movements = [];
             }
-          } else {
-            this.movements = [];
           }
 
           this.processData();
           this.populateDatalist();
           this.showLoading(false);
-
-          // CORREÇÃO: Atualizar indicador visual para Offline
-          const statusEl = document.getElementById("statusText");
-          if (statusEl) {
-            statusEl.textContent = "Modo Offline (Local)";
-            const dot = document.getElementById("statusDot");
-            if (dot) {
-              dot.className = "w-1.5 h-1.5 rounded-full bg-slate-500";
-              dot.classList.remove("animate-pulse");
-            }
-          }
+          this.updateStatusIndicator(false, "Modo Offline (Local)");
         },
 
         saveLocalData() {
-          localStorage.setItem(
-            this.config.storageKeyData,
-            JSON.stringify(this.data)
-          );
-          localStorage.setItem(
-            this.config.storageKeyMovements,
-            JSON.stringify(this.movements)
-          );
+          try {
+            localStorage.setItem(
+              this.config.storageKeyData,
+              JSON.stringify(this.data)
+            );
+            localStorage.setItem(
+              this.config.storageKeyMovements,
+              JSON.stringify(this.movements)
+            );
+          } catch (e) {
+            this.showToast("Erro ao salvar dados localmente.", "error");
+          }
         },
 
-        // --- FIREBASE LISTENERS ---
         setupListeners() {
           if (!db) return;
           this.showLoading(true);
 
+          // Using standard path artifacts/{appId}/public/data/{collection}
           const matsRef = collection(
             db,
             "artifacts",
@@ -2280,7 +1536,6 @@
               const items = [];
               snapshot.forEach((doc) => items.push(doc.data()));
               this.data = items;
-
               if (items.length === 0) {
                 this.seedDatabase();
               } else {
@@ -2289,12 +1544,10 @@
               }
               this.showLoading(false);
             },
-            (error) => {
-              console.error("Firebase Read Error:", error);
-              // Switch to offline mode
+            (err) => {
+              console.warn("Firestore error, falling back to local:", err);
               this.isOffline = true;
               this.loadLocalData();
-              this.showToast("Modo Offline ativado.", "warning");
             }
           );
 
@@ -2309,12 +1562,11 @@
           onSnapshot(movesRef, (snapshot) => {
             const moves = [];
             snapshot.forEach((doc) => {
-              const data = doc.data();
-              data.date = new Date(data.date);
-              moves.push(data);
+              const d = doc.data();
+              d.date = new Date(d.date);
+              moves.push(d);
             });
-            moves.sort((a, b) => b.date - a.date);
-            this.movements = moves;
+            this.movements = moves.sort((a, b) => b.date - a.date);
             if (this.currentView === "movements") this.renderMovements();
           });
         },
@@ -2331,9 +1583,8 @@
             "materials"
           );
 
-          const itemsToSeed = RAW_SOURCE_DATA.slice(0, 450); // Batch limit safety
-
-          itemsToSeed.forEach((item) => {
+          // Seed items
+          RAW_SOURCE_DATA.forEach((item) => {
             const itemData = {
               ...item,
               maxQuantity:
@@ -2357,334 +1608,21 @@
             return;
           }
 
-          if (
-            confirm(
-              "ATENÇÃO: Isto apagará todos os dados e histórico na nuvem. Continuar?"
-            )
-          ) {
-            this.showLoading(true);
-
-            if (this.isOffline) {
-              localStorage.removeItem(this.config.storageKeyData);
-              localStorage.removeItem(this.config.storageKeyMovements);
-              location.reload();
-            } else {
-              try {
-                // Firebase Reset
-                const matsRef = collection(
-                  db,
-                  "artifacts",
-                  appId,
-                  "public",
-                  "data",
-                  "materials"
-                );
-                const mSnap = await getDocs(matsRef);
-                const batch1 = writeBatch(db);
-                mSnap.forEach((d) => batch1.delete(d.ref));
-                await batch1.commit();
-
-                const movesRef = collection(
-                  db,
-                  "artifacts",
-                  appId,
-                  "public",
-                  "data",
-                  "movements"
-                );
-                const movSnap = await getDocs(movesRef);
-                const batch2 = writeBatch(db);
-                movSnap.forEach((d) => batch2.delete(d.ref));
-                await batch2.commit();
-
-                this.showToast("Sistema reiniciado.", "success");
-              } catch (e) {
-                this.showToast("Erro ao resetar sistema.", "error");
-              } finally {
-                this.showLoading(false);
-              }
-            }
-          }
+          // Using custom toast with actions instead of confirm()
+          Toastify({
+            text: "⚠️ CLIQUE AQUI para confirmar o reset total",
+            duration: 5000,
+            style: { background: "#ef4444", cursor: "pointer" },
+            onClick: () => {
+              this.performReset();
+            },
+          }).showToast();
         },
 
-        // --- UTILS & HELPERS ---
-        populateDatalist() {
-          setTimeout(() => {
-            const datalist = document.getElementById("materialList");
-            if (datalist) {
-              datalist.innerHTML = "";
-              this.data.forEach((item) => {
-                const option = document.createElement("option");
-                option.value = item.sku;
-                option.textContent = `${item.name} (${item.quantity} un)`;
-                datalist.appendChild(option);
-              });
-            }
-          }, 500);
-        },
+        async performReset() {
+          this.showLoading(true);
 
-        initializeDefaultData() {
-          this.data = RAW_SOURCE_DATA.map((item) => ({
-            ...item,
-            maxQuantity:
-              item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
-          }));
-        },
-
-        navigate(viewName) {
-          this.currentView = viewName;
-          document
-            .querySelectorAll(".nav-item")
-            .forEach((el) => el.classList.remove("active"));
-          document.getElementById(`nav-${viewName}`).classList.add("active");
-
-          // Hide all views
-          document.getElementById("viewDashboard").classList.add("hidden");
-          document.getElementById("viewMovements").classList.add("hidden");
-          document.getElementById("viewReports").classList.add("hidden");
-
-          document.getElementById("viewMovements").classList.remove("flex");
-          document.getElementById("viewReports").classList.remove("flex");
-
-          // Show selected view
-          if (viewName === "dashboard") {
-            document.getElementById("viewDashboard").classList.remove("hidden");
-            this.render();
-          } else if (viewName === "movements") {
-            document.getElementById("viewMovements").classList.remove("hidden");
-            document.getElementById("viewMovements").classList.add("flex");
-            this.renderMovements();
-          } else if (viewName === "reports") {
-            document.getElementById("viewReports").classList.remove("hidden");
-            document.getElementById("viewReports").classList.add("flex");
-            // Trigger initial render for reports
-            this.renderReports();
-          }
-        },
-
-        // --- REPORTS LOGIC ---
-        renderReports(btnElement = null) {
-          // Visual Feedback (Spin Icon)
-          let icon;
-          if (btnElement) {
-            icon =
-              btnElement.querySelector("svg") || btnElement.querySelector("i");
-            if (icon) icon.classList.add("animate-spin");
-            btnElement.disabled = true;
-          }
-
-          // Simulate calculation time for UX
-          setTimeout(() => {
-            try {
-              // 1. Group Distribution
-              const groups = {};
-              this.data.forEach((item) => {
-                const cat = item.category
-                  ? item.category.replace("DEP.", "").trim()
-                  : "Outros";
-                groups[cat] = (groups[cat] || 0) + 1;
-              });
-
-              const sortedGroups = Object.entries(groups)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-
-              const totalItems = Math.max(1, this.data.length);
-              const catContainer = document.getElementById("reportCategories");
-              if (catContainer) {
-                catContainer.innerHTML = "";
-
-                sortedGroups.forEach(([name, count]) => {
-                  const pct = Math.round((count / totalItems) * 100);
-                  catContainer.innerHTML += `
-                            <div>
-                                <div class="flex justify-between text-xs mb-1">
-                                    <span class="font-medium text-slate-700 truncate w-3/4">${name}</span>
-                                    <span class="text-slate-500">${count} itens (${pct}%)</span>
-                                </div>
-                                <div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden">
-                                    <div class="bg-blue-500 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%" onload="this.style.width='${pct}%'"></div>
-                                </div>
-                            </div>
-                        `;
-                  // Animate width after insertion
-                  setTimeout(() => {
-                    const bars = catContainer.querySelectorAll(".bg-blue-500");
-                    const lastBar = bars[bars.length - 1];
-                    if (lastBar) lastBar.style.width = `${pct}%`;
-                  }, 50);
-                });
-              }
-
-              // 2. Critical Items (Top 10 by lowest % capacity)
-              const criticalItems = this.data
-                .map((item) => {
-                  const max = item.maxQuantity || 100;
-                  return { ...item, pct: (item.quantity / max) * 100 };
-                })
-                .filter((item) => item.pct <= this.config.thresholds.warning)
-                .sort((a, b) => a.pct - b.pct)
-                .slice(0, 8);
-
-              const critBody = document.getElementById("reportCriticalBody");
-              if (critBody) {
-                critBody.innerHTML = "";
-
-                if (criticalItems.length === 0) {
-                  critBody.innerHTML =
-                    '<tr><td colspan="3" class="px-3 py-4 text-center text-slate-400 italic">Nenhum item em estado crítico.</td></tr>';
-                } else {
-                  criticalItems.forEach((item) => {
-                    const status = this.getStockStatus(item);
-                    critBody.innerHTML += `
-                                <tr>
-                                    <td class="px-3 py-2 border-b border-slate-50">
-                                        <div class="font-medium text-slate-700 truncate max-w-[180px]" title="${item.name}">${item.name}</div>
-                                        <div class="text-[10px] text-slate-400 font-mono">${item.sku}</div>
-                                    </td>
-                                    <td class="px-3 py-2 text-right border-b border-slate-50 font-bold text-slate-600">${item.quantity}</td>
-                                    <td class="px-3 py-2 text-center border-b border-slate-50">
-                                        <span class="inline-block w-2 h-2 rounded-full ${status.dot}" title="${status.label}"></span>
-                                    </td>
-                                </tr>
-                            `;
-                  });
-                }
-              }
-
-              // 3. Movement Stats
-              const totalMoves = this.movements ? this.movements.length : 0;
-              const totalIn = this.movements
-                ? this.movements.filter((m) => m.type === "in").length
-                : 0;
-              const totalOut = this.movements
-                ? this.movements.filter((m) => m.type === "out").length
-                : 0;
-
-              const elTotalMoves = document.getElementById("repTotalMoves");
-              const elTotalIn = document.getElementById("repTotalIn");
-              const elTotalOut = document.getElementById("repTotalOut");
-
-              if (elTotalMoves) elTotalMoves.textContent = totalMoves;
-              if (elTotalIn) elTotalIn.textContent = totalIn;
-              if (elTotalOut) elTotalOut.textContent = totalOut;
-
-              if (btnElement)
-                this.showToast(
-                  "Relatórios atualizados com sucesso.",
-                  "success"
-                );
-            } catch (error) {
-              console.error("Erro ao gerar relatórios:", error);
-              this.showToast("Erro ao atualizar dados.", "error");
-            } finally {
-              if (icon) icon.classList.remove("animate-spin");
-              if (btnElement) btnElement.disabled = false;
-            }
-          }, 600);
-        },
-
-        // Modal Logic
-        openModal() {
-          const modal = document.getElementById("movementModal");
-          const backdrop = document.getElementById("modalBackdrop");
-          const panel = document.getElementById("modalPanel");
-
-          modal.classList.remove("hidden");
-          setTimeout(() => {
-            backdrop.classList.remove("opacity-0");
-            panel.classList.remove("opacity-0", "scale-95");
-            panel.classList.add("opacity-100", "scale-100");
-          }, 10);
-
-          document.getElementById("movementForm").reset();
-          this.toggleModalType("in");
-        },
-
-        closeModal() {
-          const modal = document.getElementById("movementModal");
-          const backdrop = document.getElementById("modalBackdrop");
-          const panel = document.getElementById("modalPanel");
-
-          backdrop.classList.add("opacity-0");
-          panel.classList.remove("opacity-100", "scale-100");
-          panel.classList.add("opacity-0", "scale-95");
-
-          setTimeout(() => {
-            modal.classList.add("hidden");
-          }, 200);
-        },
-
-        toggleModalType(type) {
-          const btnSubmit = document.getElementById("btnSubmitMovement");
-          if (type === "in") {
-            btnSubmit.textContent = "Confirmar Entrada";
-            btnSubmit.classList.remove("bg-orange-600", "hover:bg-orange-500");
-            btnSubmit.classList.add("bg-emerald-600", "hover:bg-emerald-500");
-          } else {
-            btnSubmit.textContent = "Confirmar Saída";
-            btnSubmit.classList.remove(
-              "bg-emerald-600",
-              "hover:bg-emerald-500"
-            );
-            btnSubmit.classList.add("bg-orange-600", "hover:bg-orange-500");
-          }
-        },
-
-        async saveMovement(e) {
-          e.preventDefault();
-
-          const form = document.getElementById("movementForm");
-          const formData = new FormData(form);
-          const type = formData.get("moveType");
-          const skuInput = formData.get("moveItem");
-          const qty = parseInt(formData.get("moveQty"));
-
-          if (!skuInput || isNaN(qty) || qty <= 0) {
-            this.showToast("Preencha todos os campos corretamente.", "error");
-            return;
-          }
-
-          const targetItem = this.data.find((i) => i.sku === skuInput);
-
-          if (!targetItem) {
-            this.showToast("Material não encontrado.", "error");
-            return;
-          }
-
-          if (type === "out" && targetItem.quantity < qty) {
-            this.showToast(
-              `Estoque insuficiente. Disponível: ${targetItem.quantity}`,
-              "error"
-            );
-            return;
-          }
-
-          // --- UPDATE LOGIC (Hybrid) ---
-          const newQuantity =
-            type === "in"
-              ? targetItem.quantity + qty
-              : targetItem.quantity - qty;
-
-          if (this.isOffline) {
-            // Local Update
-            targetItem.quantity = newQuantity;
-            this.movements.unshift({
-              id: Date.now().toString(),
-              date: new Date(),
-              itemId: targetItem.id,
-              itemSku: targetItem.sku,
-              itemName: targetItem.name,
-              type: type,
-              quantity: qty,
-              user: this.currentUser ? this.currentUser.name : "Offline User",
-            });
-            this.saveLocalData();
-            this.processData();
-            this.closeModal();
-            this.showToast("Movimentação salva localmente.", "success");
-          } else {
-            // Firebase Update
+          if (!this.isOffline && db) {
             try {
               const matsRef = collection(
                 db,
@@ -2694,8 +1632,10 @@
                 "data",
                 "materials"
               );
-              const itemDoc = doc(matsRef, String(targetItem.id));
-              await updateDoc(itemDoc, { quantity: newQuantity });
+              const mSnap = await getDocs(matsRef);
+              const batch1 = writeBatch(db);
+              mSnap.forEach((d) => batch1.delete(d.ref));
+              await batch1.commit();
 
               const movesRef = collection(
                 db,
@@ -2705,77 +1645,203 @@
                 "data",
                 "movements"
               );
-              await addDoc(movesRef, {
-                id: Date.now().toString(),
-                date: new Date().toISOString(),
-                itemId: targetItem.id,
-                itemSku: targetItem.sku,
-                itemName: targetItem.name,
-                type: type,
-                quantity: qty,
-                user: this.currentUser ? this.currentUser.name : "Desconhecido",
-              });
+              const movSnap = await getDocs(movesRef);
+              const batch2 = writeBatch(db);
+              movSnap.forEach((d) => batch2.delete(d.ref));
+              await batch2.commit();
 
-              this.closeModal();
-              const typeLabel = type === "in" ? "Entrada" : "Saída";
-              this.showToast(`${typeLabel} registrada com sucesso!`, "success");
+              this.showToast("Sistema reiniciado.", "success");
             } catch (e) {
-              console.error(e);
-              this.showToast("Erro ao gravar dados na nuvem.", "error");
+              this.showToast("Erro ao resetar.", "error");
+            } finally {
+              this.showLoading(false);
             }
+          } else {
+            localStorage.removeItem(this.config.storageKeyData);
+            localStorage.removeItem(this.config.storageKeyMovements);
+            location.reload();
           }
         },
 
-        showToast(msg, type = "info") {
-          let bg = "#3b82f6";
-          if (type === "success") bg = "#10b981";
-          if (type === "error") bg = "#ef4444";
-          if (type === "warning") bg = "#f59e0b";
+        // --- CORE FUNCTIONS ---
+        processData() {
+          const query = this.searchQuery.toLowerCase();
+          if (query) {
+            this.filteredData = this.data.filter(
+              (item) =>
+                item.name.toLowerCase().includes(query) ||
+                item.sku.toLowerCase().includes(query) ||
+                item.contractCode.toLowerCase().includes(query) ||
+                item.category.toLowerCase().includes(query)
+            );
+          } else {
+            this.filteredData = [...this.data];
+          }
 
-          Toastify({
-            text: msg,
-            duration: 3000,
-            gravity: "top",
-            position: "right",
-            style: {
-              background: bg,
-              borderRadius: "8px",
-              fontSize: "14px",
-              boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1)",
-            },
-          }).showToast();
+          this.filteredData.sort((a, b) => {
+            let valA = a[this.sortConfig.key];
+            let valB = b[this.sortConfig.key];
+            if (typeof valA === "string") valA = valA.toLowerCase();
+            if (typeof valB === "string") valB = valB.toLowerCase();
+            if (valA < valB) return this.sortConfig.order === "asc" ? -1 : 1;
+            if (valA > valB) return this.sortConfig.order === "asc" ? 1 : -1;
+            return 0;
+          });
+
+          this.updateKPIs(this.filteredData);
+
+          this.totalPages = Math.ceil(
+            this.filteredData.length / this.itemsPerPage
+          );
+          if (this.currentPage > this.totalPages) this.currentPage = 1;
+
+          const start = (this.currentPage - 1) * this.itemsPerPage;
+          const end = start + this.itemsPerPage;
+          this.paginatedData = this.filteredData.slice(start, end);
+
+          this.render();
         },
 
-        toggleMovementFilter(type) {
-          if (this.activeMovementFilter === type)
-            this.activeMovementFilter = null;
-          else this.activeMovementFilter = type;
+        render() {
+          const tbody = document.getElementById("tableBody");
+          if (!tbody) return;
+          tbody.innerHTML = "";
 
-          this.updateMovementFilterUI();
-          this.renderMovements();
-        },
-
-        updateMovementFilterUI() {
-          const btnIn = document.getElementById("btnFilterIn");
-          const btnOut = document.getElementById("btnFilterOut");
-
-          const baseClass =
-            "bg-white border border-slate-200 hover:bg-slate-50 rounded-lg flex items-center px-3 py-1.5 shadow-sm transition-all group";
-          btnIn.className = baseClass;
-          btnOut.className = baseClass;
-
-          if (this.activeMovementFilter === "in") {
-            btnIn.className =
-              "bg-emerald-50 border border-emerald-200 rounded-lg flex items-center px-3 py-1.5 shadow-sm ring-1 ring-emerald-500/20 transition-all group";
+          if (this.paginatedData.length === 0) {
+            document.getElementById("emptyState").classList.remove("hidden");
+            document.getElementById("emptyState").classList.add("flex");
+            // Update pagination counts to 0
+            document.getElementById("pageStart").textContent = 0;
+            document.getElementById("pageEnd").textContent = 0;
+            document.getElementById("totalItems").textContent = 0;
+            return;
           }
-          if (this.activeMovementFilter === "out") {
-            btnOut.className =
-              "bg-orange-50 border border-orange-200 rounded-lg flex items-center px-3 py-1.5 shadow-sm ring-1 ring-orange-500/20 transition-all group";
-          }
+
+          document.getElementById("emptyState").classList.add("hidden");
+          document.getElementById("emptyState").classList.remove("flex");
+
+          const fragment = document.createDocumentFragment();
+          const isAdmin = this.currentUser?.role === "admin";
+
+          this.paginatedData.forEach((item) => {
+            const tr = document.createElement("tr");
+            tr.className =
+              "hover:bg-slate-50 group border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
+
+            const catColor = this.getCategoryColor(item.category);
+            const status = this.getStockStatus(item);
+            const qtyCursor = isAdmin ? "cursor-pointer" : "cursor-default";
+            const editCursor = isAdmin ? "cursor-pointer" : "cursor-default";
+            const qtyTitle = isAdmin ? "Clique para ajustar saldo" : "";
+
+            tr.innerHTML = `
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <div onclick="app.copyToClipboard('${
+                    item.contractCode
+                  }', 'Contrato')" class="clickable-code flex items-center gap-1.5 cursor-pointer group/code w-fit">
+                    <i data-lucide="hash" class="w-3 h-3 text-slate-300 group-hover/code:text-blue-500 transition-colors"></i>
+                    <span class="text-xs font-mono font-medium text-slate-600 group-hover/code:text-blue-600 transition-colors bg-slate-100 group-hover/code:bg-blue-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover/code:border-blue-200">${
+                      item.contractCode
+                    }</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                   <span class="text-xs font-mono text-slate-500">${
+                     item.sku
+                   }</span>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap">
+                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border badge-${catColor}">
+                    ${item.category.replace("DEP.", "").trim()}
+                  </span>
+                </td>
+                <td class="px-6 py-4">
+                  <div class="text-xs font-medium text-slate-900 truncate-2 max-w-xs" title="${
+                    item.name
+                  }">${item.name}</div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <div class="flex items-center justify-end gap-2 group/qty ${qtyCursor}" onclick="app.editQuantity(${
+              item.id
+            })" title="${qtyTitle}">
+                    <span class="text-xs font-bold text-slate-700 border-b border-dashed border-transparent ${
+                      isAdmin ? "group-hover/qty:border-slate-300" : ""
+                    } transition-colors">${item.quantity}</span>
+                    <span class="text-[10px] text-slate-400">un</span>
+                    ${
+                      isAdmin
+                        ? '<i data-lucide="refresh-ccw" class="w-3 h-3 text-slate-300 opacity-0 group-hover/qty:opacity-100 transition-opacity"></i>'
+                        : ""
+                    }
+                  </div>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-right">
+                  <div class="flex items-center justify-end gap-2 group/edit ${editCursor}" onclick="app.editMaxCapacity(${
+              item.id
+            })">
+                    <span class="text-xs font-medium text-slate-600 border-b border-dashed border-slate-300 ${
+                      isAdmin
+                        ? "group-hover/edit:border-blue-400 group-hover/edit:text-blue-600"
+                        : ""
+                    } transition-colors" title="${
+              isAdmin ? "Editar Ressuprimento" : ""
+            }">${item.maxQuantity}</span>
+                    ${
+                      isAdmin
+                        ? '<i data-lucide="edit-2" class="w-3 h-3 text-slate-300 opacity-0 group-hover/edit:opacity-100 transition-opacity"></i>'
+                        : ""
+                    }
+                  </div>
+                </td>
+                 <td class="px-6 py-4 whitespace-nowrap text-center">
+                  <div class="flex flex-col items-center gap-1">
+                      <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full border ${
+                        status.color
+                      }">
+                        <span class="relative flex h-1.5 w-1.5">
+                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full ${
+                            status.dot
+                          } opacity-75"></span>
+                          <span class="relative inline-flex rounded-full h-1.5 w-1.5 ${
+                            status.dot
+                          }"></span>
+                        </span>
+                        <span class="text-[10px] font-semibold">${
+                          status.label
+                        }</span>
+                      </div>
+                      <span class="text-[10px] text-slate-400 font-medium">${
+                        status.note
+                      }</span>
+                  </div>
+                </td>
+              `;
+            fragment.appendChild(tr);
+          });
+          tbody.appendChild(fragment);
+
+          const start = (this.currentPage - 1) * this.itemsPerPage + 1;
+          const end = Math.min(
+            start + this.itemsPerPage - 1,
+            this.filteredData.length
+          );
+
+          document.getElementById("pageStart").textContent = start;
+          document.getElementById("pageEnd").textContent = end;
+          document.getElementById("totalItems").textContent =
+            this.filteredData.length;
+          document.getElementById("currentPageDisplay").textContent =
+            this.currentPage;
+          document.getElementById("btnPrev").disabled = this.currentPage === 1;
+          document.getElementById("btnNext").disabled =
+            this.currentPage === this.totalPages;
+
+          lucide.createIcons();
         },
 
         renderMovements() {
           const tbody = document.getElementById("movementsBody");
+          if (!tbody) return;
           tbody.innerHTML = "";
 
           let displayMovements = this.movements;
@@ -2789,128 +1855,160 @@
             const msg = this.activeMovementFilter
               ? "Nenhuma movimentação encontrada com este filtro."
               : "Ainda não existem registros no histórico.";
-
             const icon = this.activeMovementFilter
               ? "filter-x"
               : "clipboard-list";
 
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs">
-                        <div class="flex flex-col items-center justify-center gap-2">
-                            <i data-lucide="${icon}" class="w-8 h-8 opacity-20 mb-1"></i>
-                            <span>${msg}</span>
-                        </div>
-                    </td>
-                </tr>`;
+            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs"><div class="flex flex-col items-center justify-center gap-2"><i data-lucide="${icon}" class="w-8 h-8 opacity-20 mb-1"></i><span>${msg}</span></div></td></tr>`;
             lucide.createIcons();
             return;
           }
 
           const fragment = document.createDocumentFragment();
-
           displayMovements.forEach((mov) => {
             const tr = document.createElement("tr");
             tr.className =
               "hover:bg-slate-50 border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
-
             const isEntry = mov.type === "in";
             const badgeClass = isEntry
               ? "bg-emerald-50 text-emerald-700 border-emerald-100"
               : "bg-orange-50 text-orange-700 border-orange-100";
             const icon = isEntry ? "arrow-down-left" : "arrow-up-right";
             const typeLabel = isEntry ? "Entrada" : "Saída";
-
-            const dateStr = new Intl.DateTimeFormat("pt-PT", {
-              day: "2-digit",
-              month: "2-digit",
-              hour: "2-digit",
-              minute: "2-digit",
-            }).format(mov.date);
+            const dateStr = mov.date
+              ? new Intl.DateTimeFormat("pt-PT", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                }).format(mov.date)
+              : "-";
 
             tr.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <span class="text-xs font-mono text-slate-500">${dateStr}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border ${badgeClass}">
-                        <i data-lucide="${icon}" class="w-3 h-3"></i>
-                        <span class="text-[10px] font-semibold uppercase">${typeLabel}</span>
-                    </div>
-                </td>
-                <td class="px-6 py-4">
-                    <div class="flex flex-col">
-                        <span class="text-xs font-medium text-slate-900 truncate max-w-xs" title="${
-                          mov.itemName
-                        }">${mov.itemName}</span>
-                        <span class="text-[10px] font-mono text-slate-400">SKU: ${
-                          mov.itemSku
-                        }</span>
-                    </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                    <span class="text-xs font-bold text-slate-700">${
-                      mov.quantity
-                    }</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                    <div class="flex items-center gap-2">
-                        <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">
-                            ${mov.user.charAt(0)}
+                    <td class="px-6 py-4 whitespace-nowrap"><span class="text-xs font-mono text-slate-500">${dateStr}</span></td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border ${badgeClass}">
+                            <i data-lucide="${icon}" class="w-3 h-3"></i><span class="text-[10px] font-semibold uppercase">${typeLabel}</span>
                         </div>
-                        <span class="text-xs text-slate-600">${mov.user}</span>
-                    </div>
-                </td>
-            `;
+                    </td>
+                    <td class="px-6 py-4">
+                        <div class="flex flex-col">
+                            <span class="text-xs font-medium text-slate-900 truncate max-w-xs" title="${
+                              mov.itemName
+                            }">${mov.itemName}</span>
+                            <span class="text-[10px] font-mono text-slate-400">SKU: ${
+                              mov.itemSku
+                            }</span>
+                        </div>
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap text-right"><span class="text-xs font-bold text-slate-700">${
+                      mov.quantity
+                    }</span></td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                        <div class="flex items-center gap-2">
+                            <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">${mov.user.charAt(
+                              0
+                            )}</div>
+                            <span class="text-xs text-slate-600">${
+                              mov.user
+                            }</span>
+                        </div>
+                    </td>
+                `;
             fragment.appendChild(tr);
           });
           tbody.appendChild(fragment);
           lucide.createIcons();
         },
 
-        processData() {
-          this.showLoading(true);
+        renderReports(btnElement = null) {
+          let icon;
+          if (btnElement) {
+            icon =
+              btnElement.querySelector("svg") || btnElement.querySelector("i");
+            if (icon) icon.classList.add("animate-spin");
+            btnElement.disabled = true;
+          }
 
           setTimeout(() => {
-            const query = this.searchQuery.toLowerCase();
-            if (query) {
-              this.filteredData = this.data.filter(
-                (item) =>
-                  item.name.toLowerCase().includes(query) ||
-                  item.sku.toLowerCase().includes(query) ||
-                  item.contractCode.toLowerCase().includes(query) ||
-                  item.category.toLowerCase().includes(query)
-              );
-            } else {
-              this.filteredData = [...this.data];
+            try {
+              const groups = {};
+              this.data.forEach((item) => {
+                const cat = item.category
+                  ? item.category.replace("DEP.", "").trim()
+                  : "Outros";
+                groups[cat] = (groups[cat] || 0) + 1;
+              });
+
+              const sortedGroups = Object.entries(groups)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+              const totalItems = Math.max(1, this.data.length);
+              const catContainer = document.getElementById("reportCategories");
+              if (catContainer) {
+                catContainer.innerHTML = "";
+                sortedGroups.forEach(([name, count]) => {
+                  const pct = Math.round((count / totalItems) * 100);
+                  catContainer.innerHTML += `<div><div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-700 truncate w-3/4">${name}</span><span class="text-slate-500">${count} itens (${pct}%)</span></div><div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-blue-500 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div></div></div>`;
+                  setTimeout(() => {
+                    const bars = catContainer.querySelectorAll(".bg-blue-500");
+                    const lastBar = bars[bars.length - 1];
+                    if (lastBar) lastBar.style.width = `${pct}%`;
+                  }, 50);
+                });
+              }
+
+              const criticalItems = this.data
+                .map((item) => {
+                  const max = item.maxQuantity || 100;
+                  return { ...item, pct: (item.quantity / max) * 100 };
+                })
+                .filter((item) => item.pct <= this.config.thresholds.warning)
+                .sort((a, b) => a.pct - b.pct)
+                .slice(0, 8);
+
+              const critBody = document.getElementById("reportCriticalBody");
+              if (critBody) {
+                critBody.innerHTML = "";
+                if (criticalItems.length === 0) {
+                  critBody.innerHTML =
+                    '<tr><td colspan="3" class="px-3 py-4 text-center text-slate-400 italic">Nenhum item em estado crítico.</td></tr>';
+                } else {
+                  criticalItems.forEach((item) => {
+                    const status = this.getStockStatus(item);
+                    critBody.innerHTML += `<tr><td class="px-3 py-2 border-b border-slate-50"><div class="font-medium text-slate-700 truncate max-w-[180px]" title="${item.name}">${item.name}</div><div class="text-[10px] text-slate-400 font-mono">${item.sku}</div></td><td class="px-3 py-2 text-right border-b border-slate-50 font-bold text-slate-600">${item.quantity}</td><td class="px-3 py-2 text-center border-b border-slate-50"><span class="inline-block w-2 h-2 rounded-full ${status.dot}" title="${status.label}"></span></td></tr>`;
+                  });
+                }
+              }
+
+              const totalMoves = this.movements ? this.movements.length : 0;
+              const totalIn = this.movements
+                ? this.movements.filter((m) => m.type === "in").length
+                : 0;
+              const totalOut = this.movements
+                ? this.movements.filter((m) => m.type === "out").length
+                : 0;
+
+              const elTotalMoves = document.getElementById("repTotalMoves");
+              if (elTotalMoves) elTotalMoves.textContent = totalMoves;
+              const elTotalIn = document.getElementById("repTotalIn");
+              if (elTotalIn) elTotalIn.textContent = totalIn;
+              const elTotalOut = document.getElementById("repTotalOut");
+              if (elTotalOut) elTotalOut.textContent = totalOut;
+
+              if (btnElement)
+                this.showToast(
+                  "Relatórios atualizados com sucesso.",
+                  "success"
+                );
+            } catch (error) {
+              console.error(error);
+              this.showToast("Erro ao atualizar.", "error");
+            } finally {
+              if (icon) icon.classList.remove("animate-spin");
+              if (btnElement) btnElement.disabled = false;
             }
-
-            this.filteredData.sort((a, b) => {
-              let valA = a[this.sortConfig.key];
-              let valB = b[this.sortConfig.key];
-
-              if (typeof valA === "string") valA = valA.toLowerCase();
-              if (typeof valB === "string") valB = valB.toLowerCase();
-
-              if (valA < valB) return this.sortConfig.order === "asc" ? -1 : 1;
-              if (valA > valB) return this.sortConfig.order === "asc" ? 1 : -1;
-              return 0;
-            });
-
-            this.updateKPIs(this.filteredData);
-
-            this.totalPages = Math.ceil(
-              this.filteredData.length / this.itemsPerPage
-            );
-            if (this.currentPage > this.totalPages) this.currentPage = 1;
-
-            const start = (this.currentPage - 1) * this.itemsPerPage;
-            const end = start + this.itemsPerPage;
-            this.paginatedData = this.filteredData.slice(start, end);
-
-            this.render();
-            this.showLoading(false);
-          }, 150);
+          }, 600);
         },
 
         handleSearch(query) {
@@ -2946,10 +2044,8 @@
             );
             return;
           }
-
           const item = this.data.find((i) => i.id === id);
           if (!item) return;
-
           const newMax = prompt(
             `Definir Ponto de Ressuprimento para:\n${item.name}`,
             item.maxQuantity
@@ -2958,15 +2054,7 @@
           if (newMax !== null) {
             const val = parseInt(newMax);
             if (!isNaN(val) && val > 0) {
-              if (this.isOffline) {
-                item.maxQuantity = val;
-                this.saveLocalData();
-                this.processData();
-                this.showToast(
-                  `Ressuprimento ajustado localmente para ${val}`,
-                  "success"
-                );
-              } else {
+              if (!this.isOffline && db) {
                 try {
                   const matsRef = collection(
                     db,
@@ -2985,6 +2073,11 @@
                 } catch (e) {
                   this.showToast("Erro ao salvar.", "error");
                 }
+              } else {
+                item.maxQuantity = val;
+                this.saveLocalData();
+                this.processData();
+                this.showToast(`Ressuprimento ajustado (Local).`, "success");
               }
             } else {
               this.showToast("Valor inválido.", "error");
@@ -3000,10 +2093,8 @@
             );
             return;
           }
-
           const item = this.data.find((i) => i.id === id);
           if (!item) return;
-
           const newQtyStr = prompt(
             `AJUSTE DE SALDO (Balanço):\n${item.name}\n\nQuantidade Atual: ${item.quantity}\n\nNova Quantidade Real:`,
             item.quantity
@@ -3014,30 +2105,9 @@
             if (!isNaN(newQty) && newQty >= 0) {
               const diff = newQty - item.quantity;
               if (diff === 0) return;
-
               const oldQty = item.quantity;
-
-              if (this.isOffline) {
-                item.quantity = newQty;
-                this.movements.unshift({
-                  id: Date.now().toString(),
-                  date: new Date(),
-                  itemId: item.id,
-                  itemSku: item.sku,
-                  itemName: item.name,
-                  type: diff > 0 ? "in" : "out",
-                  quantity: Math.abs(diff),
-                  user: `${this.currentUser.name} (Ajuste)`,
-                });
-                this.saveLocalData();
-                this.processData();
-                this.showToast(
-                  `Saldo corrigido localmente para ${newQty}.`,
-                  "success"
-                );
-              } else {
+              if (!this.isOffline && db) {
                 try {
-                  // Update Material
                   const matsRef = collection(
                     db,
                     "artifacts",
@@ -3048,8 +2118,6 @@
                   );
                   const itemDoc = doc(matsRef, String(item.id));
                   await updateDoc(itemDoc, { quantity: newQty });
-
-                  // Log Movement
                   const movesRef = collection(
                     db,
                     "artifacts",
@@ -3068,7 +2136,6 @@
                     quantity: Math.abs(diff),
                     user: `${this.currentUser.name} (Ajuste)`,
                   });
-
                   this.showToast(
                     `Saldo corrigido de ${oldQty} para ${newQty}.`,
                     "success"
@@ -3076,6 +2143,21 @@
                 } catch (e) {
                   this.showToast("Erro ao gravar ajuste.", "error");
                 }
+              } else {
+                item.quantity = newQty;
+                this.movements.unshift({
+                  id: Date.now().toString(),
+                  date: new Date(),
+                  itemId: item.id,
+                  itemSku: item.sku,
+                  itemName: item.name,
+                  type: diff > 0 ? "in" : "out",
+                  quantity: Math.abs(diff),
+                  user: `${this.currentUser.name} (Ajuste Local)`,
+                });
+                this.saveLocalData();
+                this.processData();
+                this.showToast(`Saldo corrigido (Local).`, "success");
               }
             } else {
               this.showToast("Valor inválido.", "error");
@@ -3098,9 +2180,14 @@
         },
 
         copyToClipboard(text, label) {
-          navigator.clipboard.writeText(text).then(() => {
-            this.showToast(`${label} copiado!`, "success");
-          });
+          // Using execCommand for compatibility
+          const el = document.createElement("textarea");
+          el.value = text;
+          document.body.appendChild(el);
+          el.select();
+          document.execCommand("copy");
+          document.body.removeChild(el);
+          this.showToast(`${label} copiado!`, "success");
         },
 
         getCategoryColor(category) {
@@ -3112,9 +2199,8 @@
         },
 
         getStockStatus(item) {
-          const max = item.maxQuantity || 100; // Safeguard against missing data
+          const max = item.maxQuantity || 100;
           const percentage = Math.round((item.quantity / max) * 100);
-
           if (percentage <= this.config.thresholds.critical) {
             return {
               label: "Ação Necessária",
@@ -3149,16 +2235,12 @@
             el.textContent =
               prefix + new Intl.NumberFormat("pt-PT").format(endValue);
           };
-
           const count = data.length;
           const groups = new Set(data.map((i) => i.category)).size;
-
-          // Ensure calculations use safety fallback for maxQuantity
           const critical = data.filter((i) => {
             const max = i.maxQuantity || 100;
             return (i.quantity / max) * 100 <= this.config.thresholds.critical;
           }).length;
-
           animate("statTotalItems", count);
           animate("statGroups", groups);
           animate("statCritical", critical);
@@ -3166,186 +2248,231 @@
 
         showLoading(isLoading) {
           const loader = document.getElementById("loadingState");
-          if (isLoading) {
-            loader.classList.remove("opacity-0", "pointer-events-none");
-          } else {
-            loader.classList.add("opacity-0", "pointer-events-none");
+          if (loader) {
+            if (isLoading)
+              loader.classList.remove("opacity-0", "pointer-events-none");
+            else loader.classList.add("opacity-0", "pointer-events-none");
           }
         },
 
-        render() {
-          const tbody = document.getElementById("tableBody");
-          tbody.innerHTML = "";
+        updateStatusIndicator(online, text) {
+          const statusEl = document.getElementById("statusText");
+          const dot = document.getElementById("statusDot");
+          if (statusEl && dot) {
+            statusEl.textContent = text;
+            dot.className = online
+              ? "w-1.5 h-1.5 rounded-full bg-emerald-500"
+              : "w-1.5 h-1.5 rounded-full bg-slate-500";
+            dot.classList.remove("animate-pulse");
+          }
+        },
 
-          if (this.paginatedData.length === 0) {
-            document.getElementById("emptyState").classList.remove("hidden");
-            document.getElementById("emptyState").classList.add("flex");
-            document.getElementById("pageStart").textContent = 0;
-            document.getElementById("pageEnd").textContent = 0;
-            document.getElementById("totalItems").textContent = 0;
+        showToast(msg, type = "info") {
+          let bg = "#3b82f6";
+          if (type === "success") bg = "#10b981";
+          if (type === "error") bg = "#ef4444";
+          Toastify({
+            text: msg,
+            duration: 3000,
+            style: { background: bg, borderRadius: "8px" },
+          }).showToast();
+        },
+
+        populateDatalist() {
+          setTimeout(() => {
+            const datalist = document.getElementById("materialList");
+            if (datalist) {
+              datalist.innerHTML = "";
+              this.data.forEach((item) => {
+                const option = document.createElement("option");
+                option.value = item.sku;
+                option.textContent = `${item.name} (${item.quantity} un)`;
+                datalist.appendChild(option);
+              });
+            }
+          }, 500);
+        },
+
+        openModal() {
+          const modal = document.getElementById("movementModal");
+          const backdrop = document.getElementById("modalBackdrop");
+          const panel = document.getElementById("modalPanel");
+          modal.classList.remove("hidden");
+          setTimeout(() => {
+            backdrop.classList.remove("opacity-0");
+            panel.classList.remove("opacity-0", "scale-95");
+            panel.classList.add("opacity-100", "scale-100");
+          }, 10);
+          document.getElementById("movementForm").reset();
+          this.toggleModalType("in");
+        },
+
+        closeModal() {
+          const modal = document.getElementById("movementModal");
+          const backdrop = document.getElementById("modalBackdrop");
+          const panel = document.getElementById("modalPanel");
+          backdrop.classList.add("opacity-0");
+          panel.classList.remove("opacity-100", "scale-100");
+          panel.classList.add("opacity-0", "scale-95");
+          setTimeout(() => modal.classList.add("hidden"), 200);
+        },
+
+        toggleModalType(type) {
+          const btnSubmit = document.getElementById("btnSubmitMovement");
+          if (type === "in") {
+            btnSubmit.textContent = "Confirmar Entrada";
+            btnSubmit.classList.remove("bg-orange-600", "hover:bg-orange-500");
+            btnSubmit.classList.add("bg-emerald-600", "hover:bg-emerald-500");
+          } else {
+            btnSubmit.textContent = "Confirmar Saída";
+            btnSubmit.classList.remove(
+              "bg-emerald-600",
+              "hover:bg-emerald-500"
+            );
+            btnSubmit.classList.add("bg-orange-600", "hover:bg-orange-500");
+          }
+        },
+
+        async saveMovement(e) {
+          e.preventDefault();
+          const form = document.getElementById("movementForm");
+          const formData = new FormData(form);
+          const type = formData.get("moveType");
+          const skuInput = formData.get("moveItem");
+          const qty = parseInt(formData.get("moveQty"));
+
+          if (!skuInput || isNaN(qty) || qty <= 0) {
+            this.showToast("Preencha todos os campos corretamente.", "error");
+            return;
+          }
+          const targetItem = this.data.find((i) => i.sku === skuInput);
+          if (!targetItem) {
+            this.showToast("Material não encontrado.", "error");
+            return;
+          }
+          if (type === "out" && targetItem.quantity < qty) {
+            this.showToast(
+              `Estoque insuficiente. Disponível: ${targetItem.quantity}`,
+              "error"
+            );
             return;
           }
 
-          document.getElementById("emptyState").classList.add("hidden");
-          document.getElementById("emptyState").classList.remove("flex");
+          const newQuantity =
+            type === "in"
+              ? targetItem.quantity + qty
+              : targetItem.quantity - qty;
 
-          const fragment = document.createDocumentFragment();
-          const isAdmin = this.currentUser?.role === "admin";
-
-          this.paginatedData.forEach((item) => {
-            const tr = document.createElement("tr");
-            tr.className =
-              "hover:bg-slate-50 group border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
-
-            const catColor = this.getCategoryColor(item.category);
-            const status = this.getStockStatus(item);
-
-            // Cursor e title dependentes de permissão
-            const qtyCursor = isAdmin ? "cursor-pointer" : "cursor-default";
-            const editCursor = isAdmin ? "cursor-pointer" : "cursor-default";
-            const qtyTitle = isAdmin ? "Clique para ajustar saldo" : "";
-            const editTitle = isAdmin ? "Clique para editar" : "";
-
-            tr.innerHTML = `
-            <td class="px-6 py-4 whitespace-nowrap">
-              <div onclick="app.copyToClipboard('${
-                item.contractCode
-              }', 'Contrato')" class="clickable-code flex items-center gap-1.5 cursor-pointer group/code w-fit">
-                <i data-lucide="hash" class="w-3 h-3 text-slate-300 group-hover/code:text-blue-500 transition-colors"></i>
-                <span class="text-xs font-mono font-medium text-slate-600 group-hover/code:text-blue-600 transition-colors bg-slate-100 group-hover/code:bg-blue-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover/code:border-blue-200">${
-                  item.contractCode
-                }</span>
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-               <span class="text-xs font-mono text-slate-500">${item.sku}</span>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap">
-              <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border badge-${catColor}">
-                ${item.category.replace("DEP.", "").trim()}
-              </span>
-            </td>
-            <td class="px-6 py-4">
-              <div class="text-xs font-medium text-slate-900 truncate-2 max-w-xs" title="${
-                item.name
-              }">${item.name}</div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">
-              <div class="flex items-center justify-end gap-2 group/qty ${qtyCursor}" onclick="app.editQuantity(${
-              item.id
-            })" title="${qtyTitle}">
-                <span class="text-xs font-bold text-slate-700 border-b border-dashed border-transparent ${
-                  isAdmin ? "group-hover/qty:border-slate-300" : ""
-                } transition-colors">${item.quantity}</span>
-                <span class="text-[10px] text-slate-400">un</span>
-                ${
-                  isAdmin
-                    ? '<i data-lucide="refresh-ccw" class="w-3 h-3 text-slate-300 opacity-0 group-hover/qty:opacity-100 transition-opacity"></i>'
-                    : ""
-                }
-              </div>
-            </td>
-            <td class="px-6 py-4 whitespace-nowrap text-right">
-              <div class="flex items-center justify-end gap-2 group/edit ${editCursor}" onclick="app.editMaxCapacity(${
-              item.id
-            })">
-                <span class="text-xs font-medium text-slate-600 border-b border-dashed border-slate-300 ${
-                  isAdmin
-                    ? "group-hover/edit:border-blue-400 group-hover/edit:text-blue-600"
-                    : ""
-                } transition-colors" title="${editTitle}">${
-              item.maxQuantity
-            }</span>
-                ${
-                  isAdmin
-                    ? '<i data-lucide="edit-2" class="w-3 h-3 text-slate-300 opacity-0 group-hover/edit:opacity-100 transition-opacity"></i>'
-                    : ""
-                }
-              </div>
-            </td>
-             <td class="px-6 py-4 whitespace-nowrap text-center">
-              <div class="flex flex-col items-center gap-1">
-                  <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full border ${
-                    status.color
-                  }">
-                    <span class="relative flex h-1.5 w-1.5">
-                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full ${
-                        status.dot
-                      } opacity-75"></span>
-                      <span class="relative inline-flex rounded-full h-1.5 w-1.5 ${
-                        status.dot
-                      }"></span>
-                    </span>
-                    <span class="text-[10px] font-semibold">${
-                      status.label
-                    }</span>
-                  </div>
-                  <span class="text-[10px] text-slate-400 font-medium">${
-                    status.note
-                  }</span>
-              </div>
-            </td>
-          `;
-            fragment.appendChild(tr);
-          });
-          tbody.appendChild(fragment);
-
-          const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-          const end = Math.min(
-            start + this.itemsPerPage - 1,
-            this.filteredData.length
-          );
-
-          document.getElementById("pageStart").textContent = start;
-          document.getElementById("pageEnd").textContent = end;
-          document.getElementById("totalItems").textContent =
-            this.filteredData.length;
-          document.getElementById("currentPageDisplay").textContent =
-            this.currentPage;
-
-          document.getElementById("btnPrev").disabled = this.currentPage === 1;
-          document.getElementById("btnNext").disabled =
-            this.currentPage === this.totalPages;
-
-          lucide.createIcons();
+          if (this.isOffline) {
+            targetItem.quantity = newQuantity;
+            this.movements.unshift({
+              id: Date.now().toString(),
+              date: new Date(),
+              itemId: targetItem.id,
+              itemSku: targetItem.sku,
+              itemName: targetItem.name,
+              type: type,
+              quantity: qty,
+              user: this.currentUser ? this.currentUser.name : "Offline User",
+            });
+            this.saveLocalData();
+            this.processData();
+            this.closeModal();
+            this.showToast("Movimentação salva localmente.", "success");
+          } else {
+            try {
+              const matsRef = collection(
+                db,
+                "artifacts",
+                appId,
+                "public",
+                "data",
+                "materials"
+              );
+              const itemDoc = doc(matsRef, String(targetItem.id));
+              await updateDoc(itemDoc, { quantity: newQuantity });
+              const movesRef = collection(
+                db,
+                "artifacts",
+                appId,
+                "public",
+                "data",
+                "movements"
+              );
+              await addDoc(movesRef, {
+                id: Date.now().toString(),
+                date: new Date().toISOString(),
+                itemId: targetItem.id,
+                itemSku: targetItem.sku,
+                itemName: targetItem.name,
+                type: type,
+                quantity: qty,
+                user: this.currentUser ? this.currentUser.name : "Desconhecido",
+              });
+              this.closeModal();
+              const typeLabel = type === "in" ? "Entrada" : "Saída";
+              this.showToast(`${typeLabel} registrada com sucesso!`, "success");
+            } catch (e) {
+              console.error(e);
+              this.showToast("Erro ao gravar dados na nuvem.", "error");
+            }
+          }
         },
 
-        exportCSV() {
-          const dataToExport =
-            this.filteredData.length > 0 ? this.filteredData : this.data;
-          let csvContent = "data:text/csv;charset=utf-8,";
-          csvContent +=
-            "Codigo;Ref;Grupo;Descricao;Quantidade;Percentagem;Status\n";
+        toggleMovementFilter(type) {
+          if (this.activeMovementFilter === type)
+            this.activeMovementFilter = null;
+          else this.activeMovementFilter = type;
+          this.updateMovementFilterUI();
+          this.renderMovements();
+        },
 
-          dataToExport.forEach((item) => {
-            const statusObj = this.getStockStatus(item);
-            const row = [
-              item.contractCode,
-              item.sku,
-              item.category,
-              `"${item.name}"`,
-              item.quantity,
-              `${statusObj.pct}%`,
-              statusObj.label,
-            ].join(";");
-            csvContent += row + "\n";
-          });
+        updateMovementFilterUI() {
+          const btnIn = document.getElementById("btnFilterIn");
+          const btnOut = document.getElementById("btnFilterOut");
+          const baseClass =
+            "bg-white border border-slate-200 hover:bg-slate-50 rounded-lg flex items-center px-3 py-1.5 shadow-sm transition-all group";
+          btnIn.className = baseClass;
+          btnOut.className = baseClass;
+          if (this.activeMovementFilter === "in") {
+            btnIn.className =
+              "bg-emerald-50 border border-emerald-200 rounded-lg flex items-center px-3 py-1.5 shadow-sm ring-1 ring-emerald-500/20 transition-all group";
+          }
+          if (this.activeMovementFilter === "out") {
+            btnOut.className =
+              "bg-orange-50 border border-orange-200 rounded-lg flex items-center px-3 py-1.5 shadow-sm ring-1 ring-orange-500/20 transition-all group";
+          }
+        },
 
-          const encodedUri = encodeURI(csvContent);
-          const link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute(
-            "download",
-            `inventario_export_${new Date().toISOString().slice(0, 10)}.csv`
-          );
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
+        navigate(viewName) {
+          this.currentView = viewName;
+          document
+            .querySelectorAll(".nav-item")
+            .forEach((el) => el.classList.remove("active"));
+          document.getElementById(`nav-${viewName}`).classList.add("active");
+          document.getElementById("viewDashboard").classList.add("hidden");
+          document.getElementById("viewMovements").classList.add("hidden");
+          document.getElementById("viewReports").classList.add("hidden");
+          document.getElementById("viewMovements").classList.remove("flex");
+          document.getElementById("viewReports").classList.remove("flex");
+
+          if (viewName === "dashboard") {
+            document.getElementById("viewDashboard").classList.remove("hidden");
+            this.render();
+          } else if (viewName === "movements") {
+            document.getElementById("viewMovements").classList.remove("hidden");
+            document.getElementById("viewMovements").classList.add("flex");
+            this.renderMovements();
+          } else if (viewName === "reports") {
+            document.getElementById("viewReports").classList.remove("hidden");
+            document.getElementById("viewReports").classList.add("flex");
+            this.renderReports();
+          }
         },
       };
 
+      // Expose app to window
       window.app = app;
-      // Initialize
       document.addEventListener("DOMContentLoaded", () => {
         app.init();
       });
