@@ -336,7 +336,7 @@
         </div>
 
         <p class="text-center text-xs text-slate-400 mt-8">
-          SEROB Inventory System v2.6
+          SEROB Inventory System v3.0 (Connected)
         </p>
       </div>
     </div>
@@ -1126,29 +1126,40 @@
         writeBatch,
       } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
 
-      // Global Env Variables
-      const env = {
-        firebaseConfig:
-          typeof __firebase_config !== "undefined"
-            ? JSON.parse(__firebase_config)
-            : null,
-        appId: typeof __app_id !== "undefined" ? __app_id : "default-app-id",
-        initialAuthToken:
-          typeof __initial_auth_token !== "undefined"
-            ? __initial_auth_token
-            : null,
+      // --- CONFIGURAÇÃO HÍBRIDA (CANVAS + USUÁRIO) ---
+
+      // 1. Configuração do Ambiente de Pré-visualização
+      const canvasConfig =
+        typeof __firebase_config !== "undefined"
+          ? JSON.parse(__firebase_config)
+          : null;
+
+      // 2. Configuração do SEU Projeto (Fallback para uso local/download)
+      // Extraído do seu firebase-config.js original
+      const userConfig = {
+        apiKey: "AIzaSyAr-0uIS0GEqMqlJ7CNAR5DXnNMeQE0zm0",
+        authDomain: "estoque-serob-db.firebaseapp.com",
+        projectId: "estoque-serob-db",
+        storageBucket: "estoque-serob-db.firebasestorage.app",
+        messagingSenderId: "702596180282",
+        appId: "1:702596180282:web:b4a6fa790a7f8efb02c803",
       };
+
+      // Decide qual config usar: Canvas (prioridade) ou Usuário
+      const activeConfig = canvasConfig || userConfig;
+      const isCanvasEnv = !!canvasConfig;
 
       // Firebase Vars
       let db = null;
       let auth = null;
       let isOffline = true;
-      const appId = env.appId;
+      const appId =
+        typeof __app_id !== "undefined" ? __app_id : "default-app-id";
 
       // --- AUTH & INIT ---
       try {
-        if (env.firebaseConfig) {
-          const firebaseApp = initializeApp(env.firebaseConfig);
+        if (activeConfig) {
+          const firebaseApp = initializeApp(activeConfig);
           auth = getAuth(firebaseApp);
           db = getFirestore(firebaseApp);
           isOffline = false;
@@ -1156,6 +1167,19 @@
       } catch (e) {
         console.warn("Modo Offline Ativado (Configuração):", e.message);
       }
+
+      // --- HELPER PARA CAMINHOS DO BANCO ---
+      // Se estiver no Canvas, usa o caminho restrito 'artifacts'.
+      // Se estiver local (User Config), usa coleções na raiz 'materials' e 'movements'.
+      const getCollectionRef = (name) => {
+        if (isCanvasEnv) {
+          // Caminho obrigatório do Canvas
+          return collection(db, "artifacts", appId, "public", "data", name);
+        } else {
+          // Caminho limpo para seu projeto pessoal
+          return collection(db, name);
+        }
+      };
 
       // USERS CONFIG
       const USERS = [
@@ -1188,7 +1212,7 @@
         },
       ];
 
-      // DADOS INICIAIS (Apenas amostra, o completo é muito grande, mas mantemos o essencial para teste)
+      // DADOS INICIAIS
       const RAW_SOURCE_DATA = [
         {
           id: 1001,
@@ -1324,9 +1348,15 @@
           );
           try {
             let authPromise;
-            if (env.initialAuthToken) {
-              authPromise = signInWithCustomToken(auth, env.initialAuthToken);
+            // Se estamos no Canvas, usamos o token especial
+            if (
+              isCanvasEnv &&
+              typeof __initial_auth_token !== "undefined" &&
+              __initial_auth_token
+            ) {
+              authPromise = signInWithCustomToken(auth, __initial_auth_token);
             } else {
+              // Se estamos rodando localmente (com userConfig), tentamos anônimo
               authPromise = signInAnonymously(auth);
             }
             await Promise.race([authPromise, timeoutPromise]);
@@ -1335,7 +1365,10 @@
             onAuthStateChanged(auth, (user) => {
               if (user) {
                 this.setupListeners();
-                this.updateStatusIndicator(true, "Online (Nuvem)");
+                const statusLabel = isCanvasEnv
+                  ? "Online (Canvas)"
+                  : "Online (Pessoal)";
+                this.updateStatusIndicator(true, statusLabel);
               }
             });
           } catch (e) {
@@ -1521,15 +1554,9 @@
           if (!db) return;
           this.showLoading(true);
 
-          // Using standard path artifacts/{appId}/public/data/{collection}
-          const matsRef = collection(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "materials"
-          );
+          // Usando o helper para definir o caminho correto
+          const matsRef = getCollectionRef("materials");
+
           onSnapshot(
             matsRef,
             (snapshot) => {
@@ -1551,14 +1578,8 @@
             }
           );
 
-          const movesRef = collection(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "movements"
-          );
+          const movesRef = getCollectionRef("movements");
+
           onSnapshot(movesRef, (snapshot) => {
             const moves = [];
             snapshot.forEach((doc) => {
@@ -1574,14 +1595,8 @@
         async seedDatabase() {
           if (!db) return;
           const batch = writeBatch(db);
-          const matsRef = collection(
-            db,
-            "artifacts",
-            appId,
-            "public",
-            "data",
-            "materials"
-          );
+          // Usando helper
+          const matsRef = getCollectionRef("materials");
 
           // Seed items
           RAW_SOURCE_DATA.forEach((item) => {
@@ -1608,7 +1623,6 @@
             return;
           }
 
-          // Using custom toast with actions instead of confirm()
           Toastify({
             text: "⚠️ CLIQUE AQUI para confirmar o reset total",
             duration: 5000,
@@ -1624,27 +1638,13 @@
 
           if (!this.isOffline && db) {
             try {
-              const matsRef = collection(
-                db,
-                "artifacts",
-                appId,
-                "public",
-                "data",
-                "materials"
-              );
+              const matsRef = getCollectionRef("materials");
               const mSnap = await getDocs(matsRef);
               const batch1 = writeBatch(db);
               mSnap.forEach((d) => batch1.delete(d.ref));
               await batch1.commit();
 
-              const movesRef = collection(
-                db,
-                "artifacts",
-                appId,
-                "public",
-                "data",
-                "movements"
-              );
+              const movesRef = getCollectionRef("movements");
               const movSnap = await getDocs(movesRef);
               const batch2 = writeBatch(db);
               movSnap.forEach((d) => batch2.delete(d.ref));
@@ -1837,6 +1837,51 @@
             this.currentPage === this.totalPages;
 
           lucide.createIcons();
+        },
+
+        exportCSV() {
+          if (!this.data || this.data.length === 0) {
+            this.showToast("Não há dados para exportar.", "error");
+            return;
+          }
+
+          const headers = [
+            "Código Contrato",
+            "SKU",
+            "Grupo",
+            "Descrição",
+            "Quantidade",
+            "Ressuprimento",
+          ];
+          const csvRows = [headers.join(";")];
+
+          this.data.forEach((item) => {
+            const row = [
+              `"${item.contractCode || ""}"`,
+              `"${item.sku || ""}"`,
+              `"${item.category || ""}"`,
+              `"${item.name || ""}"`,
+              item.quantity,
+              item.maxQuantity || 0,
+            ];
+            csvRows.push(row.join(";"));
+          });
+
+          const csvString = "\uFEFF" + csvRows.join("\n");
+          const blob = new Blob([csvString], {
+            type: "text/csv;charset=utf-8;",
+          });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.setAttribute("href", url);
+          link.setAttribute(
+            "download",
+            `inventario_serob_${new Date().toISOString().split("T")[0]}.csv`
+          );
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          this.showToast("Exportação iniciada!", "success");
         },
 
         renderMovements() {
@@ -2056,14 +2101,8 @@
             if (!isNaN(val) && val > 0) {
               if (!this.isOffline && db) {
                 try {
-                  const matsRef = collection(
-                    db,
-                    "artifacts",
-                    appId,
-                    "public",
-                    "data",
-                    "materials"
-                  );
+                  // Usando helper
+                  const matsRef = getCollectionRef("materials");
                   const itemDoc = doc(matsRef, String(item.id));
                   await updateDoc(itemDoc, { maxQuantity: val });
                   this.showToast(
@@ -2108,24 +2147,12 @@
               const oldQty = item.quantity;
               if (!this.isOffline && db) {
                 try {
-                  const matsRef = collection(
-                    db,
-                    "artifacts",
-                    appId,
-                    "public",
-                    "data",
-                    "materials"
-                  );
+                  // Usando helper
+                  const matsRef = getCollectionRef("materials");
                   const itemDoc = doc(matsRef, String(item.id));
                   await updateDoc(itemDoc, { quantity: newQty });
-                  const movesRef = collection(
-                    db,
-                    "artifacts",
-                    appId,
-                    "public",
-                    "data",
-                    "movements"
-                  );
+
+                  const movesRef = getCollectionRef("movements");
                   await addDoc(movesRef, {
                     id: Date.now().toString(),
                     date: new Date().toISOString(),
@@ -2381,24 +2408,12 @@
             this.showToast("Movimentação salva localmente.", "success");
           } else {
             try {
-              const matsRef = collection(
-                db,
-                "artifacts",
-                appId,
-                "public",
-                "data",
-                "materials"
-              );
+              // Usando helper
+              const matsRef = getCollectionRef("materials");
               const itemDoc = doc(matsRef, String(targetItem.id));
               await updateDoc(itemDoc, { quantity: newQuantity });
-              const movesRef = collection(
-                db,
-                "artifacts",
-                appId,
-                "public",
-                "data",
-                "movements"
-              );
+
+              const movesRef = getCollectionRef("movements");
               await addDoc(movesRef, {
                 id: Date.now().toString(),
                 date: new Date().toISOString(),
