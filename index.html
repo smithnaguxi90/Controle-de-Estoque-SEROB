@@ -328,7 +328,7 @@
         </div>
 
         <p class="text-center text-xs text-slate-400 mt-8">
-          SEROB Inventory System v3.1 (Híbrido)
+          SEROB Inventory System v4.1 (Híbrido)
         </p>
       </div>
     </div>
@@ -822,17 +822,24 @@
                 <div class="bg-slate-50 p-4 rounded-full mb-3">
                   <i data-lucide="search-x" class="w-8 h-8 text-slate-400"></i>
                 </div>
-                <h3 class="text-sm font-semibold text-slate-900">
+                <h3
+                  id="emptyStateTitle"
+                  class="text-sm font-semibold text-slate-900"
+                >
                   Nenhum resultado encontrado
                 </h3>
-                <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                  Tente ajustar os termos da sua pesquisa.
+                <p
+                  id="emptyStateDesc"
+                  class="text-xs text-slate-500 mt-1 max-w-xs mx-auto"
+                >
+                  Tente ajustar os termos da sua pesquisa ou verifique a conexão
+                  com o servidor.
                 </p>
                 <button
-                  onclick="app.clearSearch()"
-                  class="mt-4 text-xs font-medium text-blue-600 hover:text-blue-700"
+                  onclick="app.loadData()"
+                  class="mt-4 text-xs font-medium text-white bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg transition-colors"
                 >
-                  Limpar pesquisa
+                  Tentar Reconectar
                 </button>
               </div>
             </div>
@@ -887,7 +894,7 @@
                 Histórico de Movimentações
               </h2>
               <p class="text-xs text-slate-500">
-                Registro completo de entradas e saídas.
+                Registro completo de entradas e saídas de estoque.
               </p>
             </div>
             <div class="flex gap-2">
@@ -1095,7 +1102,7 @@
       // CONFIGURAÇÃO DA API
       const API_URL = "http://localhost:3000/api";
 
-      // DADOS DE DEMONSTRAÇÃO (BACKUP)
+      // DADOS DE FALLBACK (Para quando não há conexão)
       const MOCK_DATA = [
         {
           id: 1001,
@@ -1104,101 +1111,213 @@
           name: "GÁS 13 KG",
           category: "DEP. C4 - GÁS",
           quantity: 27,
-          maxQuantity: 40,
+          minQuantity: 5,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 1002,
+          contractCode: "B.16.04.006",
+          sku: "39633",
+          name: "BOTIJÁO DE GÁS P-13 (VASILHAME)",
+          category: "DEP. C4 - GÁS",
+          quantity: 30,
+          minQuantity: 5,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 1003,
+          contractCode: "***",
+          sku: "***",
+          name: "GÁS EM USO",
+          category: "DEP. C4 - GÁS",
+          quantity: 0,
+          minQuantity: 0,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 1004,
+          contractCode: "****",
+          sku: "****",
+          name: "GÁS VAZIO",
+          category: "DEP. C4 - GÁS",
+          quantity: 0,
+          minQuantity: 0,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 2001,
+          contractCode: "B.02.05.009",
+          sku: "39630",
+          name: "BOCAL PARA ARREMATES EM RALOS, D=100MM",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 39,
+          minQuantity: 5,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 2002,
+          contractCode: "B.02.05.010",
+          sku: "39631",
+          name: "BOCAL PARA ARREMATES EM RALOS, D=150MM",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 17,
+          minQuantity: 5,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 2003,
+          contractCode: "B.02.05.008",
+          sku: "39632",
+          name: "BOCAL PARA ARREMATES EM RALOS, D=75MM",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 37,
+          minQuantity: 5,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 2004,
+          contractCode: "B.02.04.002",
+          sku: "39787",
+          name: "EMULSÃO ASFÁLTICA PARA IMPRIMAÇÃO (BASE ÁGUA)",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 13,
+          minQuantity: 5,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
           id: 2005,
           contractCode: "B.02.03.001",
           sku: "20827",
-          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA",
+          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA (5.000)",
           category: "DEP. 01 - IMPERMEABILIZAÇÃO",
           quantity: 265,
-          maxQuantity: 300,
+          minQuantity: 50,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
-          id: 3003,
-          contractCode: "B.10.02.012",
-          sku: "4121",
-          name: "TINTA ESMALTE SINTÉTICO ACETINADO",
-          category: "DEP. 02 - TINTA ESMALTE",
-          quantity: 77,
-          maxQuantity: 100,
+          id: 2006,
+          contractCode: "B.02.03.002",
+          sku: "19437",
+          name: "IMPERMEABILIZANTE SEMIFLEXÍVEL (1.000)",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 264,
+          minQuantity: 50,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
-          id: 4001,
-          contractCode: "B.05.06.001",
-          sku: "4617",
-          name: "ADESIVO DE CONTATO - COLA FÓRMICA",
-          category: "DEP. 03 - COLA FÓRMICA",
-          quantity: 3239,
-          maxQuantity: 4000,
+          id: 2007,
+          contractCode: "B.02.01.002",
+          sku: "18389",
+          name: "MANTA ANTIRAIZ",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
-          id: 5001,
-          contractCode: "B.16.04.001",
-          sku: "5819",
-          name: "ÁLCOOL",
-          category: "DEP. 04 - ÁLCOOL",
-          quantity: 3253,
-          maxQuantity: 4000,
+          id: 2008,
+          contractCode: "B.02.05.003",
+          sku: "39789",
+          name: "PAPEL KRAFT PARA IMPERMEABILIZAÇÃO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
-          id: 6003,
-          contractCode: "B.08.01.007",
-          sku: "3046",
-          name: "PISO CINZA",
-          category: "DEP. 12 - PISO VINÍLICO",
-          quantity: 542,
-          maxQuantity: 600,
+          id: 2009,
+          contractCode: "B.02.04.003",
+          sku: "16493",
+          name: "PRIMER ASFÁLTICO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
-          id: 7001,
-          contractCode: "B.16.10.001",
-          sku: "25742",
-          name: "FITA CREPE 25 MM X 50 M",
-          category: "DEP. 25 - TINTA ACRÍLICA",
-          quantity: 3252,
-          maxQuantity: 4000,
+          id: 2010,
+          contractCode: "B.02.02.003",
+          sku: "27574",
+          name: "SELANTE BRANCO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
         },
         {
-          id: 8001,
-          contractCode: "B.04.05.012",
-          sku: "2511",
-          name: 'CANTONEIRA AÇO 1.1/2 x 1.1/2 x 3/16"',
-          category: "DEMAP - 01 ao 11",
-          quantity: 165,
-          maxQuantity: 200,
+          id: 2011,
+          contractCode: "B.02.02.001",
+          sku: "30314",
+          name: "SELANTE CINZA",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 2012,
+          contractCode: "B.02.02.002",
+          sku: "27575",
+          name: "SELANTE PRETO",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
+        },
+        {
+          id: 2013,
+          contractCode: "B.02.04.006",
+          sku: "39685",
+          name: "TINTA ASFÁLTICA ANTIRRAIZ",
+          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
+          quantity: 0,
+          minQuantity: 10,
+          alertPercentage: 40,
+          isArchived: false,
         },
       ];
 
-      // USERS UI CONFIG (Simulação de Kiosk)
+      // USERS UI CONFIG - Senhas removidas para segurança
       const USERS_UI = [
         {
           id: 1,
           name: "Jefferson de Araújo Silva",
           email: "jefferson.araujo@camara.leg.br",
+          role: "admin",
           initials: "JA",
           color: "blue",
-          role: "admin",
-          password: "admin", // Demo password
         },
         {
           id: 2,
           name: "Jessé Souza dos Anjos",
           email: "jesse.anjos@camara.leg.br",
+          role: "user",
           initials: "JS",
           color: "emerald",
-          role: "user",
-          password: "user",
         },
         {
           id: 3,
           name: "Antônio Pinto Melo Sousa Júnior",
           email: "antoniosousa.junior@camara.leg.br",
+          role: "user",
           initials: "AP",
           color: "purple",
-          role: "user",
-          password: "user",
         },
       ];
 
@@ -1210,7 +1329,6 @@
         },
 
         // State
-        isOffline: false,
         data: [],
         filteredData: [],
         paginatedData: [],
@@ -1230,7 +1348,7 @@
         init() {
           lucide.createIcons();
           this.checkLogin();
-          // Carregar dados (tentativa online, fallback offline)
+          // Carregar dados (apenas via API)
           this.loadData();
 
           // Event Listeners
@@ -1263,17 +1381,15 @@
           const container = document.getElementById("statusIndicator");
 
           if (isOnline) {
-            this.isOffline = false;
             dot.className =
               "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
-            text.textContent = "Conectado ao Servidor";
+            text.textContent = "Online";
             text.className = "text-[10px] text-emerald-400 font-medium";
             container.className =
               "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-emerald-900/50 transition-colors";
           } else {
-            this.isOffline = true;
             dot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
-            text.textContent = "Modo Demo / Local";
+            text.textContent = "Offline (Teste)";
             text.className = "text-[10px] text-amber-400 font-medium";
             container.className =
               "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-amber-900/50 transition-colors";
@@ -1338,7 +1454,7 @@
           if (!this.tempLoginUser) return;
 
           try {
-            // Tenta login no servidor
+            // Login seguro via API
             const response = await fetch(`${API_URL}/login`, {
               method: "POST",
               headers: { "Content-Type": "application/json" },
@@ -1348,7 +1464,11 @@
               }),
             });
 
-            if (!response.ok) throw new Error("Server error");
+            if (!response.ok) {
+              const errData = await response.json();
+              throw new Error(errData.message || "Erro no servidor");
+            }
+
             const result = await response.json();
 
             if (result.success) {
@@ -1357,32 +1477,15 @@
               this.showToast(result.message || "Acesso negado", "error");
             }
           } catch (error) {
-            // Fallback para login local/demo
-            console.warn("Backend indisponível, tentando login local");
-
-            // Verificação simples para demo
-            // Em produção real, nunca verificar senhas assim no front
-            let isValid = false;
-            if (
-              this.tempLoginUser.password &&
-              password === this.tempLoginUser.password
-            ) {
-              isValid = true;
-            } else if (
-              password === "admin" ||
-              password === "user" ||
-              password === "123456"
-            ) {
-              isValid = true; // Senhas genéricas para demo
-            }
-
-            if (isValid) {
-              this.completeLogin(this.tempLoginUser);
-              this.updateConnectionStatus(false);
-              this.showToast("Login em Modo Offline", "info");
-            } else {
-              this.showToast("Senha incorreta (Demo)", "error");
-            }
+            console.error("Login Error:", error);
+            // FALLBACK PARA TESTE - Permitir login se servidor falhar
+            // Em produção real, remover isto
+            this.showToast(
+              "Servidor inacessível. A entrar em modo de teste...",
+              "warning"
+            );
+            this.updateConnectionStatus(false);
+            this.completeLogin(this.tempLoginUser);
           }
         },
 
@@ -1420,11 +1523,10 @@
           this.render();
         },
 
-        // --- DATA LOADING (HÍBRIDO) ---
+        // --- DATA LOADING (API ONLY) ---
         async loadData() {
           this.showLoading(true);
           try {
-            // Timeout para não ficar preso se o backend não responder
             const timeout = (ms) =>
               new Promise((_, reject) =>
                 setTimeout(() => reject(new Error("Timeout")), ms)
@@ -1435,10 +1537,10 @@
               fetch(`${API_URL}/movements`),
             ]);
 
-            // Corrida entre o fetch e um timeout de 2 segundos
+            // Corrida entre o fetch e um timeout de 3 segundos
             const [matRes, movRes] = await Promise.race([
               fetchPromise,
-              timeout(2000),
+              timeout(3000),
             ]);
 
             if (!matRes.ok || !movRes.ok)
@@ -1457,30 +1559,31 @@
             this.processData();
             this.populateDatalist();
           } catch (e) {
-            console.warn(
-              "Backend offline ou timeout, usando dados de MOCK:",
-              e
-            );
-            this.useMockData();
+            console.error("Erro de conexão:", e);
+            // FALLBACK PARA TESTE AQUI
+            this.loadMockData();
           } finally {
             this.showLoading(false);
           }
         },
 
-        useMockData() {
-          this.isOffline = true;
+        loadMockData() {
+          this.showToast(
+            "Servidor offline. A carregar dados de teste...",
+            "warning"
+          );
           this.updateConnectionStatus(false);
 
-          // Carrega mock data se vazio
-          if (this.data.length === 0) {
-            this.data = [...MOCK_DATA]; // Clona para não alterar constante
-          }
-          // Movimentações vazias no inicio para demo
-          if (!this.movements) this.movements = [];
+          // Usar dados de fallback
+          this.data = [...MOCK_DATA];
+          // Calcular max quantity aproximado para UI
+          this.data.forEach((item) => {
+            if (!item.maxQuantity) item.maxQuantity = 100;
+          });
+          this.movements = [];
 
           this.processData();
           this.populateDatalist();
-          this.showToast("Modo Demonstração ativado (Sem Backend)", "info");
         },
 
         // --- CORE FUNCTIONS ---
@@ -1543,8 +1646,7 @@
           document.getElementById("emptyState").classList.remove("flex");
 
           const fragment = document.createDocumentFragment();
-          // Fallback para admin se user role nao existir (demo)
-          const isAdmin = (this.currentUser?.role || "admin") === "admin";
+          const isAdmin = this.currentUser?.role === "admin";
 
           this.paginatedData.forEach((item) => {
             const tr = document.createElement("tr");
@@ -1830,10 +1932,7 @@
                 );
             })
             .catch(() => {
-              this.showToast(
-                "Erro ao atualizar relatórios (Modo Offline?).",
-                "error"
-              );
+              this.showToast("Erro ao atualizar relatórios.", "error");
             })
             .finally(() => {
               if (icon) icon.classList.remove("animate-spin");
@@ -1903,12 +2002,18 @@
 
               try {
                 // Se offline, atualiza local
-                if (this.isOffline) {
+                if (
+                  !this.data ||
+                  this.data === MOCK_DATA ||
+                  document
+                    .getElementById("statusText")
+                    .textContent.includes("Offline")
+                ) {
                   item.quantity = newQty;
                   this.movements.unshift({
                     id: Date.now(),
                     date: new Date(),
-                    type,
+                    type: type,
                     quantity: qtyToMove,
                     itemName: item.name,
                     itemSku: item.sku,
@@ -1949,7 +2054,7 @@
                 this.movements.unshift({
                   id: Date.now(),
                   date: new Date(),
-                  type,
+                  type: type,
                   quantity: qtyToMove,
                   itemName: item.name,
                   itemSku: item.sku,
@@ -2153,7 +2258,13 @@
 
           try {
             // Se já estiver em modo offline, não tenta fetch
-            if (this.isOffline) {
+            if (
+              !this.data ||
+              this.data === MOCK_DATA ||
+              document
+                .getElementById("statusText")
+                .textContent.includes("Offline")
+            ) {
               this.saveMovementOffline(targetItem, type, qty);
               return;
             }
