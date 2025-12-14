@@ -298,14 +298,6 @@
             <div>
               <div class="flex items-center justify-between mb-1.5">
                 <label class="text-xs font-medium text-slate-600">Senha</label>
-                <button
-                  type="button"
-                  onclick="app.requestNewPassword()"
-                  class="text-xs text-blue-600 hover:text-blue-700 font-medium transition-colors"
-                  tabindex="-1"
-                >
-                  Definir nova senha?
-                </button>
               </div>
               <div class="relative password-field">
                 <div
@@ -336,7 +328,7 @@
         </div>
 
         <p class="text-center text-xs text-slate-400 mt-8">
-          SEROB Inventory System v3.0 (Connected)
+          SEROB Inventory System v3.1 (Híbrido)
         </p>
       </div>
     </div>
@@ -427,56 +419,6 @@
                           </div>
                         </label>
                       </div>
-
-                      <form id="form-cadastro">
-                        <h3>Adicionar Novo Item</h3>
-
-                        <div class="campos">
-                          <input
-                            type="number"
-                            id="inp-id"
-                            placeholder="ID (ex: 1001)"
-                            required
-                          />
-
-                          <input
-                            type="text"
-                            id="inp-contract"
-                            placeholder="Cód. Contrato (ex: B.16.04...)"
-                            required
-                          />
-                          <input
-                            type="text"
-                            id="inp-sku"
-                            placeholder="SKU (ex: 39201)"
-                            required
-                          />
-                          <input
-                            type="text"
-                            id="inp-name"
-                            placeholder="Nome do Produto"
-                            required
-                          />
-
-                          <input
-                            type="text"
-                            id="inp-category"
-                            placeholder="Categoria (ex: DEP. 01)"
-                            required
-                          />
-
-                          <input
-                            type="number"
-                            id="inp-quantity"
-                            placeholder="Quantidade"
-                            required
-                          />
-                        </div>
-
-                        <button type="submit" id="btn-salvar">
-                          Salvar Produto
-                        </button>
-                      </form>
 
                       <div>
                         <label
@@ -608,14 +550,6 @@
         <div class="flex gap-2">
           <!-- Botão de Reset (Admin Only) -->
           <button
-            id="btnResetSystem"
-            onclick="app.resetSystem()"
-            class="hidden flex-1 items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-red-400 hover:text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
-            title="Restaurar Padrão"
-          >
-            <i data-lucide="trash-2" class="w-3 h-3"></i>
-          </button>
-          <button
             onclick="app.logout()"
             class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
             title="Sair"
@@ -626,16 +560,17 @@
       </div>
 
       <div class="p-2 border-t border-slate-700/50 bg-slate-900 text-center">
+        <!-- Status Indicator -->
         <div
-          id="connectionStatus"
-          class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700"
+          id="statusIndicator"
+          class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 transition-colors"
         >
           <div
-            class="w-1.5 h-1.5 rounded-full bg-yellow-500 animate-pulse"
             id="statusDot"
+            class="w-1.5 h-1.5 rounded-full bg-slate-500"
           ></div>
-          <span class="text-[10px] text-slate-400 font-medium" id="statusText"
-            >A Iniciar...</span
+          <span id="statusText" class="text-[10px] text-slate-400 font-medium"
+            >A verificar...</span
           >
         </div>
       </div>
@@ -789,7 +724,9 @@
               <div
                 class="w-8 h-8 border-2 border-blue-100 border-t-blue-600 rounded-full animate-spin mb-2"
               ></div>
-              <p class="text-xs font-medium text-slate-500">A processar...</p>
+              <p class="text-xs font-medium text-slate-500">
+                A carregar dados...
+              </p>
             </div>
 
             <!-- Table Wrapper -->
@@ -874,9 +811,7 @@
                 <tbody
                   id="tableBody"
                   class="divide-y divide-slate-100 bg-white"
-                >
-                  <!-- Rows injected via JS -->
-                </tbody>
+                ></tbody>
               </table>
 
               <!-- Empty State -->
@@ -891,7 +826,7 @@
                   Nenhum resultado encontrado
                 </h3>
                 <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                  Tente ajustar os termos da sua pesquisa ou limpe os filtros.
+                  Tente ajustar os termos da sua pesquisa.
                 </p>
                 <button
                   onclick="app.clearSearch()"
@@ -952,7 +887,7 @@
                 Histórico de Movimentações
               </h2>
               <p class="text-xs text-slate-500">
-                Registro completo de entradas e saídas de estoque.
+                Registro completo de entradas e saídas.
               </p>
             </div>
             <div class="flex gap-2">
@@ -1157,113 +1092,11 @@
 
     <!-- Scripts -->
     <script type="module">
-      import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
-      import {
-        getAuth,
-        signInAnonymously,
-        signInWithCustomToken,
-        onAuthStateChanged,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
-      import {
-        getFirestore,
-        collection,
-        doc,
-        getDocs,
-        setDoc,
-        updateDoc,
-        addDoc,
-        onSnapshot,
-        writeBatch,
-      } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+      // CONFIGURAÇÃO DA API
+      const API_URL = "http://localhost:3000/api";
 
-      // --- CONFIGURAÇÃO HÍBRIDA (CANVAS + USUÁRIO) ---
-
-      // 1. Configuração do Ambiente de Pré-visualização
-      const canvasConfig =
-        typeof __firebase_config !== "undefined"
-          ? JSON.parse(__firebase_config)
-          : null;
-
-      // 2. Configuração do SEU Projeto (Fallback para uso local/download)
-      // Extraído do seu firebase-config.js original
-      const userConfig = {
-        apiKey: "AIzaSyAr-0uIS0GEqMqlJ7CNAR5DXnNMeQE0zm0",
-        authDomain: "estoque-serob-db.firebaseapp.com",
-        projectId: "estoque-serob-db",
-        storageBucket: "estoque-serob-db.firebasestorage.app",
-        messagingSenderId: "702596180282",
-        appId: "1:702596180282:web:b4a6fa790a7f8efb02c803",
-      };
-
-      // Decide qual config usar: Canvas (prioridade) ou Usuário
-      const activeConfig = canvasConfig || userConfig;
-      const isCanvasEnv = !!canvasConfig;
-
-      // Firebase Vars
-      let db = null;
-      let auth = null;
-      let isOffline = true;
-      const appId =
-        typeof __app_id !== "undefined" ? __app_id : "default-app-id";
-
-      // --- AUTH & INIT ---
-      try {
-        if (activeConfig) {
-          const firebaseApp = initializeApp(activeConfig);
-          auth = getAuth(firebaseApp);
-          db = getFirestore(firebaseApp);
-          isOffline = false;
-        }
-      } catch (e) {
-        console.warn("Modo Offline Ativado (Configuração):", e.message);
-      }
-
-      // --- HELPER PARA CAMINHOS DO BANCO ---
-      // Se estiver no Canvas, usa o caminho restrito 'artifacts'.
-      // Se estiver local (User Config), usa coleções na raiz 'materials' e 'movements'.
-      const getCollectionRef = (name) => {
-        if (isCanvasEnv) {
-          // Caminho obrigatório do Canvas
-          return collection(db, "artifacts", appId, "public", "data", name);
-        } else {
-          // Caminho limpo para seu projeto pessoal
-          return collection(db, name);
-        }
-      };
-
-      // USERS CONFIG
-      const USERS = [
-        {
-          id: 1,
-          name: "Jefferson de Araújo Silva",
-          email: "jefferson.araujo@camara.leg.br",
-          role: "admin",
-          initials: "JA",
-          color: "blue",
-          password: "serob.admin",
-        },
-        {
-          id: 2,
-          name: "Jessé Souza dos Anjos",
-          email: "jesse.anjos@camara.leg.br",
-          role: "user",
-          initials: "JS",
-          color: "emerald",
-          password: "serob.user",
-        },
-        {
-          id: 3,
-          name: "Antônio Pinto Melo Sousa Júnior",
-          email: "antoniosousa.junior@camara.leg.br",
-          role: "user",
-          initials: "AP",
-          color: "purple",
-          password: "serob.user",
-        },
-      ];
-
-      // DADOS INICIAIS
-      const RAW_SOURCE_DATA = [
+      // DADOS DE DEMONSTRAÇÃO (BACKUP)
+      const MOCK_DATA = [
         {
           id: 1001,
           contractCode: "B.16.04.007",
@@ -1271,22 +1104,25 @@
           name: "GÁS 13 KG",
           category: "DEP. C4 - GÁS",
           quantity: 27,
+          maxQuantity: 40,
         },
         {
           id: 2005,
           contractCode: "B.02.03.001",
           sku: "20827",
-          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA (5.000)",
+          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA",
           category: "DEP. 01 - IMPERMEABILIZAÇÃO",
           quantity: 265,
+          maxQuantity: 300,
         },
         {
           id: 3003,
           contractCode: "B.10.02.012",
           sku: "4121",
-          name: "TINTA ESMALTE SINTÉTICO ACETINADO BRANCO GELO",
+          name: "TINTA ESMALTE SINTÉTICO ACETINADO",
           category: "DEP. 02 - TINTA ESMALTE",
           quantity: 77,
+          maxQuantity: 100,
         },
         {
           id: 4001,
@@ -1295,6 +1131,7 @@
           name: "ADESIVO DE CONTATO - COLA FÓRMICA",
           category: "DEP. 03 - COLA FÓRMICA",
           quantity: 3239,
+          maxQuantity: 4000,
         },
         {
           id: 5001,
@@ -1303,6 +1140,7 @@
           name: "ÁLCOOL",
           category: "DEP. 04 - ÁLCOOL",
           quantity: 3253,
+          maxQuantity: 4000,
         },
         {
           id: 6003,
@@ -1311,6 +1149,7 @@
           name: "PISO CINZA",
           category: "DEP. 12 - PISO VINÍLICO",
           quantity: 542,
+          maxQuantity: 600,
         },
         {
           id: 7001,
@@ -1319,6 +1158,7 @@
           name: "FITA CREPE 25 MM X 50 M",
           category: "DEP. 25 - TINTA ACRÍLICA",
           quantity: 3252,
+          maxQuantity: 4000,
         },
         {
           id: 8001,
@@ -1327,6 +1167,38 @@
           name: 'CANTONEIRA AÇO 1.1/2 x 1.1/2 x 3/16"',
           category: "DEMAP - 01 ao 11",
           quantity: 165,
+          maxQuantity: 200,
+        },
+      ];
+
+      // USERS UI CONFIG (Simulação de Kiosk)
+      const USERS_UI = [
+        {
+          id: 1,
+          name: "Jefferson de Araújo Silva",
+          email: "jefferson.araujo@camara.leg.br",
+          initials: "JA",
+          color: "blue",
+          role: "admin",
+          password: "admin", // Demo password
+        },
+        {
+          id: 2,
+          name: "Jessé Souza dos Anjos",
+          email: "jesse.anjos@camara.leg.br",
+          initials: "JS",
+          color: "emerald",
+          role: "user",
+          password: "user",
+        },
+        {
+          id: 3,
+          name: "Antônio Pinto Melo Sousa Júnior",
+          email: "antoniosousa.junior@camara.leg.br",
+          initials: "AP",
+          color: "purple",
+          role: "user",
+          password: "user",
         },
       ];
 
@@ -1335,12 +1207,10 @@
         config: {
           thresholds: { critical: 15, warning: 40 },
           storageKeyUser: "serob_current_user_v1",
-          storageKeyData: "serob_local_data_v1",
-          storageKeyMovements: "serob_local_moves_v1",
         },
 
         // State
-        isOffline: isOffline,
+        isOffline: false,
         data: [],
         filteredData: [],
         paginatedData: [],
@@ -1360,12 +1230,8 @@
         init() {
           lucide.createIcons();
           this.checkLogin();
-
-          if (!this.isOffline) {
-            this.initAuth();
-          } else {
-            this.loadLocalData();
-          }
+          // Carregar dados (tentativa online, fallback offline)
+          this.loadData();
 
           // Event Listeners
           document.addEventListener("keydown", (e) => {
@@ -1391,41 +1257,26 @@
             .addEventListener("input", searchHandler);
         },
 
-        // --- AUTHENTICATION ---
-        async initAuth() {
-          const timeoutPromise = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error("Timeout")), 4000)
-          );
-          try {
-            let authPromise;
-            // Se estamos no Canvas, usamos o token especial
-            if (
-              isCanvasEnv &&
-              typeof __initial_auth_token !== "undefined" &&
-              __initial_auth_token
-            ) {
-              authPromise = signInWithCustomToken(auth, __initial_auth_token);
-            } else {
-              // Se estamos rodando localmente (com userConfig), tentamos anônimo
-              authPromise = signInAnonymously(auth);
-            }
-            await Promise.race([authPromise, timeoutPromise]);
+        updateConnectionStatus(isOnline) {
+          const dot = document.getElementById("statusDot");
+          const text = document.getElementById("statusText");
+          const container = document.getElementById("statusIndicator");
 
-            // Only setup listeners after auth is confirmed
-            onAuthStateChanged(auth, (user) => {
-              if (user) {
-                this.setupListeners();
-                const statusLabel = isCanvasEnv
-                  ? "Online (Canvas)"
-                  : "Online (Pessoal)";
-                this.updateStatusIndicator(true, statusLabel);
-              }
-            });
-          } catch (e) {
-            console.warn("Offline Mode triggered:", e);
+          if (isOnline) {
+            this.isOffline = false;
+            dot.className =
+              "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
+            text.textContent = "Conectado ao Servidor";
+            text.className = "text-[10px] text-emerald-400 font-medium";
+            container.className =
+              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-emerald-900/50 transition-colors";
+          } else {
             this.isOffline = true;
-            this.loadLocalData();
-            this.updateStatusIndicator(false, "Modo Offline (Local)");
+            dot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
+            text.textContent = "Modo Demo / Local";
+            text.className = "text-[10px] text-amber-400 font-medium";
+            container.className =
+              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-amber-900/50 transition-colors";
           }
         },
 
@@ -1441,13 +1292,14 @@
           }
         },
 
-        selectUserForLogin(userId) {
-          const user = USERS.find((u) => u.id === userId);
-          if (user) {
-            this.tempLoginUser = user;
-            document.getElementById("selectedUserName").textContent = user.name;
+        selectUserForLogin(uiId) {
+          const userUI = USERS_UI.find((u) => u.id === uiId);
+          if (userUI) {
+            this.tempLoginUser = userUI;
+            document.getElementById("selectedUserName").textContent =
+              userUI.name;
             document.getElementById("selectedUserAvatar").textContent =
-              user.initials;
+              userUI.initials;
 
             // Colors
             const colors = {
@@ -1455,7 +1307,7 @@
               emerald: "bg-emerald-100 text-emerald-600",
               purple: "bg-purple-100 text-purple-600",
             };
-            const colorClass = colors[user.color] || colors.blue;
+            const colorClass = colors[userUI.color] || colors.blue;
             document.getElementById(
               "selectedUserAvatar"
             ).className = `w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-inner ${colorClass}`;
@@ -1478,42 +1330,76 @@
           document.getElementById("loginStep1").classList.remove("hidden");
         },
 
-        requestNewPassword() {
+        async performLogin(e) {
+          e.preventDefault();
+          const pwdInput = document.getElementById("loginPassword");
+          const password = pwdInput.value;
+
           if (!this.tempLoginUser) return;
-          const newPass = prompt(
-            `Definir nova senha para ${this.tempLoginUser.name}:`
-          );
-          if (newPass && newPass.trim().length > 0) {
-            this.tempLoginUser.password = newPass.trim();
-            document.getElementById("loginPassword").value = newPass.trim();
-            document.getElementById("loginPassword").focus();
-            this.showToast("Senha definida com sucesso!", "success");
+
+          try {
+            // Tenta login no servidor
+            const response = await fetch(`${API_URL}/login`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                userId: this.tempLoginUser.id,
+                password: password,
+              }),
+            });
+
+            if (!response.ok) throw new Error("Server error");
+            const result = await response.json();
+
+            if (result.success) {
+              this.completeLogin({ ...this.tempLoginUser, ...result.user });
+            } else {
+              this.showToast(result.message || "Acesso negado", "error");
+            }
+          } catch (error) {
+            // Fallback para login local/demo
+            console.warn("Backend indisponível, tentando login local");
+
+            // Verificação simples para demo
+            // Em produção real, nunca verificar senhas assim no front
+            let isValid = false;
+            if (
+              this.tempLoginUser.password &&
+              password === this.tempLoginUser.password
+            ) {
+              isValid = true;
+            } else if (
+              password === "admin" ||
+              password === "user" ||
+              password === "123456"
+            ) {
+              isValid = true; // Senhas genéricas para demo
+            }
+
+            if (isValid) {
+              this.completeLogin(this.tempLoginUser);
+              this.updateConnectionStatus(false);
+              this.showToast("Login em Modo Offline", "info");
+            } else {
+              this.showToast("Senha incorreta (Demo)", "error");
+            }
           }
         },
 
-        performLogin(e) {
-          e.preventDefault();
-          const pwdInput = document.getElementById("loginPassword");
-          if (
-            this.tempLoginUser &&
-            pwdInput.value === this.tempLoginUser.password
-          ) {
-            this.currentUser = this.tempLoginUser;
-            localStorage.setItem(
-              this.config.storageKeyUser,
-              JSON.stringify(this.currentUser)
-            );
-            this.updateUIForUser();
-            document.getElementById("loginOverlay").classList.add("hidden");
-            this.showToast(
-              `Bem-vindo, ${this.currentUser.name.split(" ")[0]}!`,
-              "success"
-            );
-            pwdInput.value = "";
-            this.tempLoginUser = null;
-          } else {
-            this.showToast("Senha incorreta.", "error");
-          }
+        completeLogin(user) {
+          this.currentUser = user;
+          localStorage.setItem(
+            this.config.storageKeyUser,
+            JSON.stringify(this.currentUser)
+          );
+          this.updateUIForUser();
+          document.getElementById("loginOverlay").classList.add("hidden");
+          this.showToast(
+            `Bem-vindo, ${this.currentUser.name.split(" ")[0]}!`,
+            "success"
+          );
+          document.getElementById("loginPassword").value = "";
+          this.tempLoginUser = null;
         },
 
         logout() {
@@ -1531,186 +1417,70 @@
             this.currentUser.email;
           document.getElementById("userAvatar").textContent =
             this.currentUser.initials;
-
-          // Admin buttons visibility
-          const btnReset = document.getElementById("btnResetSystem");
-          if (btnReset) {
-            if (this.currentUser.role === "admin") {
-              btnReset.classList.remove("hidden");
-              btnReset.classList.add("flex");
-            } else {
-              btnReset.classList.add("hidden");
-              btnReset.classList.remove("flex");
-            }
-          }
           this.render();
         },
 
-        // --- DATA LOADING ---
-        loadLocalData() {
-          const storedData = localStorage.getItem(this.config.storageKeyData);
-          const storedMovements = localStorage.getItem(
-            this.config.storageKeyMovements
-          );
+        // --- DATA LOADING (HÍBRIDO) ---
+        async loadData() {
+          this.showLoading(true);
+          try {
+            // Timeout para não ficar preso se o backend não responder
+            const timeout = (ms) =>
+              new Promise((_, reject) =>
+                setTimeout(() => reject(new Error("Timeout")), ms)
+              );
 
-          if (storedData) {
-            this.data = JSON.parse(storedData);
-            // Migration check
-            this.data.forEach((item) => {
-              if (!item.maxQuantity)
-                item.maxQuantity =
-                  item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100;
-            });
-          } else {
-            // Seed from RAW
-            this.data = RAW_SOURCE_DATA.map((item) => ({
-              ...item,
-              maxQuantity:
-                item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
+            const fetchPromise = Promise.all([
+              fetch(`${API_URL}/materials`),
+              fetch(`${API_URL}/movements`),
+            ]);
+
+            // Corrida entre o fetch e um timeout de 2 segundos
+            const [matRes, movRes] = await Promise.race([
+              fetchPromise,
+              timeout(2000),
+            ]);
+
+            if (!matRes.ok || !movRes.ok)
+              throw new Error("Falha na resposta da API");
+
+            this.data = await matRes.json();
+            const rawMoves = await movRes.json();
+
+            // Converter datas
+            this.movements = rawMoves.map((m) => ({
+              ...m,
+              date: new Date(m.date),
             }));
-          }
 
-          if (storedMovements) {
-            try {
-              this.movements = JSON.parse(storedMovements);
-              this.movements.forEach((m) => (m.date = new Date(m.date)));
-            } catch (e) {
-              this.movements = [];
-            }
+            this.updateConnectionStatus(true);
+            this.processData();
+            this.populateDatalist();
+          } catch (e) {
+            console.warn(
+              "Backend offline ou timeout, usando dados de MOCK:",
+              e
+            );
+            this.useMockData();
+          } finally {
+            this.showLoading(false);
           }
+        },
+
+        useMockData() {
+          this.isOffline = true;
+          this.updateConnectionStatus(false);
+
+          // Carrega mock data se vazio
+          if (this.data.length === 0) {
+            this.data = [...MOCK_DATA]; // Clona para não alterar constante
+          }
+          // Movimentações vazias no inicio para demo
+          if (!this.movements) this.movements = [];
 
           this.processData();
           this.populateDatalist();
-          this.showLoading(false);
-          this.updateStatusIndicator(false, "Modo Offline (Local)");
-        },
-
-        saveLocalData() {
-          try {
-            localStorage.setItem(
-              this.config.storageKeyData,
-              JSON.stringify(this.data)
-            );
-            localStorage.setItem(
-              this.config.storageKeyMovements,
-              JSON.stringify(this.movements)
-            );
-          } catch (e) {
-            this.showToast("Erro ao salvar dados localmente.", "error");
-          }
-        },
-
-        setupListeners() {
-          if (!db) return;
-          this.showLoading(true);
-
-          // Usando o helper para definir o caminho correto
-          const matsRef = getCollectionRef("materials");
-
-          onSnapshot(
-            matsRef,
-            (snapshot) => {
-              const items = [];
-              snapshot.forEach((doc) => items.push(doc.data()));
-              this.data = items;
-              if (items.length === 0) {
-                this.seedDatabase();
-              } else {
-                this.processData();
-                this.populateDatalist();
-              }
-              this.showLoading(false);
-            },
-            (err) => {
-              console.warn("Firestore error, falling back to local:", err);
-              this.isOffline = true;
-              this.loadLocalData();
-            }
-          );
-
-          const movesRef = getCollectionRef("movements");
-
-          onSnapshot(movesRef, (snapshot) => {
-            const moves = [];
-            snapshot.forEach((doc) => {
-              const d = doc.data();
-              d.date = new Date(d.date);
-              moves.push(d);
-            });
-            this.movements = moves.sort((a, b) => b.date - a.date);
-            if (this.currentView === "movements") this.renderMovements();
-          });
-        },
-
-        async seedDatabase() {
-          if (!db) return;
-          const batch = writeBatch(db);
-          // Usando helper
-          const matsRef = getCollectionRef("materials");
-
-          // Seed items
-          RAW_SOURCE_DATA.forEach((item) => {
-            const itemData = {
-              ...item,
-              maxQuantity:
-                item.quantity > 0 ? Math.ceil(item.quantity * 1.5) : 100,
-            };
-            const docRef = doc(matsRef, String(item.id));
-            batch.set(docRef, itemData);
-          });
-
-          try {
-            await batch.commit();
-            this.showToast("Base de dados inicializada.", "success");
-          } catch (e) {
-            console.error("Error seeding", e);
-          }
-        },
-
-        async resetSystem() {
-          if (this.currentUser?.role !== "admin") {
-            this.showToast("Ação não autorizada.", "error");
-            return;
-          }
-
-          Toastify({
-            text: "⚠️ CLIQUE AQUI para confirmar o reset total",
-            duration: 5000,
-            style: { background: "#ef4444", cursor: "pointer" },
-            onClick: () => {
-              this.performReset();
-            },
-          }).showToast();
-        },
-
-        async performReset() {
-          this.showLoading(true);
-
-          if (!this.isOffline && db) {
-            try {
-              const matsRef = getCollectionRef("materials");
-              const mSnap = await getDocs(matsRef);
-              const batch1 = writeBatch(db);
-              mSnap.forEach((d) => batch1.delete(d.ref));
-              await batch1.commit();
-
-              const movesRef = getCollectionRef("movements");
-              const movSnap = await getDocs(movesRef);
-              const batch2 = writeBatch(db);
-              movSnap.forEach((d) => batch2.delete(d.ref));
-              await batch2.commit();
-
-              this.showToast("Sistema reiniciado.", "success");
-            } catch (e) {
-              this.showToast("Erro ao resetar.", "error");
-            } finally {
-              this.showLoading(false);
-            }
-          } else {
-            localStorage.removeItem(this.config.storageKeyData);
-            localStorage.removeItem(this.config.storageKeyMovements);
-            location.reload();
-          }
+          this.showToast("Modo Demonstração ativado (Sem Backend)", "info");
         },
 
         // --- CORE FUNCTIONS ---
@@ -1721,8 +1491,9 @@
               (item) =>
                 item.name.toLowerCase().includes(query) ||
                 item.sku.toLowerCase().includes(query) ||
-                item.contractCode.toLowerCase().includes(query) ||
-                item.category.toLowerCase().includes(query)
+                (item.contractCode &&
+                  item.contractCode.toLowerCase().includes(query)) ||
+                (item.category && item.category.toLowerCase().includes(query))
             );
           } else {
             this.filteredData = [...this.data];
@@ -1740,8 +1511,9 @@
 
           this.updateKPIs(this.filteredData);
 
-          this.totalPages = Math.ceil(
-            this.filteredData.length / this.itemsPerPage
+          this.totalPages = Math.max(
+            1,
+            Math.ceil(this.filteredData.length / this.itemsPerPage)
           );
           if (this.currentPage > this.totalPages) this.currentPage = 1;
 
@@ -1771,18 +1543,21 @@
           document.getElementById("emptyState").classList.remove("flex");
 
           const fragment = document.createDocumentFragment();
-          const isAdmin = this.currentUser?.role === "admin";
+          // Fallback para admin se user role nao existir (demo)
+          const isAdmin = (this.currentUser?.role || "admin") === "admin";
 
           this.paginatedData.forEach((item) => {
             const tr = document.createElement("tr");
             tr.className =
               "hover:bg-slate-50 group border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
 
-            const catColor = this.getCategoryColor(item.category);
+            const catColor = this.getCategoryColor(item.category || "");
             const status = this.getStockStatus(item);
             const qtyCursor = isAdmin ? "cursor-pointer" : "cursor-default";
             const editCursor = isAdmin ? "cursor-pointer" : "cursor-default";
-            const qtyTitle = isAdmin ? "Clique para ajustar saldo" : "";
+            const qtyTitle = isAdmin
+              ? "Clique para ajustar saldo (Balanço)"
+              : "";
 
             tr.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -1791,7 +1566,7 @@
                   }', 'Contrato')" class="clickable-code flex items-center gap-1.5 cursor-pointer group/code w-fit">
                     <i data-lucide="hash" class="w-3 h-3 text-slate-300 group-hover/code:text-blue-500 transition-colors"></i>
                     <span class="text-xs font-mono font-medium text-slate-600 group-hover/code:text-blue-600 transition-colors bg-slate-100 group-hover/code:bg-blue-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover/code:border-blue-200">${
-                      item.contractCode
+                      item.contractCode || "-"
                     }</span>
                   </div>
                 </td>
@@ -1802,7 +1577,7 @@
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border badge-${catColor}">
-                    ${item.category.replace("DEP.", "").trim()}
+                    ${(item.category || "Geral").replace("DEP.", "").trim()}
                   </span>
                 </td>
                 <td class="px-6 py-4">
@@ -1889,51 +1664,6 @@
           lucide.createIcons();
         },
 
-        exportCSV() {
-          if (!this.data || this.data.length === 0) {
-            this.showToast("Não há dados para exportar.", "error");
-            return;
-          }
-
-          const headers = [
-            "Código Contrato",
-            "SKU",
-            "Grupo",
-            "Descrição",
-            "Quantidade",
-            "Ressuprimento",
-          ];
-          const csvRows = [headers.join(";")];
-
-          this.data.forEach((item) => {
-            const row = [
-              `"${item.contractCode || ""}"`,
-              `"${item.sku || ""}"`,
-              `"${item.category || ""}"`,
-              `"${item.name || ""}"`,
-              item.quantity,
-              item.maxQuantity || 0,
-            ];
-            csvRows.push(row.join(";"));
-          });
-
-          const csvString = "\uFEFF" + csvRows.join("\n");
-          const blob = new Blob([csvString], {
-            type: "text/csv;charset=utf-8;",
-          });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement("a");
-          link.setAttribute("href", url);
-          link.setAttribute(
-            "download",
-            `inventario_serob_${new Date().toISOString().split("T")[0]}.csv`
-          );
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          this.showToast("Exportação iniciada!", "success");
-        },
-
         renderMovements() {
           const tbody = document.getElementById("movementsBody");
           if (!tbody) return;
@@ -1990,9 +1720,9 @@
                         <div class="flex flex-col">
                             <span class="text-xs font-medium text-slate-900 truncate max-w-xs" title="${
                               mov.itemName
-                            }">${mov.itemName}</span>
+                            }">${mov.itemName || "Item"}</span>
                             <span class="text-[10px] font-mono text-slate-400">SKU: ${
-                              mov.itemSku
+                              mov.itemSku || "-"
                             }</span>
                         </div>
                     </td>
@@ -2001,11 +1731,11 @@
                     }</span></td>
                     <td class="px-6 py-4 whitespace-nowrap">
                         <div class="flex items-center gap-2">
-                            <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">${mov.user.charAt(
-                              0
-                            )}</div>
+                            <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">${(
+                              mov.user || "?"
+                            ).charAt(0)}</div>
                             <span class="text-xs text-slate-600">${
-                              mov.user
+                              mov.user || "Desconhecido"
                             }</span>
                         </div>
                     </td>
@@ -2025,8 +1755,10 @@
             btnElement.disabled = true;
           }
 
-          setTimeout(() => {
-            try {
+          // Recarrega dados reais antes de renderizar relatório
+          this.loadData()
+            .then(() => {
+              // Lógica de renderização de relatório
               const groups = {};
               this.data.forEach((item) => {
                 const cat = item.category
@@ -2096,14 +1828,17 @@
                   "Relatórios atualizados com sucesso.",
                   "success"
                 );
-            } catch (error) {
-              console.error(error);
-              this.showToast("Erro ao atualizar.", "error");
-            } finally {
+            })
+            .catch(() => {
+              this.showToast(
+                "Erro ao atualizar relatórios (Modo Offline?).",
+                "error"
+              );
+            })
+            .finally(() => {
               if (icon) icon.classList.remove("animate-spin");
               if (btnElement) btnElement.disabled = false;
-            }
-          }, 600);
+            });
         },
 
         handleSearch(query) {
@@ -2132,58 +1867,25 @@
         },
 
         async editMaxCapacity(id) {
-          if (this.currentUser?.role !== "admin") {
-            this.showToast(
-              "Apenas administradores podem alterar configurações.",
-              "error"
-            );
+          if ((this.currentUser?.role || "admin") !== "admin") {
+            this.showToast("Apenas administradores.", "error");
             return;
           }
-          const item = this.data.find((i) => i.id === id);
-          if (!item) return;
-          const newMax = prompt(
-            `Definir Ponto de Ressuprimento para:\n${item.name}`,
-            item.maxQuantity
+          this.showToast(
+            "Edição de meta não disponível na demonstração.",
+            "info"
           );
-
-          if (newMax !== null) {
-            const val = parseInt(newMax);
-            if (!isNaN(val) && val > 0) {
-              if (!this.isOffline && db) {
-                try {
-                  // Usando helper
-                  const matsRef = getCollectionRef("materials");
-                  const itemDoc = doc(matsRef, String(item.id));
-                  await updateDoc(itemDoc, { maxQuantity: val });
-                  this.showToast(
-                    `Ressuprimento ajustado para ${val}`,
-                    "success"
-                  );
-                } catch (e) {
-                  this.showToast("Erro ao salvar.", "error");
-                }
-              } else {
-                item.maxQuantity = val;
-                this.saveLocalData();
-                this.processData();
-                this.showToast(`Ressuprimento ajustado (Local).`, "success");
-              }
-            } else {
-              this.showToast("Valor inválido.", "error");
-            }
-          }
         },
 
         async editQuantity(id) {
-          if (this.currentUser?.role !== "admin") {
-            this.showToast(
-              "Apenas administradores podem realizar ajustes de balanço.",
-              "error"
-            );
+          // Funcionalidade de Balanço (ajusta através de movimentação)
+          if ((this.currentUser?.role || "admin") !== "admin") {
+            this.showToast("Apenas administradores.", "error");
             return;
           }
           const item = this.data.find((i) => i.id === id);
           if (!item) return;
+
           const newQtyStr = prompt(
             `AJUSTE DE SALDO (Balanço):\n${item.name}\n\nQuantidade Atual: ${item.quantity}\n\nNova Quantidade Real:`,
             item.quantity
@@ -2194,47 +1896,70 @@
             if (!isNaN(newQty) && newQty >= 0) {
               const diff = newQty - item.quantity;
               if (diff === 0) return;
-              const oldQty = item.quantity;
-              if (!this.isOffline && db) {
-                try {
-                  // Usando helper
-                  const matsRef = getCollectionRef("materials");
-                  const itemDoc = doc(matsRef, String(item.id));
-                  await updateDoc(itemDoc, { quantity: newQty });
 
-                  const movesRef = getCollectionRef("movements");
-                  await addDoc(movesRef, {
-                    id: Date.now().toString(),
-                    date: new Date().toISOString(),
-                    itemId: item.id,
-                    itemSku: item.sku,
+              // Determina se é entrada ou saída para corrigir
+              const type = diff > 0 ? "in" : "out";
+              const qtyToMove = Math.abs(diff);
+
+              try {
+                // Se offline, atualiza local
+                if (this.isOffline) {
+                  item.quantity = newQty;
+                  this.movements.unshift({
+                    id: Date.now(),
+                    date: new Date(),
+                    type,
+                    quantity: qtyToMove,
                     itemName: item.name,
-                    type: diff > 0 ? "in" : "out",
-                    quantity: Math.abs(diff),
-                    user: `${this.currentUser.name} (Ajuste)`,
+                    itemSku: item.sku,
+                    user: this.currentUser?.name || "Offline User",
                   });
+                  this.processData();
+                  this.showToast(`Saldo corrigido (Offline).`, "success");
+                  return;
+                }
+
+                // Usa a mesma API de movimentação para registrar o ajuste
+                const response = await fetch(`${API_URL}/movements`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    sku: item.sku,
+                    type: type,
+                    quantity: qtyToMove,
+                    userId: this.currentUser.id,
+                  }),
+                });
+
+                const result = await response.json();
+                if (result.success) {
                   this.showToast(
-                    `Saldo corrigido de ${oldQty} para ${newQty}.`,
+                    `Saldo corrigido (Ajuste de ${
+                      type === "in" ? "+" : "-"
+                    }${qtyToMove}).`,
                     "success"
                   );
-                } catch (e) {
-                  this.showToast("Erro ao gravar ajuste.", "error");
+                  this.loadData();
+                } else {
+                  this.showToast(result.message, "error");
                 }
-              } else {
+              } catch (e) {
+                // Fallback offline se erro
                 item.quantity = newQty;
                 this.movements.unshift({
-                  id: Date.now().toString(),
+                  id: Date.now(),
                   date: new Date(),
-                  itemId: item.id,
-                  itemSku: item.sku,
+                  type,
+                  quantity: qtyToMove,
                   itemName: item.name,
-                  type: diff > 0 ? "in" : "out",
-                  quantity: Math.abs(diff),
-                  user: `${this.currentUser.name} (Ajuste Local)`,
+                  itemSku: item.sku,
+                  user: this.currentUser?.name || "Offline User",
                 });
-                this.saveLocalData();
                 this.processData();
-                this.showToast(`Saldo corrigido (Local).`, "success");
+                this.showToast(
+                  `Saldo corrigido (Offline Fallback).`,
+                  "warning"
+                );
               }
             } else {
               this.showToast("Valor inválido.", "error");
@@ -2257,7 +1982,6 @@
         },
 
         copyToClipboard(text, label) {
-          // Using execCommand for compatibility
           const el = document.createElement("textarea");
           el.value = text;
           document.body.appendChild(el);
@@ -2332,22 +2056,11 @@
           }
         },
 
-        updateStatusIndicator(online, text) {
-          const statusEl = document.getElementById("statusText");
-          const dot = document.getElementById("statusDot");
-          if (statusEl && dot) {
-            statusEl.textContent = text;
-            dot.className = online
-              ? "w-1.5 h-1.5 rounded-full bg-emerald-500"
-              : "w-1.5 h-1.5 rounded-full bg-slate-500";
-            dot.classList.remove("animate-pulse");
-          }
-        },
-
         showToast(msg, type = "info") {
           let bg = "#3b82f6";
           if (type === "success") bg = "#10b981";
           if (type === "error") bg = "#ef4444";
+          if (type === "warning") bg = "#f59e0b";
           Toastify({
             text: msg,
             duration: 3000,
@@ -2422,12 +2135,10 @@
             this.showToast("Preencha todos os campos corretamente.", "error");
             return;
           }
+
+          // Verificação preliminar de estoque para saída
           const targetItem = this.data.find((i) => i.sku === skuInput);
-          if (!targetItem) {
-            this.showToast("Material não encontrado.", "error");
-            return;
-          }
-          if (type === "out" && targetItem.quantity < qty) {
+          if (targetItem && type === "out" && targetItem.quantity < qty) {
             this.showToast(
               `Estoque insuficiente. Disponível: ${targetItem.quantity}`,
               "error"
@@ -2435,53 +2146,68 @@
             return;
           }
 
-          const newQuantity =
-            type === "in"
-              ? targetItem.quantity + qty
-              : targetItem.quantity - qty;
+          if (!this.currentUser) {
+            this.showToast("Sessão expirada. Faça login novamente.", "error");
+            return;
+          }
 
-          if (this.isOffline) {
-            targetItem.quantity = newQuantity;
-            this.movements.unshift({
-              id: Date.now().toString(),
-              date: new Date(),
-              itemId: targetItem.id,
-              itemSku: targetItem.sku,
-              itemName: targetItem.name,
-              type: type,
-              quantity: qty,
-              user: this.currentUser ? this.currentUser.name : "Offline User",
-            });
-            this.saveLocalData();
-            this.processData();
-            this.closeModal();
-            this.showToast("Movimentação salva localmente.", "success");
-          } else {
-            try {
-              // Usando helper
-              const matsRef = getCollectionRef("materials");
-              const itemDoc = doc(matsRef, String(targetItem.id));
-              await updateDoc(itemDoc, { quantity: newQuantity });
+          try {
+            // Se já estiver em modo offline, não tenta fetch
+            if (this.isOffline) {
+              this.saveMovementOffline(targetItem, type, qty);
+              return;
+            }
 
-              const movesRef = getCollectionRef("movements");
-              await addDoc(movesRef, {
-                id: Date.now().toString(),
-                date: new Date().toISOString(),
-                itemId: targetItem.id,
-                itemSku: targetItem.sku,
-                itemName: targetItem.name,
+            const response = await fetch(`${API_URL}/movements`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({
+                sku: skuInput,
                 type: type,
                 quantity: qty,
-                user: this.currentUser ? this.currentUser.name : "Desconhecido",
-              });
+                userId: this.currentUser.id,
+              }),
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+              this.showToast("Movimentação registrada com sucesso!", "success");
+              this.loadData();
               this.closeModal();
-              const typeLabel = type === "in" ? "Entrada" : "Saída";
-              this.showToast(`${typeLabel} registrada com sucesso!`, "success");
-            } catch (e) {
-              console.error(e);
-              this.showToast("Erro ao gravar dados na nuvem.", "error");
+            } else {
+              this.showToast(result.message || "Erro no servidor", "error");
+            }
+          } catch (err) {
+            // Fallback se falhar durante a operação
+            console.error(err);
+            if (targetItem) {
+              this.saveMovementOffline(targetItem, type, qty);
+            } else {
+              this.showToast("Erro: Item não encontrado localmente.", "error");
             }
           }
+        },
+
+        saveMovementOffline(item, type, qty) {
+          if (!item) return;
+          const newQty =
+            type === "in" ? item.quantity + qty : item.quantity - qty;
+          item.quantity = newQty;
+
+          this.movements.unshift({
+            id: Date.now(),
+            date: new Date(),
+            type,
+            quantity: qty,
+            itemName: item.name,
+            itemSku: item.sku,
+            user: this.currentUser.name,
+          });
+
+          this.processData();
+          this.closeModal();
+          this.showToast("Movimentação salva (Modo Offline)", "warning");
         },
 
         toggleMovementFilter(type) {
@@ -2533,6 +2259,33 @@
             document.getElementById("viewReports").classList.add("flex");
             this.renderReports();
           }
+        },
+
+        exportCSV() {
+          if (!this.data || this.data.length === 0) {
+            this.showToast("Sem dados para exportar.", "info");
+            return;
+          }
+          let csvContent = "data:text/csv;charset=utf-8,";
+          csvContent += "SKU;Nome;Categoria;Quantidade;Contrato\n";
+          this.data.forEach((item) => {
+            const row = [
+              item.sku,
+              item.name.replace(/;/g, ","), // evita quebrar CSV
+              item.category,
+              item.quantity,
+              item.contractCode,
+            ].join(";");
+            csvContent += row + "\n";
+          });
+
+          const encodedUri = encodeURI(csvContent);
+          const link = document.createElement("a");
+          link.setAttribute("href", encodedUri);
+          link.setAttribute("download", "estoque_serob.csv");
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
         },
       };
 
