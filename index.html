@@ -8,10 +8,8 @@
     />
     <title>Gestão de Materiais | DETEC - COENG</title>
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -19,10 +17,8 @@
       rel="stylesheet"
     />
 
-    <!-- Ícones Lucide -->
     <script src="https://unpkg.com/lucide@latest"></script>
 
-    <!-- Notificações Toastify -->
     <link
       rel="stylesheet"
       type="text/css"
@@ -33,7 +29,8 @@
       src="https://cdn.jsdelivr.net/npm/toastify-js"
     ></script>
 
-    <!-- Tailwind Config -->
+    <link rel="stylesheet" href="styles.css" />
+
     <script>
       tailwind.config = {
         theme: {
@@ -64,113 +61,8 @@
         },
       };
     </script>
-
-    <style>
-      /* Base & Reset */
-      body {
-        -webkit-font-smoothing: antialiased;
-        background-color: #f8fafc;
-        color: #0f172a;
-      }
-
-      /* Custom Scrollbar */
-      .custom-scrollbar::-webkit-scrollbar {
-        width: 6px;
-        height: 6px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb {
-        background: #cbd5e1;
-        border-radius: 3px;
-      }
-      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-        background: #94a3b8;
-      }
-
-      /* Utilities */
-      .truncate-2 {
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-        overflow: hidden;
-      }
-
-      /* Animations */
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(5px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
-      }
-      .animate-fade-in {
-        animation: fadeIn 0.3s ease-out forwards;
-      }
-
-      .clickable-code:active {
-        transform: scale(0.98);
-      }
-
-      /* Navigation Active State */
-      .nav-item.active {
-        background-color: rgba(37, 99, 235, 0.1);
-        color: #60a5fa;
-        border-color: rgba(37, 99, 235, 0.2);
-      }
-      .nav-item.active i {
-        color: #60a5fa;
-      }
-
-      /* Login Screen Overlay */
-      #loginOverlay {
-        z-index: 100;
-        background-image: radial-gradient(
-          circle at center,
-          #f1f5f9 0%,
-          #e2e8f0 100%
-        );
-      }
-
-      /* Input Password Toggle */
-      .password-field:focus-within i {
-        color: #3b82f6;
-      }
-
-      /* Badge Colors */
-      .badge-blue {
-        background-color: #eff6ff;
-        color: #1d4ed8;
-        border: 1px solid #dbeafe;
-      }
-      .badge-green {
-        background-color: #ecfdf5;
-        color: #047857;
-        border: 1px solid #d1fae5;
-      }
-      .badge-purple {
-        background-color: #faf5ff;
-        color: #7e22ce;
-        border: 1px solid #e9d5ff;
-      }
-      .badge-orange {
-        background-color: #fff7ed;
-        color: #c2410c;
-        border: 1px solid #ffedd5;
-      }
-      .badge-gray {
-        background-color: #f8fafc;
-        color: #334155;
-        border: 1px solid #e2e8f0;
-      }
-    </style>
   </head>
   <body class="flex h-screen h-dvh overflow-hidden bg-slate-50">
-    <!-- LOGIN SCREEN -->
     <div
       id="loginOverlay"
       class="fixed inset-0 flex items-center justify-center p-4"
@@ -178,7 +70,6 @@
       <div
         class="bg-white p-8 rounded-2xl shadow-xl w-full max-w-md border border-slate-200 relative overflow-hidden"
       >
-        <!-- STEP 1: SELECT USER -->
         <div id="loginStep1" class="transition-all duration-300">
           <div class="text-center mb-8">
             <div
@@ -266,7 +157,6 @@
           </div>
         </div>
 
-        <!-- STEP 2: ENTER PASSWORD -->
         <div
           id="loginStep2"
           class="hidden flex-col items-center transition-all duration-300"
@@ -333,7 +223,6 @@
       </div>
     </div>
 
-    <!-- MODAL DE MOVIMENTAÇÃO -->
     <div
       id="movementModal"
       class="fixed inset-0 z-50 hidden"
@@ -482,7 +371,6 @@
       </div>
     </div>
 
-    <!-- Sidebar -->
     <aside
       class="hidden md:flex flex-col w-64 bg-slate-850 border-r border-slate-800 text-white shrink-0"
     >
@@ -548,7 +436,6 @@
         </div>
 
         <div class="flex gap-2">
-          <!-- Botão de Reset (Admin Only) -->
           <button
             onclick="app.logout()"
             class="flex-1 flex items-center justify-center gap-2 px-3 py-2 text-xs font-medium text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors"
@@ -560,7 +447,6 @@
       </div>
 
       <div class="p-2 border-t border-slate-700/50 bg-slate-900 text-center">
-        <!-- Status Indicator -->
         <div
           id="statusIndicator"
           class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-slate-700 transition-colors"
@@ -576,9 +462,7 @@
       </div>
     </aside>
 
-    <!-- Main Content -->
     <div class="flex-1 flex flex-col min-w-0 bg-slate-50/50">
-      <!-- Topbar -->
       <header
         class="bg-white border-b border-slate-200 px-4 sm:px-8 py-3 flex items-center justify-between gap-4 sticky top-0 z-30"
       >
@@ -625,16 +509,13 @@
         </div>
       </header>
 
-      <!-- Content Area -->
       <main
         class="flex-1 overflow-hidden flex flex-col p-4 sm:p-8 gap-6 relative"
       >
-        <!-- VIEW: DASHBOARD -->
         <div
           id="viewDashboard"
           class="flex flex-col gap-6 h-full overflow-hidden"
         >
-          <!-- KPIs -->
           <div
             class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 shrink-0"
           >
@@ -702,7 +583,6 @@
             </div>
           </div>
 
-          <!-- Toolbar & Filters Mobile -->
           <div class="sm:hidden shrink-0">
             <input
               type="text"
@@ -712,11 +592,9 @@
             />
           </div>
 
-          <!-- Data Table Container -->
           <div
             class="bg-white border border-slate-200 rounded-xl shadow-sm flex flex-col flex-1 overflow-hidden relative"
           >
-            <!-- Loading State -->
             <div
               id="loadingState"
               class="absolute inset-0 bg-white/80 backdrop-blur-sm z-50 flex flex-col items-center justify-center transition-opacity duration-300 pointer-events-none opacity-0"
@@ -729,7 +607,6 @@
               </p>
             </div>
 
-            <!-- Table Wrapper -->
             <div class="flex-1 overflow-auto custom-scrollbar relative">
               <table class="w-full text-left border-collapse min-w-[800px]">
                 <thead
@@ -814,7 +691,6 @@
                 ></tbody>
               </table>
 
-              <!-- Empty State -->
               <div
                 id="emptyState"
                 class="hidden flex-col items-center justify-center py-24 text-center"
@@ -844,7 +720,6 @@
               </div>
             </div>
 
-            <!-- Pagination Footer -->
             <div
               class="border-t border-slate-200 bg-slate-50 px-6 py-3 flex items-center justify-between shrink-0"
             >
@@ -883,7 +758,6 @@
           </div>
         </div>
 
-        <!-- VIEW: MOVEMENTS -->
         <div
           id="viewMovements"
           class="hidden flex-col gap-6 h-full overflow-hidden animate-fade-in"
@@ -966,7 +840,6 @@
           </div>
         </div>
 
-        <!-- VIEW: REPORTS -->
         <div
           id="viewReports"
           class="hidden flex-col gap-6 h-full overflow-y-auto custom-scrollbar animate-fade-in pb-10"
@@ -989,9 +862,7 @@
             </button>
           </div>
 
-          <!-- Report Grid -->
           <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <!-- Chart: Categorias -->
             <div
               class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm"
             >
@@ -1004,7 +875,6 @@
               <div id="reportCategories" class="space-y-4"></div>
             </div>
 
-            <!-- Table: Top Críticos -->
             <div
               class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex flex-col"
             >
@@ -1042,7 +912,6 @@
               </div>
             </div>
 
-            <!-- Stats: Movimentações -->
             <div
               class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm lg:col-span-2"
             >
@@ -1097,1314 +966,6 @@
       </main>
     </div>
 
-    <!-- Scripts -->
-    <script type="module">
-      // CONFIGURAÇÃO DA API
-      const API_URL = "http://localhost:3000/api";
-
-      // DADOS DE FALLBACK (Para quando não há conexão)
-      const MOCK_DATA = [
-        {
-          id: 1001,
-          contractCode: "B.16.04.007",
-          sku: "39201",
-          name: "GÁS 13 KG",
-          category: "DEP. C4 - GÁS",
-          quantity: 27,
-          minQuantity: 5,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 1002,
-          contractCode: "B.16.04.006",
-          sku: "39633",
-          name: "BOTIJÁO DE GÁS P-13 (VASILHAME)",
-          category: "DEP. C4 - GÁS",
-          quantity: 30,
-          minQuantity: 5,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 1003,
-          contractCode: "***",
-          sku: "***",
-          name: "GÁS EM USO",
-          category: "DEP. C4 - GÁS",
-          quantity: 0,
-          minQuantity: 0,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 1004,
-          contractCode: "****",
-          sku: "****",
-          name: "GÁS VAZIO",
-          category: "DEP. C4 - GÁS",
-          quantity: 0,
-          minQuantity: 0,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2001,
-          contractCode: "B.02.05.009",
-          sku: "39630",
-          name: "BOCAL PARA ARREMATES EM RALOS, D=100MM",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 39,
-          minQuantity: 5,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2002,
-          contractCode: "B.02.05.010",
-          sku: "39631",
-          name: "BOCAL PARA ARREMATES EM RALOS, D=150MM",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 17,
-          minQuantity: 5,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2003,
-          contractCode: "B.02.05.008",
-          sku: "39632",
-          name: "BOCAL PARA ARREMATES EM RALOS, D=75MM",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 37,
-          minQuantity: 5,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2004,
-          contractCode: "B.02.04.002",
-          sku: "39787",
-          name: "EMULSÃO ASFÁLTICA PARA IMPRIMAÇÃO (BASE ÁGUA)",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 13,
-          minQuantity: 5,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2005,
-          contractCode: "B.02.03.001",
-          sku: "20827",
-          name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA (5.000)",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 265,
-          minQuantity: 50,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2006,
-          contractCode: "B.02.03.002",
-          sku: "19437",
-          name: "IMPERMEABILIZANTE SEMIFLEXÍVEL (1.000)",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 264,
-          minQuantity: 50,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2007,
-          contractCode: "B.02.01.002",
-          sku: "18389",
-          name: "MANTA ANTIRAIZ",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2008,
-          contractCode: "B.02.05.003",
-          sku: "39789",
-          name: "PAPEL KRAFT PARA IMPERMEABILIZAÇÃO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2009,
-          contractCode: "B.02.04.003",
-          sku: "16493",
-          name: "PRIMER ASFÁLTICO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2010,
-          contractCode: "B.02.02.003",
-          sku: "27574",
-          name: "SELANTE BRANCO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2011,
-          contractCode: "B.02.02.001",
-          sku: "30314",
-          name: "SELANTE CINZA",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2012,
-          contractCode: "B.02.02.002",
-          sku: "27575",
-          name: "SELANTE PRETO",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-        {
-          id: 2013,
-          contractCode: "B.02.04.006",
-          sku: "39685",
-          name: "TINTA ASFÁLTICA ANTIRRAIZ",
-          category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-          quantity: 0,
-          minQuantity: 10,
-          alertPercentage: 40,
-          isArchived: false,
-        },
-      ];
-
-      // USERS UI CONFIG - Senhas removidas para segurança
-      const USERS_UI = [
-        {
-          id: 1,
-          name: "Jefferson de Araújo Silva",
-          email: "jefferson.araujo@camara.leg.br",
-          role: "admin",
-          initials: "JA",
-          color: "blue",
-        },
-        {
-          id: 2,
-          name: "Jessé Souza dos Anjos",
-          email: "jesse.anjos@camara.leg.br",
-          role: "user",
-          initials: "JS",
-          color: "emerald",
-        },
-        {
-          id: 3,
-          name: "Antônio Pinto Melo Sousa Júnior",
-          email: "antoniosousa.junior@camara.leg.br",
-          role: "user",
-          initials: "AP",
-          color: "purple",
-        },
-      ];
-
-      // APP LOGIC
-      const app = {
-        config: {
-          thresholds: { critical: 15, warning: 40 },
-          storageKeyUser: "serob_current_user_v1",
-        },
-
-        // State
-        data: [],
-        filteredData: [],
-        paginatedData: [],
-        movements: [],
-        currentView: "dashboard",
-        activeMovementFilter: null,
-        currentUser: null,
-        tempLoginUser: null,
-
-        currentPage: 1,
-        itemsPerPage: 15,
-        totalPages: 1,
-        sortConfig: { key: "name", order: "asc" },
-        searchQuery: "",
-        searchDebounceTimer: null,
-
-        init() {
-          lucide.createIcons();
-          this.checkLogin();
-          // Carregar dados (apenas via API)
-          this.loadData();
-
-          // Event Listeners
-          document.addEventListener("keydown", (e) => {
-            if ((e.metaKey || e.ctrlKey) && e.key === "k") {
-              e.preventDefault();
-              document.getElementById("searchInputDesktop").focus();
-            }
-            if (e.key === "Escape") this.closeModal();
-          });
-
-          const searchHandler = (e) => {
-            clearTimeout(this.searchDebounceTimer);
-            this.searchDebounceTimer = setTimeout(() => {
-              this.handleSearch(e.target.value);
-            }, 300);
-          };
-
-          document
-            .getElementById("searchInputDesktop")
-            .addEventListener("input", searchHandler);
-          document
-            .getElementById("searchInputMobile")
-            .addEventListener("input", searchHandler);
-        },
-
-        updateConnectionStatus(isOnline) {
-          const dot = document.getElementById("statusDot");
-          const text = document.getElementById("statusText");
-          const container = document.getElementById("statusIndicator");
-
-          if (isOnline) {
-            dot.className =
-              "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
-            text.textContent = "Online";
-            text.className = "text-[10px] text-emerald-400 font-medium";
-            container.className =
-              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-emerald-900/50 transition-colors";
-          } else {
-            dot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
-            text.textContent = "Offline (Teste)";
-            text.className = "text-[10px] text-amber-400 font-medium";
-            container.className =
-              "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-amber-900/50 transition-colors";
-          }
-        },
-
-        checkLogin() {
-          const storedUser = localStorage.getItem(this.config.storageKeyUser);
-          if (storedUser) {
-            this.currentUser = JSON.parse(storedUser);
-            this.updateUIForUser();
-            document.getElementById("loginOverlay").classList.add("hidden");
-          } else {
-            document.getElementById("loginOverlay").classList.remove("hidden");
-            this.backToUserSelect();
-          }
-        },
-
-        selectUserForLogin(uiId) {
-          const userUI = USERS_UI.find((u) => u.id === uiId);
-          if (userUI) {
-            this.tempLoginUser = userUI;
-            document.getElementById("selectedUserName").textContent =
-              userUI.name;
-            document.getElementById("selectedUserAvatar").textContent =
-              userUI.initials;
-
-            // Colors
-            const colors = {
-              blue: "bg-blue-100 text-blue-600",
-              emerald: "bg-emerald-100 text-emerald-600",
-              purple: "bg-purple-100 text-purple-600",
-            };
-            const colorClass = colors[userUI.color] || colors.blue;
-            document.getElementById(
-              "selectedUserAvatar"
-            ).className = `w-16 h-16 rounded-full flex items-center justify-center font-bold text-xl mb-3 shadow-inner ${colorClass}`;
-
-            document.getElementById("loginStep1").classList.add("hidden");
-            document.getElementById("loginStep2").classList.remove("hidden");
-            document.getElementById("loginStep2").classList.add("flex");
-            setTimeout(
-              () => document.getElementById("loginPassword").focus(),
-              100
-            );
-          }
-        },
-
-        backToUserSelect() {
-          this.tempLoginUser = null;
-          document.getElementById("loginPassword").value = "";
-          document.getElementById("loginStep2").classList.add("hidden");
-          document.getElementById("loginStep2").classList.remove("flex");
-          document.getElementById("loginStep1").classList.remove("hidden");
-        },
-
-        async performLogin(e) {
-          e.preventDefault();
-          const pwdInput = document.getElementById("loginPassword");
-          const password = pwdInput.value;
-
-          if (!this.tempLoginUser) return;
-
-          try {
-            // Login seguro via API
-            const response = await fetch(`${API_URL}/login`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                userId: this.tempLoginUser.id,
-                password: password,
-              }),
-            });
-
-            if (!response.ok) {
-              const errData = await response.json();
-              throw new Error(errData.message || "Erro no servidor");
-            }
-
-            const result = await response.json();
-
-            if (result.success) {
-              this.completeLogin({ ...this.tempLoginUser, ...result.user });
-            } else {
-              this.showToast(result.message || "Acesso negado", "error");
-            }
-          } catch (error) {
-            console.error("Login Error:", error);
-            // FALLBACK PARA TESTE - Permitir login se servidor falhar
-            // Em produção real, remover isto
-            this.showToast(
-              "Servidor inacessível. A entrar em modo de teste...",
-              "warning"
-            );
-            this.updateConnectionStatus(false);
-            this.completeLogin(this.tempLoginUser);
-          }
-        },
-
-        completeLogin(user) {
-          this.currentUser = user;
-          localStorage.setItem(
-            this.config.storageKeyUser,
-            JSON.stringify(this.currentUser)
-          );
-          this.updateUIForUser();
-          document.getElementById("loginOverlay").classList.add("hidden");
-          this.showToast(
-            `Bem-vindo, ${this.currentUser.name.split(" ")[0]}!`,
-            "success"
-          );
-          document.getElementById("loginPassword").value = "";
-          this.tempLoginUser = null;
-        },
-
-        logout() {
-          this.currentUser = null;
-          localStorage.removeItem(this.config.storageKeyUser);
-          document.getElementById("loginOverlay").classList.remove("hidden");
-          this.backToUserSelect();
-        },
-
-        updateUIForUser() {
-          if (!this.currentUser) return;
-          document.getElementById("userName").textContent =
-            this.currentUser.name;
-          document.getElementById("userEmail").textContent =
-            this.currentUser.email;
-          document.getElementById("userAvatar").textContent =
-            this.currentUser.initials;
-          this.render();
-        },
-
-        // --- DATA LOADING (API ONLY) ---
-        async loadData() {
-          this.showLoading(true);
-          try {
-            const timeout = (ms) =>
-              new Promise((_, reject) =>
-                setTimeout(() => reject(new Error("Timeout")), ms)
-              );
-
-            const fetchPromise = Promise.all([
-              fetch(`${API_URL}/materials`),
-              fetch(`${API_URL}/movements`),
-            ]);
-
-            // Corrida entre o fetch e um timeout de 3 segundos
-            const [matRes, movRes] = await Promise.race([
-              fetchPromise,
-              timeout(3000),
-            ]);
-
-            if (!matRes.ok || !movRes.ok)
-              throw new Error("Falha na resposta da API");
-
-            this.data = await matRes.json();
-            const rawMoves = await movRes.json();
-
-            // Converter datas
-            this.movements = rawMoves.map((m) => ({
-              ...m,
-              date: new Date(m.date),
-            }));
-
-            this.updateConnectionStatus(true);
-            this.processData();
-            this.populateDatalist();
-          } catch (e) {
-            console.error("Erro de conexão:", e);
-            // FALLBACK PARA TESTE AQUI
-            this.loadMockData();
-          } finally {
-            this.showLoading(false);
-          }
-        },
-
-        loadMockData() {
-          this.showToast(
-            "Servidor offline. A carregar dados de teste...",
-            "warning"
-          );
-          this.updateConnectionStatus(false);
-
-          // Usar dados de fallback
-          this.data = [...MOCK_DATA];
-          // Calcular max quantity aproximado para UI
-          this.data.forEach((item) => {
-            if (!item.maxQuantity) item.maxQuantity = 100;
-          });
-          this.movements = [];
-
-          this.processData();
-          this.populateDatalist();
-        },
-
-        // --- CORE FUNCTIONS ---
-        processData() {
-          const query = this.searchQuery.toLowerCase();
-          if (query) {
-            this.filteredData = this.data.filter(
-              (item) =>
-                item.name.toLowerCase().includes(query) ||
-                item.sku.toLowerCase().includes(query) ||
-                (item.contractCode &&
-                  item.contractCode.toLowerCase().includes(query)) ||
-                (item.category && item.category.toLowerCase().includes(query))
-            );
-          } else {
-            this.filteredData = [...this.data];
-          }
-
-          this.filteredData.sort((a, b) => {
-            let valA = a[this.sortConfig.key];
-            let valB = b[this.sortConfig.key];
-            if (typeof valA === "string") valA = valA.toLowerCase();
-            if (typeof valB === "string") valB = valB.toLowerCase();
-            if (valA < valB) return this.sortConfig.order === "asc" ? -1 : 1;
-            if (valA > valB) return this.sortConfig.order === "asc" ? 1 : -1;
-            return 0;
-          });
-
-          this.updateKPIs(this.filteredData);
-
-          this.totalPages = Math.max(
-            1,
-            Math.ceil(this.filteredData.length / this.itemsPerPage)
-          );
-          if (this.currentPage > this.totalPages) this.currentPage = 1;
-
-          const start = (this.currentPage - 1) * this.itemsPerPage;
-          const end = start + this.itemsPerPage;
-          this.paginatedData = this.filteredData.slice(start, end);
-
-          this.render();
-        },
-
-        render() {
-          const tbody = document.getElementById("tableBody");
-          if (!tbody) return;
-          tbody.innerHTML = "";
-
-          if (this.paginatedData.length === 0) {
-            document.getElementById("emptyState").classList.remove("hidden");
-            document.getElementById("emptyState").classList.add("flex");
-            // Update pagination counts to 0
-            document.getElementById("pageStart").textContent = 0;
-            document.getElementById("pageEnd").textContent = 0;
-            document.getElementById("totalItems").textContent = 0;
-            return;
-          }
-
-          document.getElementById("emptyState").classList.add("hidden");
-          document.getElementById("emptyState").classList.remove("flex");
-
-          const fragment = document.createDocumentFragment();
-          const isAdmin = this.currentUser?.role === "admin";
-
-          this.paginatedData.forEach((item) => {
-            const tr = document.createElement("tr");
-            tr.className =
-              "hover:bg-slate-50 group border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
-
-            const catColor = this.getCategoryColor(item.category || "");
-            const status = this.getStockStatus(item);
-            const qtyCursor = isAdmin ? "cursor-pointer" : "cursor-default";
-            const editCursor = isAdmin ? "cursor-pointer" : "cursor-default";
-            const qtyTitle = isAdmin
-              ? "Clique para ajustar saldo (Balanço)"
-              : "";
-
-            tr.innerHTML = `
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div onclick="app.copyToClipboard('${
-                    item.contractCode
-                  }', 'Contrato')" class="clickable-code flex items-center gap-1.5 cursor-pointer group/code w-fit">
-                    <i data-lucide="hash" class="w-3 h-3 text-slate-300 group-hover/code:text-blue-500 transition-colors"></i>
-                    <span class="text-xs font-mono font-medium text-slate-600 group-hover/code:text-blue-600 transition-colors bg-slate-100 group-hover/code:bg-blue-50 px-1.5 py-0.5 rounded border border-slate-200 group-hover/code:border-blue-200">${
-                      item.contractCode || "-"
-                    }</span>
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                   <span class="text-xs font-mono text-slate-500">${
-                     item.sku
-                   }</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-medium border badge-${catColor}">
-                    ${(item.category || "Geral").replace("DEP.", "").trim()}
-                  </span>
-                </td>
-                <td class="px-6 py-4">
-                  <div class="text-xs font-medium text-slate-900 truncate-2 max-w-xs" title="${
-                    item.name
-                  }">${item.name}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <div class="flex items-center justify-end gap-2 group/qty ${qtyCursor}" onclick="app.editQuantity(${
-              item.id
-            })" title="${qtyTitle}">
-                    <span class="text-xs font-bold text-slate-700 border-b border-dashed border-transparent ${
-                      isAdmin ? "group-hover/qty:border-slate-300" : ""
-                    } transition-colors">${item.quantity}</span>
-                    <span class="text-[10px] text-slate-400">un</span>
-                    ${
-                      isAdmin
-                        ? '<i data-lucide="refresh-ccw" class="w-3 h-3 text-slate-300 opacity-0 group-hover/qty:opacity-100 transition-opacity"></i>'
-                        : ""
-                    }
-                  </div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right">
-                  <div class="flex items-center justify-end gap-2 group/edit ${editCursor}" onclick="app.editMaxCapacity(${
-              item.id
-            })">
-                    <span class="text-xs font-medium text-slate-600 border-b border-dashed border-slate-300 ${
-                      isAdmin
-                        ? "group-hover/edit:border-blue-400 group-hover/edit:text-blue-600"
-                        : ""
-                    } transition-colors" title="${
-              isAdmin ? "Editar Ressuprimento" : ""
-            }">${item.maxQuantity}</span>
-                    ${
-                      isAdmin
-                        ? '<i data-lucide="edit-2" class="w-3 h-3 text-slate-300 opacity-0 group-hover/edit:opacity-100 transition-opacity"></i>'
-                        : ""
-                    }
-                  </div>
-                </td>
-                 <td class="px-6 py-4 whitespace-nowrap text-center">
-                  <div class="flex flex-col items-center gap-1">
-                      <div class="inline-flex items-center gap-1.5 px-2 py-1 rounded-full border ${
-                        status.color
-                      }">
-                        <span class="relative flex h-1.5 w-1.5">
-                          <span class="animate-ping absolute inline-flex h-full w-full rounded-full ${
-                            status.dot
-                          } opacity-75"></span>
-                          <span class="relative inline-flex rounded-full h-1.5 w-1.5 ${
-                            status.dot
-                          }"></span>
-                        </span>
-                        <span class="text-[10px] font-semibold">${
-                          status.label
-                        }</span>
-                      </div>
-                      <span class="text-[10px] text-slate-400 font-medium">${
-                        status.note
-                      }</span>
-                  </div>
-                </td>
-              `;
-            fragment.appendChild(tr);
-          });
-          tbody.appendChild(fragment);
-
-          const start = (this.currentPage - 1) * this.itemsPerPage + 1;
-          const end = Math.min(
-            start + this.itemsPerPage - 1,
-            this.filteredData.length
-          );
-
-          document.getElementById("pageStart").textContent = start;
-          document.getElementById("pageEnd").textContent = end;
-          document.getElementById("totalItems").textContent =
-            this.filteredData.length;
-          document.getElementById("currentPageDisplay").textContent =
-            this.currentPage;
-          document.getElementById("btnPrev").disabled = this.currentPage === 1;
-          document.getElementById("btnNext").disabled =
-            this.currentPage === this.totalPages;
-
-          lucide.createIcons();
-        },
-
-        renderMovements() {
-          const tbody = document.getElementById("movementsBody");
-          if (!tbody) return;
-          tbody.innerHTML = "";
-
-          let displayMovements = this.movements;
-          if (this.activeMovementFilter) {
-            displayMovements = this.movements.filter(
-              (m) => m.type === this.activeMovementFilter
-            );
-          }
-
-          if (displayMovements.length === 0) {
-            const msg = this.activeMovementFilter
-              ? "Nenhuma movimentação encontrada com este filtro."
-              : "Ainda não existem registros no histórico.";
-            const icon = this.activeMovementFilter
-              ? "filter-x"
-              : "clipboard-list";
-
-            tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs"><div class="flex flex-col items-center justify-center gap-2"><i data-lucide="${icon}" class="w-8 h-8 opacity-20 mb-1"></i><span>${msg}</span></div></td></tr>`;
-            lucide.createIcons();
-            return;
-          }
-
-          const fragment = document.createDocumentFragment();
-          displayMovements.forEach((mov) => {
-            const tr = document.createElement("tr");
-            tr.className =
-              "hover:bg-slate-50 border-b border-slate-50 last:border-b-0 transition-colors animate-fade-in";
-            const isEntry = mov.type === "in";
-            const badgeClass = isEntry
-              ? "bg-emerald-50 text-emerald-700 border-emerald-100"
-              : "bg-orange-50 text-orange-700 border-orange-100";
-            const icon = isEntry ? "arrow-down-left" : "arrow-up-right";
-            const typeLabel = isEntry ? "Entrada" : "Saída";
-            const dateStr = mov.date
-              ? new Intl.DateTimeFormat("pt-PT", {
-                  day: "2-digit",
-                  month: "2-digit",
-                  hour: "2-digit",
-                  minute: "2-digit",
-                }).format(mov.date)
-              : "-";
-
-            tr.innerHTML = `
-                    <td class="px-6 py-4 whitespace-nowrap"><span class="text-xs font-mono text-slate-500">${dateStr}</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full border ${badgeClass}">
-                            <i data-lucide="${icon}" class="w-3 h-3"></i><span class="text-[10px] font-semibold uppercase">${typeLabel}</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4">
-                        <div class="flex flex-col">
-                            <span class="text-xs font-medium text-slate-900 truncate max-w-xs" title="${
-                              mov.itemName
-                            }">${mov.itemName || "Item"}</span>
-                            <span class="text-[10px] font-mono text-slate-400">SKU: ${
-                              mov.itemSku || "-"
-                            }</span>
-                        </div>
-                    </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-right"><span class="text-xs font-bold text-slate-700">${
-                      mov.quantity
-                    }</span></td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                        <div class="flex items-center gap-2">
-                            <div class="w-5 h-5 rounded-full bg-slate-200 flex items-center justify-center text-[10px] font-bold text-slate-600">${(
-                              mov.user || "?"
-                            ).charAt(0)}</div>
-                            <span class="text-xs text-slate-600">${
-                              mov.user || "Desconhecido"
-                            }</span>
-                        </div>
-                    </td>
-                `;
-            fragment.appendChild(tr);
-          });
-          tbody.appendChild(fragment);
-          lucide.createIcons();
-        },
-
-        renderReports(btnElement = null) {
-          let icon;
-          if (btnElement) {
-            icon =
-              btnElement.querySelector("svg") || btnElement.querySelector("i");
-            if (icon) icon.classList.add("animate-spin");
-            btnElement.disabled = true;
-          }
-
-          // Recarrega dados reais antes de renderizar relatório
-          this.loadData()
-            .then(() => {
-              // Lógica de renderização de relatório
-              const groups = {};
-              this.data.forEach((item) => {
-                const cat = item.category
-                  ? item.category.replace("DEP.", "").trim()
-                  : "Outros";
-                groups[cat] = (groups[cat] || 0) + 1;
-              });
-
-              const sortedGroups = Object.entries(groups)
-                .sort((a, b) => b[1] - a[1])
-                .slice(0, 5);
-              const totalItems = Math.max(1, this.data.length);
-              const catContainer = document.getElementById("reportCategories");
-              if (catContainer) {
-                catContainer.innerHTML = "";
-                sortedGroups.forEach(([name, count]) => {
-                  const pct = Math.round((count / totalItems) * 100);
-                  catContainer.innerHTML += `<div><div class="flex justify-between text-xs mb-1"><span class="font-medium text-slate-700 truncate w-3/4">${name}</span><span class="text-slate-500">${count} itens (${pct}%)</span></div><div class="w-full bg-slate-100 rounded-full h-2 overflow-hidden"><div class="bg-blue-500 h-2 rounded-full transition-all duration-1000 ease-out" style="width: 0%"></div></div></div>`;
-                  setTimeout(() => {
-                    const bars = catContainer.querySelectorAll(".bg-blue-500");
-                    const lastBar = bars[bars.length - 1];
-                    if (lastBar) lastBar.style.width = `${pct}%`;
-                  }, 50);
-                });
-              }
-
-              const criticalItems = this.data
-                .map((item) => {
-                  const max = item.maxQuantity || 100;
-                  return { ...item, pct: (item.quantity / max) * 100 };
-                })
-                .filter((item) => item.pct <= this.config.thresholds.warning)
-                .sort((a, b) => a.pct - b.pct)
-                .slice(0, 8);
-
-              const critBody = document.getElementById("reportCriticalBody");
-              if (critBody) {
-                critBody.innerHTML = "";
-                if (criticalItems.length === 0) {
-                  critBody.innerHTML =
-                    '<tr><td colspan="3" class="px-3 py-4 text-center text-slate-400 italic">Nenhum item em estado crítico.</td></tr>';
-                } else {
-                  criticalItems.forEach((item) => {
-                    const status = this.getStockStatus(item);
-                    critBody.innerHTML += `<tr><td class="px-3 py-2 border-b border-slate-50"><div class="font-medium text-slate-700 truncate max-w-[180px]" title="${item.name}">${item.name}</div><div class="text-[10px] text-slate-400 font-mono">${item.sku}</div></td><td class="px-3 py-2 text-right border-b border-slate-50 font-bold text-slate-600">${item.quantity}</td><td class="px-3 py-2 text-center border-b border-slate-50"><span class="inline-block w-2 h-2 rounded-full ${status.dot}" title="${status.label}"></span></td></tr>`;
-                  });
-                }
-              }
-
-              const totalMoves = this.movements ? this.movements.length : 0;
-              const totalIn = this.movements
-                ? this.movements.filter((m) => m.type === "in").length
-                : 0;
-              const totalOut = this.movements
-                ? this.movements.filter((m) => m.type === "out").length
-                : 0;
-
-              const elTotalMoves = document.getElementById("repTotalMoves");
-              if (elTotalMoves) elTotalMoves.textContent = totalMoves;
-              const elTotalIn = document.getElementById("repTotalIn");
-              if (elTotalIn) elTotalIn.textContent = totalIn;
-              const elTotalOut = document.getElementById("repTotalOut");
-              if (elTotalOut) elTotalOut.textContent = totalOut;
-
-              if (btnElement)
-                this.showToast(
-                  "Relatórios atualizados com sucesso.",
-                  "success"
-                );
-            })
-            .catch(() => {
-              this.showToast("Erro ao atualizar relatórios.", "error");
-            })
-            .finally(() => {
-              if (icon) icon.classList.remove("animate-spin");
-              if (btnElement) btnElement.disabled = false;
-            });
-        },
-
-        handleSearch(query) {
-          this.searchQuery = query;
-          this.currentPage = 1;
-          this.processData();
-        },
-
-        clearSearch() {
-          this.searchQuery = "";
-          document.getElementById("searchInputDesktop").value = "";
-          document.getElementById("searchInputMobile").value = "";
-          this.currentPage = 1;
-          this.processData();
-        },
-
-        sort(key) {
-          if (this.sortConfig.key === key) {
-            this.sortConfig.order =
-              this.sortConfig.order === "asc" ? "desc" : "asc";
-          } else {
-            this.sortConfig.key = key;
-            this.sortConfig.order = "asc";
-          }
-          this.processData();
-        },
-
-        async editMaxCapacity(id) {
-          if ((this.currentUser?.role || "admin") !== "admin") {
-            this.showToast("Apenas administradores.", "error");
-            return;
-          }
-          this.showToast(
-            "Edição de meta não disponível na demonstração.",
-            "info"
-          );
-        },
-
-        async editQuantity(id) {
-          // Funcionalidade de Balanço (ajusta através de movimentação)
-          if ((this.currentUser?.role || "admin") !== "admin") {
-            this.showToast("Apenas administradores.", "error");
-            return;
-          }
-          const item = this.data.find((i) => i.id === id);
-          if (!item) return;
-
-          const newQtyStr = prompt(
-            `AJUSTE DE SALDO (Balanço):\n${item.name}\n\nQuantidade Atual: ${item.quantity}\n\nNova Quantidade Real:`,
-            item.quantity
-          );
-
-          if (newQtyStr !== null) {
-            const newQty = parseInt(newQtyStr);
-            if (!isNaN(newQty) && newQty >= 0) {
-              const diff = newQty - item.quantity;
-              if (diff === 0) return;
-
-              // Determina se é entrada ou saída para corrigir
-              const type = diff > 0 ? "in" : "out";
-              const qtyToMove = Math.abs(diff);
-
-              try {
-                // Se offline, atualiza local
-                if (
-                  !this.data ||
-                  this.data === MOCK_DATA ||
-                  document
-                    .getElementById("statusText")
-                    .textContent.includes("Offline")
-                ) {
-                  item.quantity = newQty;
-                  this.movements.unshift({
-                    id: Date.now(),
-                    date: new Date(),
-                    type: type,
-                    quantity: qtyToMove,
-                    itemName: item.name,
-                    itemSku: item.sku,
-                    user: this.currentUser?.name || "Offline User",
-                  });
-                  this.processData();
-                  this.showToast(`Saldo corrigido (Offline).`, "success");
-                  return;
-                }
-
-                // Usa a mesma API de movimentação para registrar o ajuste
-                const response = await fetch(`${API_URL}/movements`, {
-                  method: "POST",
-                  headers: { "Content-Type": "application/json" },
-                  body: JSON.stringify({
-                    sku: item.sku,
-                    type: type,
-                    quantity: qtyToMove,
-                    userId: this.currentUser.id,
-                  }),
-                });
-
-                const result = await response.json();
-                if (result.success) {
-                  this.showToast(
-                    `Saldo corrigido (Ajuste de ${
-                      type === "in" ? "+" : "-"
-                    }${qtyToMove}).`,
-                    "success"
-                  );
-                  this.loadData();
-                } else {
-                  this.showToast(result.message, "error");
-                }
-              } catch (e) {
-                // Fallback offline se erro
-                item.quantity = newQty;
-                this.movements.unshift({
-                  id: Date.now(),
-                  date: new Date(),
-                  type: type,
-                  quantity: qtyToMove,
-                  itemName: item.name,
-                  itemSku: item.sku,
-                  user: this.currentUser?.name || "Offline User",
-                });
-                this.processData();
-                this.showToast(
-                  `Saldo corrigido (Offline Fallback).`,
-                  "warning"
-                );
-              }
-            } else {
-              this.showToast("Valor inválido.", "error");
-            }
-          }
-        },
-
-        prevPage() {
-          if (this.currentPage > 1) {
-            this.currentPage--;
-            this.processData();
-          }
-        },
-
-        nextPage() {
-          if (this.currentPage < this.totalPages) {
-            this.currentPage++;
-            this.processData();
-          }
-        },
-
-        copyToClipboard(text, label) {
-          const el = document.createElement("textarea");
-          el.value = text;
-          document.body.appendChild(el);
-          el.select();
-          document.execCommand("copy");
-          document.body.removeChild(el);
-          this.showToast(`${label} copiado!`, "success");
-        },
-
-        getCategoryColor(category) {
-          const hash = category
-            .split("")
-            .reduce((acc, char) => char.charCodeAt(0) + acc, 0);
-          const types = ["blue", "green", "purple", "orange", "gray"];
-          return types[hash % types.length];
-        },
-
-        getStockStatus(item) {
-          const max = item.maxQuantity || 100;
-          const percentage = Math.round((item.quantity / max) * 100);
-          if (percentage <= this.config.thresholds.critical) {
-            return {
-              label: "Ação Necessária",
-              color: "text-red-700 bg-red-50 border-red-100",
-              dot: "bg-red-500",
-              pct: percentage,
-              note: "Risco de Rutura",
-            };
-          }
-          if (percentage <= this.config.thresholds.warning) {
-            return {
-              label: "Pedir Compra",
-              color: "text-amber-700 bg-amber-50 border-amber-100",
-              dot: "bg-amber-500",
-              pct: percentage,
-              note: "Entrega: 45 dias",
-            };
-          }
-          return {
-            label: "Estoque Saudável",
-            color: "text-emerald-700 bg-emerald-50 border-emerald-100",
-            dot: "bg-emerald-500",
-            pct: percentage,
-            note: `${percentage}% da Meta`,
-          };
-        },
-
-        updateKPIs(data) {
-          const animate = (id, endValue, prefix = "") => {
-            const el = document.getElementById(id);
-            if (!el) return;
-            el.textContent =
-              prefix + new Intl.NumberFormat("pt-PT").format(endValue);
-          };
-          const count = data.length;
-          const groups = new Set(data.map((i) => i.category)).size;
-          const critical = data.filter((i) => {
-            const max = i.maxQuantity || 100;
-            return (i.quantity / max) * 100 <= this.config.thresholds.critical;
-          }).length;
-          animate("statTotalItems", count);
-          animate("statGroups", groups);
-          animate("statCritical", critical);
-        },
-
-        showLoading(isLoading) {
-          const loader = document.getElementById("loadingState");
-          if (loader) {
-            if (isLoading)
-              loader.classList.remove("opacity-0", "pointer-events-none");
-            else loader.classList.add("opacity-0", "pointer-events-none");
-          }
-        },
-
-        showToast(msg, type = "info") {
-          let bg = "#3b82f6";
-          if (type === "success") bg = "#10b981";
-          if (type === "error") bg = "#ef4444";
-          if (type === "warning") bg = "#f59e0b";
-          Toastify({
-            text: msg,
-            duration: 3000,
-            style: { background: bg, borderRadius: "8px" },
-          }).showToast();
-        },
-
-        populateDatalist() {
-          setTimeout(() => {
-            const datalist = document.getElementById("materialList");
-            if (datalist) {
-              datalist.innerHTML = "";
-              this.data.forEach((item) => {
-                const option = document.createElement("option");
-                option.value = item.sku;
-                option.textContent = `${item.name} (${item.quantity} un)`;
-                datalist.appendChild(option);
-              });
-            }
-          }, 500);
-        },
-
-        openModal() {
-          const modal = document.getElementById("movementModal");
-          const backdrop = document.getElementById("modalBackdrop");
-          const panel = document.getElementById("modalPanel");
-          modal.classList.remove("hidden");
-          setTimeout(() => {
-            backdrop.classList.remove("opacity-0");
-            panel.classList.remove("opacity-0", "scale-95");
-            panel.classList.add("opacity-100", "scale-100");
-          }, 10);
-          document.getElementById("movementForm").reset();
-          this.toggleModalType("in");
-        },
-
-        closeModal() {
-          const modal = document.getElementById("movementModal");
-          const backdrop = document.getElementById("modalBackdrop");
-          const panel = document.getElementById("modalPanel");
-          backdrop.classList.add("opacity-0");
-          panel.classList.remove("opacity-100", "scale-100");
-          panel.classList.add("opacity-0", "scale-95");
-          setTimeout(() => modal.classList.add("hidden"), 200);
-        },
-
-        toggleModalType(type) {
-          const btnSubmit = document.getElementById("btnSubmitMovement");
-          if (type === "in") {
-            btnSubmit.textContent = "Confirmar Entrada";
-            btnSubmit.classList.remove("bg-orange-600", "hover:bg-orange-500");
-            btnSubmit.classList.add("bg-emerald-600", "hover:bg-emerald-500");
-          } else {
-            btnSubmit.textContent = "Confirmar Saída";
-            btnSubmit.classList.remove(
-              "bg-emerald-600",
-              "hover:bg-emerald-500"
-            );
-            btnSubmit.classList.add("bg-orange-600", "hover:bg-orange-500");
-          }
-        },
-
-        async saveMovement(e) {
-          e.preventDefault();
-          const form = document.getElementById("movementForm");
-          const formData = new FormData(form);
-          const type = formData.get("moveType");
-          const skuInput = formData.get("moveItem");
-          const qty = parseInt(formData.get("moveQty"));
-
-          if (!skuInput || isNaN(qty) || qty <= 0) {
-            this.showToast("Preencha todos os campos corretamente.", "error");
-            return;
-          }
-
-          // Verificação preliminar de estoque para saída
-          const targetItem = this.data.find((i) => i.sku === skuInput);
-          if (targetItem && type === "out" && targetItem.quantity < qty) {
-            this.showToast(
-              `Estoque insuficiente. Disponível: ${targetItem.quantity}`,
-              "error"
-            );
-            return;
-          }
-
-          if (!this.currentUser) {
-            this.showToast("Sessão expirada. Faça login novamente.", "error");
-            return;
-          }
-
-          try {
-            // Se já estiver em modo offline, não tenta fetch
-            if (
-              !this.data ||
-              this.data === MOCK_DATA ||
-              document
-                .getElementById("statusText")
-                .textContent.includes("Offline")
-            ) {
-              this.saveMovementOffline(targetItem, type, qty);
-              return;
-            }
-
-            const response = await fetch(`${API_URL}/movements`, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                sku: skuInput,
-                type: type,
-                quantity: qty,
-                userId: this.currentUser.id,
-              }),
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-              this.showToast("Movimentação registrada com sucesso!", "success");
-              this.loadData();
-              this.closeModal();
-            } else {
-              this.showToast(result.message || "Erro no servidor", "error");
-            }
-          } catch (err) {
-            // Fallback se falhar durante a operação
-            console.error(err);
-            if (targetItem) {
-              this.saveMovementOffline(targetItem, type, qty);
-            } else {
-              this.showToast("Erro: Item não encontrado localmente.", "error");
-            }
-          }
-        },
-
-        saveMovementOffline(item, type, qty) {
-          if (!item) return;
-          const newQty =
-            type === "in" ? item.quantity + qty : item.quantity - qty;
-          item.quantity = newQty;
-
-          this.movements.unshift({
-            id: Date.now(),
-            date: new Date(),
-            type,
-            quantity: qty,
-            itemName: item.name,
-            itemSku: item.sku,
-            user: this.currentUser.name,
-          });
-
-          this.processData();
-          this.closeModal();
-          this.showToast("Movimentação salva (Modo Offline)", "warning");
-        },
-
-        toggleMovementFilter(type) {
-          if (this.activeMovementFilter === type)
-            this.activeMovementFilter = null;
-          else this.activeMovementFilter = type;
-          this.updateMovementFilterUI();
-          this.renderMovements();
-        },
-
-        updateMovementFilterUI() {
-          const btnIn = document.getElementById("btnFilterIn");
-          const btnOut = document.getElementById("btnFilterOut");
-          const baseClass =
-            "bg-white border border-slate-200 hover:bg-slate-50 rounded-lg flex items-center px-3 py-1.5 shadow-sm transition-all group";
-          btnIn.className = baseClass;
-          btnOut.className = baseClass;
-          if (this.activeMovementFilter === "in") {
-            btnIn.className =
-              "bg-emerald-50 border border-emerald-200 rounded-lg flex items-center px-3 py-1.5 shadow-sm ring-1 ring-emerald-500/20 transition-all group";
-          }
-          if (this.activeMovementFilter === "out") {
-            btnOut.className =
-              "bg-orange-50 border border-orange-200 rounded-lg flex items-center px-3 py-1.5 shadow-sm ring-1 ring-orange-500/20 transition-all group";
-          }
-        },
-
-        navigate(viewName) {
-          this.currentView = viewName;
-          document
-            .querySelectorAll(".nav-item")
-            .forEach((el) => el.classList.remove("active"));
-          document.getElementById(`nav-${viewName}`).classList.add("active");
-          document.getElementById("viewDashboard").classList.add("hidden");
-          document.getElementById("viewMovements").classList.add("hidden");
-          document.getElementById("viewReports").classList.add("hidden");
-          document.getElementById("viewMovements").classList.remove("flex");
-          document.getElementById("viewReports").classList.remove("flex");
-
-          if (viewName === "dashboard") {
-            document.getElementById("viewDashboard").classList.remove("hidden");
-            this.render();
-          } else if (viewName === "movements") {
-            document.getElementById("viewMovements").classList.remove("hidden");
-            document.getElementById("viewMovements").classList.add("flex");
-            this.renderMovements();
-          } else if (viewName === "reports") {
-            document.getElementById("viewReports").classList.remove("hidden");
-            document.getElementById("viewReports").classList.add("flex");
-            this.renderReports();
-          }
-        },
-
-        exportCSV() {
-          if (!this.data || this.data.length === 0) {
-            this.showToast("Sem dados para exportar.", "info");
-            return;
-          }
-          let csvContent = "data:text/csv;charset=utf-8,";
-          csvContent += "SKU;Nome;Categoria;Quantidade;Contrato\n";
-          this.data.forEach((item) => {
-            const row = [
-              item.sku,
-              item.name.replace(/;/g, ","), // evita quebrar CSV
-              item.category,
-              item.quantity,
-              item.contractCode,
-            ].join(";");
-            csvContent += row + "\n";
-          });
-
-          const encodedUri = encodeURI(csvContent);
-          const link = document.createElement("a");
-          link.setAttribute("href", encodedUri);
-          link.setAttribute("download", "estoque_serob.csv");
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-        },
-      };
-
-      // Expose app to window
-      window.app = app;
-      document.addEventListener("DOMContentLoaded", () => {
-        app.init();
-      });
-    </script>
+    <script type="module" src="script.js"></script>
   </body>
 </html>
