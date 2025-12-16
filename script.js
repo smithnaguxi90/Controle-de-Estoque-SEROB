@@ -1,5 +1,5 @@
-// CONFIGURAÇÃO DA API
-const API_URL = "http://localhost:3000/api";
+// CONFIGURAÇÃO DA API (ATUALIZADA PARA PORTA 3001)
+const API_URL = "http://localhost:3001/api";
 
 // USERS UI CONFIG
 const USERS_UI = [
@@ -54,16 +54,16 @@ const app = {
   searchDebounceTimer: null,
 
   init() {
-    lucide.createIcons();
+    if (typeof lucide !== "undefined") lucide.createIcons();
     this.checkLogin();
-    // Carregar dados (apenas via API)
     this.loadData();
 
     // Event Listeners
     document.addEventListener("keydown", (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === "k") {
         e.preventDefault();
-        document.getElementById("searchInputDesktop").focus();
+        const searchInput = document.getElementById("searchInputDesktop");
+        if (searchInput) searchInput.focus();
       }
       if (e.key === "Escape") this.closeModal();
     });
@@ -75,18 +75,17 @@ const app = {
       }, 300);
     };
 
-    document
-      .getElementById("searchInputDesktop")
-      .addEventListener("input", searchHandler);
-    document
-      .getElementById("searchInputMobile")
-      .addEventListener("input", searchHandler);
+    const dInput = document.getElementById("searchInputDesktop");
+    const mInput = document.getElementById("searchInputMobile");
+    if (dInput) dInput.addEventListener("input", searchHandler);
+    if (mInput) mInput.addEventListener("input", searchHandler);
   },
 
   updateConnectionStatus(isOnline) {
     const dot = document.getElementById("statusDot");
     const text = document.getElementById("statusText");
     const container = document.getElementById("statusIndicator");
+    if (!dot || !text || !container) return;
 
     if (isOnline) {
       dot.className = "w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse";
@@ -106,11 +105,17 @@ const app = {
   checkLogin() {
     const storedUser = localStorage.getItem(this.config.storageKeyUser);
     if (storedUser) {
-      this.currentUser = JSON.parse(storedUser);
-      this.updateUIForUser();
-      document.getElementById("loginOverlay").classList.add("hidden");
+      try {
+        this.currentUser = JSON.parse(storedUser);
+        this.updateUIForUser();
+        const overlay = document.getElementById("loginOverlay");
+        if (overlay) overlay.classList.add("hidden");
+      } catch (e) {
+        this.logout();
+      }
     } else {
-      document.getElementById("loginOverlay").classList.remove("hidden");
+      const overlay = document.getElementById("loginOverlay");
+      if (overlay) overlay.classList.remove("hidden");
       this.backToUserSelect();
     }
   },
@@ -123,7 +128,6 @@ const app = {
       document.getElementById("selectedUserAvatar").textContent =
         userUI.initials;
 
-      // Colors
       const colors = {
         blue: "bg-blue-100 text-blue-600",
         emerald: "bg-emerald-100 text-emerald-600",
@@ -137,13 +141,17 @@ const app = {
       document.getElementById("loginStep1").classList.add("hidden");
       document.getElementById("loginStep2").classList.remove("hidden");
       document.getElementById("loginStep2").classList.add("flex");
-      setTimeout(() => document.getElementById("loginPassword").focus(), 100);
+      setTimeout(() => {
+        const pwd = document.getElementById("loginPassword");
+        if (pwd) pwd.focus();
+      }, 100);
     }
   },
 
   backToUserSelect() {
     this.tempLoginUser = null;
-    document.getElementById("loginPassword").value = "";
+    const pwd = document.getElementById("loginPassword");
+    if (pwd) pwd.value = "";
     document.getElementById("loginStep2").classList.add("hidden");
     document.getElementById("loginStep2").classList.remove("flex");
     document.getElementById("loginStep1").classList.remove("hidden");
@@ -157,7 +165,6 @@ const app = {
     if (!this.tempLoginUser) return;
 
     try {
-      // Login seguro via API
       const response = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -168,8 +175,7 @@ const app = {
       });
 
       if (!response.ok) {
-        const errData = await response.json();
-        throw new Error(errData.message || "Erro no servidor");
+        throw new Error("Erro no servidor");
       }
 
       const result = await response.json();
@@ -181,10 +187,7 @@ const app = {
       }
     } catch (error) {
       console.error("Login Error:", error);
-      this.showToast(
-        "Erro de conexão. Verifique se o servidor está a rodar.",
-        "error"
-      );
+      this.showToast("Erro de conexão com o servidor (Porta 3001).", "error");
       this.updateConnectionStatus(false);
     }
   },
@@ -201,7 +204,8 @@ const app = {
       `Bem-vindo, ${this.currentUser.name.split(" ")[0]}!`,
       "success"
     );
-    document.getElementById("loginPassword").value = "";
+    const pwd = document.getElementById("loginPassword");
+    if (pwd) pwd.value = "";
     this.tempLoginUser = null;
   },
 
@@ -214,14 +218,15 @@ const app = {
 
   updateUIForUser() {
     if (!this.currentUser) return;
-    document.getElementById("userName").textContent = this.currentUser.name;
-    document.getElementById("userEmail").textContent = this.currentUser.email;
-    document.getElementById("userAvatar").textContent =
-      this.currentUser.initials;
+    const elName = document.getElementById("userName");
+    const elEmail = document.getElementById("userEmail");
+    const elAvatar = document.getElementById("userAvatar");
+    if (elName) elName.textContent = this.currentUser.name;
+    if (elEmail) elEmail.textContent = this.currentUser.email;
+    if (elAvatar) elAvatar.textContent = this.currentUser.initials;
     this.render();
   },
 
-  // --- DATA LOADING (API ONLY) ---
   async loadData() {
     this.showLoading(true);
     try {
@@ -235,10 +240,9 @@ const app = {
         fetch(`${API_URL}/movements`),
       ]);
 
-      // Corrida entre o fetch e um timeout de 5 segundos
       const [matRes, movRes] = await Promise.race([
         fetchPromise,
-        timeout(5000), // Aumentei um pouco o timeout para redes lentas
+        timeout(5000),
       ]);
 
       if (!matRes.ok || !movRes.ok) throw new Error("Falha na resposta da API");
@@ -246,7 +250,6 @@ const app = {
       this.data = await matRes.json();
       const rawMoves = await movRes.json();
 
-      // Converter datas
       this.movements = rawMoves.map((m) => ({
         ...m,
         date: new Date(m.date),
@@ -259,8 +262,6 @@ const app = {
       console.error("Erro de conexão:", e);
       this.updateConnectionStatus(false);
       this.showToast("Falha ao conectar com o servidor.", "error");
-
-      // Limpa os dados visuais se não conseguir conectar
       this.data = [];
       this.movements = [];
       this.processData();
@@ -269,7 +270,6 @@ const app = {
     }
   },
 
-  // --- CORE FUNCTIONS ---
   processData() {
     const query = this.searchQuery.toLowerCase();
     if (query) {
@@ -316,17 +316,22 @@ const app = {
     tbody.innerHTML = "";
 
     if (this.paginatedData.length === 0) {
-      document.getElementById("emptyState").classList.remove("hidden");
-      document.getElementById("emptyState").classList.add("flex");
-      // Update pagination counts to 0
+      const emptyState = document.getElementById("emptyState");
+      if (emptyState) {
+        emptyState.classList.remove("hidden");
+        emptyState.classList.add("flex");
+      }
       document.getElementById("pageStart").textContent = 0;
       document.getElementById("pageEnd").textContent = 0;
       document.getElementById("totalItems").textContent = 0;
       return;
     }
 
-    document.getElementById("emptyState").classList.add("hidden");
-    document.getElementById("emptyState").classList.remove("flex");
+    const emptyState = document.getElementById("emptyState");
+    if (emptyState) {
+      emptyState.classList.add("hidden");
+      emptyState.classList.remove("flex");
+    }
 
     const fragment = document.createDocumentFragment();
     const isAdmin = this.currentUser?.role === "admin";
@@ -444,7 +449,7 @@ const app = {
     document.getElementById("btnNext").disabled =
       this.currentPage === this.totalPages;
 
-    lucide.createIcons();
+    if (typeof lucide !== "undefined") lucide.createIcons();
   },
 
   renderMovements() {
@@ -466,7 +471,7 @@ const app = {
       const icon = this.activeMovementFilter ? "filter-x" : "clipboard-list";
 
       tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-12 text-center text-slate-400 text-xs"><div class="flex flex-col items-center justify-center gap-2"><i data-lucide="${icon}" class="w-8 h-8 opacity-20 mb-1"></i><span>${msg}</span></div></td></tr>`;
-      lucide.createIcons();
+      if (typeof lucide !== "undefined") lucide.createIcons();
       return;
     }
 
@@ -524,7 +529,7 @@ const app = {
       fragment.appendChild(tr);
     });
     tbody.appendChild(fragment);
-    lucide.createIcons();
+    if (typeof lucide !== "undefined") lucide.createIcons();
   },
 
   renderReports(btnElement = null) {
@@ -535,10 +540,8 @@ const app = {
       btnElement.disabled = true;
     }
 
-    // Recarrega dados reais antes de renderizar relatório
     this.loadData()
       .then(() => {
-        // Lógica de renderização de relatório
         const groups = {};
         this.data.forEach((item) => {
           const cat = item.category
@@ -623,8 +626,10 @@ const app = {
 
   clearSearch() {
     this.searchQuery = "";
-    document.getElementById("searchInputDesktop").value = "";
-    document.getElementById("searchInputMobile").value = "";
+    const dInput = document.getElementById("searchInputDesktop");
+    const mInput = document.getElementById("searchInputMobile");
+    if (dInput) dInput.value = "";
+    if (mInput) mInput.value = "";
     this.currentPage = 1;
     this.processData();
   },
@@ -648,7 +653,6 @@ const app = {
   },
 
   async editQuantity(id) {
-    // Funcionalidade de Balanço (ajusta através de movimentação)
     if ((this.currentUser?.role || "admin") !== "admin") {
       this.showToast("Apenas administradores.", "error");
       return;
@@ -667,12 +671,10 @@ const app = {
         const diff = newQty - item.quantity;
         if (diff === 0) return;
 
-        // Determina se é entrada ou saída para corrigir
         const type = diff > 0 ? "in" : "out";
         const qtyToMove = Math.abs(diff);
 
         try {
-          // Usa a mesma API de movimentação para registrar o ajuste
           const response = await fetch(`${API_URL}/movements`, {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -798,11 +800,15 @@ const app = {
     if (type === "success") bg = "#10b981";
     if (type === "error") bg = "#ef4444";
     if (type === "warning") bg = "#f59e0b";
-    Toastify({
-      text: msg,
-      duration: 3000,
-      style: { background: bg, borderRadius: "8px" },
-    }).showToast();
+    if (typeof Toastify !== "undefined") {
+      Toastify({
+        text: msg,
+        duration: 3000,
+        style: { background: bg, borderRadius: "8px" },
+      }).showToast();
+    } else {
+      alert(msg);
+    }
   },
 
   populateDatalist() {
@@ -830,7 +836,8 @@ const app = {
       panel.classList.remove("opacity-0", "scale-95");
       panel.classList.add("opacity-100", "scale-100");
     }, 10);
-    document.getElementById("movementForm").reset();
+    const form = document.getElementById("movementForm");
+    if (form) form.reset();
     this.toggleModalType("in");
   },
 
@@ -846,6 +853,7 @@ const app = {
 
   toggleModalType(type) {
     const btnSubmit = document.getElementById("btnSubmitMovement");
+    if (!btnSubmit) return;
     if (type === "in") {
       btnSubmit.textContent = "Confirmar Entrada";
       btnSubmit.classList.remove("bg-orange-600", "hover:bg-orange-500");
@@ -870,7 +878,6 @@ const app = {
       return;
     }
 
-    // Verificação preliminar de estoque para saída
     const targetItem = this.data.find((i) => i.sku === skuInput);
     if (targetItem && type === "out" && targetItem.quantity < qty) {
       this.showToast(
@@ -922,6 +929,7 @@ const app = {
   updateMovementFilterUI() {
     const btnIn = document.getElementById("btnFilterIn");
     const btnOut = document.getElementById("btnFilterOut");
+    if (!btnIn || !btnOut) return;
     const baseClass =
       "bg-white border border-slate-200 hover:bg-slate-50 rounded-lg flex items-center px-3 py-1.5 shadow-sm transition-all group";
     btnIn.className = baseClass;
@@ -941,7 +949,9 @@ const app = {
     document
       .querySelectorAll(".nav-item")
       .forEach((el) => el.classList.remove("active"));
-    document.getElementById(`nav-${viewName}`).classList.add("active");
+    const navItem = document.getElementById(`nav-${viewName}`);
+    if (navItem) navItem.classList.add("active");
+
     document.getElementById("viewDashboard").classList.add("hidden");
     document.getElementById("viewMovements").classList.add("hidden");
     document.getElementById("viewReports").classList.add("hidden");
@@ -950,14 +960,16 @@ const app = {
 
     if (viewName === "dashboard") {
       document.getElementById("viewDashboard").classList.remove("hidden");
-      this.clearSearch(); // Agora limpa a pesquisa ao entrar no dashboard
+      this.clearSearch();
     } else if (viewName === "movements") {
-      document.getElementById("viewMovements").classList.remove("hidden");
-      document.getElementById("viewMovements").classList.add("flex");
+      const vm = document.getElementById("viewMovements");
+      vm.classList.remove("hidden");
+      vm.classList.add("flex");
       this.renderMovements();
     } else if (viewName === "reports") {
-      document.getElementById("viewReports").classList.remove("hidden");
-      document.getElementById("viewReports").classList.add("flex");
+      const vr = document.getElementById("viewReports");
+      vr.classList.remove("hidden");
+      vr.classList.add("flex");
       this.renderReports();
     }
   },
@@ -972,7 +984,7 @@ const app = {
     this.data.forEach((item) => {
       const row = [
         item.sku,
-        item.name.replace(/;/g, ","), // evita quebrar CSV
+        item.name.replace(/;/g, ","),
         item.category,
         item.quantity,
         item.contractCode,
@@ -990,7 +1002,6 @@ const app = {
   },
 };
 
-// Expose app to window
 window.app = app;
 document.addEventListener("DOMContentLoaded", () => {
   app.init();
