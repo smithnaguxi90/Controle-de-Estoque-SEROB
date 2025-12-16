@@ -5,6 +5,11 @@ body {
   color: #0f172a;
 }
 
+/* Safe Area Spacing for Mobile Bottom Nav */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
 /* Custom Scrollbar */
 .custom-scrollbar::-webkit-scrollbar {
   width: 6px;
@@ -51,11 +56,10 @@ body {
 /* Navigation Active State */
 .nav-item.active {
   background-color: rgba(37, 99, 235, 0.1);
-  color: #60a5fa;
-  border-color: rgba(37, 99, 235, 0.2);
+  color: #2563eb; /* brand-600 */
 }
 .nav-item.active i {
-  color: #60a5fa;
+  color: #2563eb;
 }
 
 /* Login Screen Overlay */

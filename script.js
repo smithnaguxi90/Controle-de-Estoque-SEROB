@@ -985,8 +985,14 @@ const app = {
     document
       .querySelectorAll(".nav-item")
       .forEach((el) => el.classList.remove("active"));
-    const navItem = document.getElementById(`nav-${viewName}`);
-    if (navItem) navItem.classList.add("active");
+
+    // Desktop Nav
+    const desktopNav = document.getElementById(`nav-${viewName}`);
+    if (desktopNav) desktopNav.classList.add("active");
+
+    // Mobile Nav
+    const mobileNav = document.getElementById(`mobile-nav-${viewName}`);
+    if (mobileNav) mobileNav.classList.add("active");
 
     document.getElementById("viewDashboard").classList.add("hidden");
     document.getElementById("viewMovements").classList.add("hidden");
