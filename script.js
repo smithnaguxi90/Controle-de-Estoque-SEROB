@@ -644,12 +644,48 @@ const app = {
     this.processData();
   },
 
+  // --- FUNÇÃO EDITADA: Agora envia os dados para o servidor ---
   async editMaxCapacity(id) {
     if ((this.currentUser?.role || "admin") !== "admin") {
       this.showToast("Apenas administradores.", "error");
       return;
     }
-    this.showToast("Edição de meta não disponível na demonstração.", "info");
+
+    const item = this.data.find((i) => i.id === id);
+    if (!item) return;
+
+    const newMaxStr = prompt(
+      `DEFINIR RESSUPRIMENTO (Meta):\n${item.name}\n\nMeta Atual: ${item.maxQuantity}\n\nNova Meta:`,
+      item.maxQuantity
+    );
+
+    if (newMaxStr !== null) {
+      const newMax = parseInt(newMaxStr);
+      if (!isNaN(newMax) && newMax >= 0) {
+        try {
+          // Chama a nova rota PUT
+          const response = await fetch(`${API_URL}/materials/${id}`, {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ maxQuantity: newMax }),
+          });
+
+          const result = await response.json();
+          if (result.success) {
+            item.maxQuantity = newMax;
+            this.showToast("Meta de ressuprimento atualizada.", "success");
+            this.render(); // Atualiza a tabela e a bolinha de status
+          } else {
+            this.showToast(result.error || "Erro ao atualizar.", "error");
+          }
+        } catch (e) {
+          console.error(e);
+          this.showToast("Erro de conexão.", "error");
+        }
+      } else {
+        this.showToast("Valor inválido.", "error");
+      }
+    }
   },
 
   async editQuantity(id) {

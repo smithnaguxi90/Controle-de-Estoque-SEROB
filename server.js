@@ -5,8 +5,7 @@ const bodyParser = require("body-parser");
 const path = require("path");
 
 const app = express();
-// Porta 3001 mantida
-const PORT = 3001;
+const PORT = 3001; // Mantendo a porta 3001
 
 // --- CONFIGURAÇÃO DA BASE DE DADOS ---
 const dbConfig = {
@@ -94,6 +93,22 @@ app.get("/api/materials", (req, res) => {
   });
 });
 
+// NOVA ROTA: Atualizar Material (Ex: Ressuprimento/Meta)
+app.put("/api/materials/:id", (req, res) => {
+  const { id } = req.params;
+  const { maxQuantity } = req.body;
+
+  if (maxQuantity === undefined) {
+    return res.status(400).json({ error: "Valor inválido" });
+  }
+
+  const sql = "UPDATE materials SET max_quantity = ? WHERE id = ?";
+  db.query(sql, [maxQuantity, id], (err, result) => {
+    if (err) return res.status(500).json({ error: err.message });
+    res.json({ success: true });
+  });
+});
+
 app.post("/api/movements", (req, res) => {
   const { sku, type, quantity, userId } = req.body;
   db.beginTransaction((err) => {
@@ -163,9 +178,8 @@ app.get("/api/movements", (req, res) => {
   });
 });
 
-// --- CORREÇÃO AQUI (Express 5 Syntax) ---
-// Em vez de "*", usamos "(.*)" para capturar tudo
-app.get("(.*)", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
+// --- ROTA FINAL (Express 5 Syntax) ---
+app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 const server = app.listen(PORT, () => {
   console.log("\n🟢 ===================================================");
