@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/smithnaguxi90/Controle-de-Estoque---SEROB#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "body-parser": "^2.2.1",
     "cors": "^2.8.5",
     "express": "^5.2.1",

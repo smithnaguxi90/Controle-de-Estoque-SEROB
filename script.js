@@ -65,7 +65,10 @@ const app = {
         const searchInput = document.getElementById("searchInputDesktop");
         if (searchInput) searchInput.focus();
       }
-      if (e.key === "Escape") this.closeModal();
+      if (e.key === "Escape") {
+        this.closeModal();
+        this.closeChangePasswordModal();
+      }
     });
 
     const searchHandler = (e) => {
@@ -157,6 +160,22 @@ const app = {
     document.getElementById("loginStep1").classList.remove("hidden");
   },
 
+  togglePasswordVisibility() {
+    const input = document.getElementById("loginPassword");
+    const icon = document.getElementById("eyeIcon");
+
+    if (input && icon) {
+      if (input.type === "password") {
+        input.type = "text";
+        icon.setAttribute("data-lucide", "eye-off");
+      } else {
+        input.type = "password";
+        icon.setAttribute("data-lucide", "eye");
+      }
+      lucide.createIcons();
+    }
+  },
+
   async performLogin(e) {
     e.preventDefault();
     const pwdInput = document.getElementById("loginPassword");
@@ -225,6 +244,73 @@ const app = {
     if (elEmail) elEmail.textContent = this.currentUser.email;
     if (elAvatar) elAvatar.textContent = this.currentUser.initials;
     this.render();
+  },
+
+  // --- NOVA FUNÇÃO: Gerir Modal de Senha ---
+  openChangePasswordModal() {
+    const modal = document.getElementById("changePasswordModal");
+    const backdrop = document.getElementById("passwordModalBackdrop");
+    const panel = document.getElementById("passwordModalPanel");
+    const form = document.getElementById("changePasswordForm");
+
+    if (form) form.reset();
+
+    modal.classList.remove("hidden");
+    setTimeout(() => {
+      backdrop.classList.remove("opacity-0");
+      panel.classList.remove("opacity-0", "scale-95");
+      panel.classList.add("opacity-100", "scale-100");
+    }, 10);
+  },
+
+  closeChangePasswordModal() {
+    const modal = document.getElementById("changePasswordModal");
+    const backdrop = document.getElementById("passwordModalBackdrop");
+    const panel = document.getElementById("passwordModalPanel");
+
+    backdrop.classList.add("opacity-0");
+    panel.classList.remove("opacity-100", "scale-100");
+    panel.classList.add("opacity-0", "scale-95");
+    setTimeout(() => modal.classList.add("hidden"), 200);
+  },
+
+  async performPasswordChange(e) {
+    e.preventDefault();
+    if (!this.currentUser) return;
+
+    const form = document.getElementById("changePasswordForm");
+    const formData = new FormData(form);
+    const oldPassword = formData.get("oldPassword");
+    const newPassword = formData.get("newPassword");
+
+    if (!oldPassword || !newPassword) {
+      this.showToast("Preencha todos os campos.", "error");
+      return;
+    }
+
+    try {
+      const response = await fetch(`${API_URL}/change-password`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: this.currentUser.id,
+          oldPassword: oldPassword,
+          newPassword: newPassword,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (result.success) {
+        this.showToast("Senha alterada com sucesso!", "success");
+        this.closeChangePasswordModal();
+      } else {
+        this.showToast(result.message || "Erro ao alterar senha.", "error");
+      }
+    } catch (err) {
+      console.error(err);
+      this.showToast("Erro de conexão.", "error");
+    }
   },
 
   async loadData() {

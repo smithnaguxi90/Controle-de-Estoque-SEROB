@@ -3,9 +3,10 @@ const mysql = require("mysql2");
 const cors = require("cors");
 const bodyParser = require("body-parser");
 const path = require("path");
+const bcrypt = require("bcrypt"); // Biblioteca de criptografia
 
 const app = express();
-const PORT = 3001; // Mantendo a porta 3001
+const PORT = 3001;
 
 // --- CONFIGURAÇÃO DA BASE DE DADOS ---
 const dbConfig = {
@@ -19,7 +20,7 @@ const dbConfig = {
 app.use(cors());
 app.use(bodyParser.json());
 
-// [IMPORTANTE] Servir os arquivos do site
+// Servir arquivos estáticos
 app.use(express.static(__dirname));
 
 // Logger
@@ -35,12 +36,6 @@ function handleDisconnect() {
   db.connect((err) => {
     if (err) {
       console.error("\n❌ ERRO MYSQL:", err.code);
-      if (err.code === "ER_ACCESS_DENIED_ERROR")
-        console.error("👉 Senha incorreta no server.js");
-      else if (err.code === "ECONNREFUSED")
-        console.error("👉 MySQL desligado (Abra o XAMPP).");
-      else if (err.code === "ER_BAD_DB_ERROR")
-        console.error("👉 Base de dados 'serob_db' não existe.");
       setTimeout(handleDisconnect, 5000);
     } else {
       console.log("✅ [MySQL] Conectado!");
@@ -55,19 +50,99 @@ function handleDisconnect() {
 handleDisconnect();
 
 // --- ROTAS API ---
+
+// ROTA DE LOGIN (Com Migração Automática para Hash)
 app.post("/api/login", (req, res) => {
   const { userId, password } = req.body;
-  const sql = "SELECT * FROM users WHERE id = ? AND password = ?";
-  db.query(sql, [userId, password], (err, results) => {
+
+  // Buscar utilizador pelo ID
+  const sql = "SELECT * FROM users WHERE id = ?";
+  db.query(sql, [userId], async (err, results) => {
     if (err) return res.status(500).json({ error: err.message });
-    if (results.length > 0) {
-      const user = results[0];
-      delete user.password;
-      res.json({ success: true, user });
-    } else {
-      res
+
+    if (results.length === 0) {
+      return res
         .status(401)
-        .json({ success: false, message: "Credenciais inválidas" });
+        .json({ success: false, message: "Utilizador não encontrado" });
+    }
+
+    const user = results[0];
+
+    try {
+      // 1. Tentar comparar como HASH (Senha Segura)
+      const match = await bcrypt.compare(password, user.password);
+
+      if (match) {
+        // Senha correta e já segura
+        delete user.password;
+        return res.json({ success: true, user });
+      }
+
+      // 2. Se falhar, verificar se é uma senha ANTIGA (Texto Simples - Migração)
+      // Esta parte permite que o utilizador entre a primeira vez para convertermos a senha
+      if (password === user.password) {
+        console.log(
+          `🔒 A migrar senha do utilizador ${user.name} para formato seguro...`
+        );
+
+        // Criptografar e atualizar na BD
+        const hashedPassword = await bcrypt.hash(password, 10);
+        db.query("UPDATE users SET password = ? WHERE id = ?", [
+          hashedPassword,
+          user.id,
+        ]);
+
+        delete user.password;
+        return res.json({ success: true, user });
+      }
+
+      // Senha incorreta
+      res.status(401).json({ success: false, message: "Senha incorreta" });
+    } catch (e) {
+      res.status(500).json({ error: "Erro ao processar senha" });
+    }
+  });
+});
+
+// ROTA ALTERAR SENHA (Agora salva Criptografado)
+app.post("/api/change-password", (req, res) => {
+  const { userId, oldPassword, newPassword } = req.body;
+
+  // 1. Buscar utilizador para verificar senha antiga
+  const checkSql = "SELECT * FROM users WHERE id = ?";
+  db.query(checkSql, [userId], async (err, results) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (results.length === 0)
+      return res.status(404).json({ message: "Utilizador não encontrado" });
+
+    const user = results[0];
+    let isOldPasswordCorrect = false;
+
+    // Verificar senha antiga (Suporta tanto Hash quanto Texto Simples)
+    const matchHash = await bcrypt.compare(oldPassword, user.password);
+    if (matchHash) {
+      isOldPasswordCorrect = true;
+    } else if (oldPassword === user.password) {
+      isOldPasswordCorrect = true;
+    }
+
+    if (!isOldPasswordCorrect) {
+      return res
+        .status(401)
+        .json({ success: false, message: "A senha atual está incorreta." });
+    }
+
+    // 2. Criptografar a NOVA senha antes de salvar
+    try {
+      const hashedNewPassword = await bcrypt.hash(newPassword, 10);
+
+      const updateSql = "UPDATE users SET password = ? WHERE id = ?";
+      db.query(updateSql, [hashedNewPassword, userId], (err) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, message: "Senha alterada com sucesso!" });
+      });
+    } catch (e) {
+      res.status(500).json({ error: "Erro ao criptografar senha" });
     }
   });
 });
@@ -93,14 +168,11 @@ app.get("/api/materials", (req, res) => {
   });
 });
 
-// NOVA ROTA: Atualizar Material (Ex: Ressuprimento/Meta)
 app.put("/api/materials/:id", (req, res) => {
   const { id } = req.params;
   const { maxQuantity } = req.body;
-
-  if (maxQuantity === undefined) {
+  if (maxQuantity === undefined)
     return res.status(400).json({ error: "Valor inválido" });
-  }
 
   const sql = "UPDATE materials SET max_quantity = ? WHERE id = ?";
   db.query(sql, [maxQuantity, id], (err, result) => {
@@ -178,20 +250,19 @@ app.get("/api/movements", (req, res) => {
   });
 });
 
-// --- ROTA FINAL (Express 5 Syntax) ---
 app.get(/.*/, (req, res) => res.sendFile(path.join(__dirname, "index.html")));
 
 const server = app.listen(PORT, () => {
   console.log("\n🟢 ===================================================");
   console.log(`🚀 SERVIDOR LIGADO EM: http://localhost:${PORT}`);
-  console.log("   Acesse este link no seu navegador.");
+  console.log("   Agora as senhas estão protegidas com criptografia.");
   console.log("===================================================\n");
 });
 
 server.on("error", (e) => {
   if (e.code === "EADDRINUSE") {
     console.error(
-      `\n❌ A porta ${PORT} também está ocupada! Tente reiniciar o computador ou matar o processo.`
+      `\n❌ A porta ${PORT} está ocupada! Use: npx kill-port ${PORT}`
     );
   } else {
     console.error("Erro:", e);
