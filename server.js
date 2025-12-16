@@ -2,16 +2,16 @@ const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
 const bodyParser = require("body-parser");
+const path = require("path"); // Necessário para arquivos estáticos
 
 const app = express();
 const PORT = 3000;
 
 // --- CONFIGURAÇÃO DA BASE DE DADOS ---
-// ⚠️ ATENÇÃO: Verifique a senha aqui em baixo!
 const dbConfig = {
   host: "localhost",
   user: "root",
-  password: "Smith1990@", // <--- SUA SENHA REAL DO MYSQL AQUI
+  password: "Smith1990@", // <--- Confirme se a senha está correta
   database: "serob_db",
 };
 
@@ -19,7 +19,11 @@ const dbConfig = {
 app.use(cors());
 app.use(bodyParser.json());
 
-// Logger de pedidos (para ver no terminal o que está a acontecer)
+// --- [IMPORTANTE] SERVIR ARQUIVOS DO SITE (HTML, CSS, JS) ---
+// Sem esta linha, o navegador recebe "Cannot GET /"
+app.use(express.static(__dirname));
+
+// Logger de pedidos
 app.use((req, res, next) => {
   console.log(
     `[${new Date().toLocaleTimeString()}] 📨 Pedido recebido: ${req.method} ${
@@ -39,22 +43,12 @@ function handleDisconnect() {
     if (err) {
       console.error("\n❌ ERRO CRÍTICO AO LIGAR À BASE DE DADOS:", err.code);
       if (err.code === "ER_ACCESS_DENIED_ERROR") {
-        console.error(
-          "👉 A SENHA DO MYSQL ESTÁ INCORRETA no arquivo server.js."
-        );
-        console.error(
-          "   Edite o arquivo server.js e coloque a senha correta na linha 14."
-        );
+        console.error("👉 Senha incorreta no server.js (linha 14).");
       } else if (err.code === "ECONNREFUSED") {
-        console.error(
-          "👉 O MySQL não está a correr. Abra o XAMPP ou Workbench."
-        );
+        console.error("👉 O MySQL não está a correr (Verifique o XAMPP).");
       } else if (err.code === "ER_BAD_DB_ERROR") {
-        console.error(
-          '👉 A base de dados "serob_db" não existe. Rode o schema.sql.'
-        );
+        console.error('👉 Base de dados "serob_db" não existe.');
       }
-      // Não matar o processo para o utilizador ler o erro, mas tentar reconectar em 5s
       setTimeout(handleDisconnect, 5000);
     } else {
       console.log("✅ [Base de Dados] Conectado ao MySQL com sucesso!");
@@ -73,16 +67,13 @@ function handleDisconnect() {
 
 handleDisconnect();
 
-// --- ROTAS ---
+// --- ROTAS DA API ---
 
 app.post("/api/login", (req, res) => {
   const { userId, password } = req.body;
   const sql = "SELECT * FROM users WHERE id = ? AND password = ?";
   db.query(sql, [userId, password], (err, results) => {
-    if (err) {
-      console.error("Erro no Login:", err.message);
-      return res.status(500).json({ error: err.message });
-    }
+    if (err) return res.status(500).json({ error: err.message });
     if (results.length > 0) {
       const user = results[0];
       delete user.password;
@@ -96,17 +87,13 @@ app.post("/api/login", (req, res) => {
 });
 
 app.get("/api/materials", (req, res) => {
-  // Verifica se a tabela tem a coluna is_archived, senão faz fallback
   const sql = "SELECT * FROM materials ORDER BY name ASC";
   db.query(sql, (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar materiais:", err.message);
+    if (err)
       return res
         .status(500)
         .json({ error: "Erro de Banco de Dados: " + err.message });
-    }
 
-    // Filtro manual caso o campo is_archived não exista no banco antigo
     const activeMaterials = results.filter(
       (item) => item.is_archived !== 1 && item.is_archived !== true
     );
@@ -175,7 +162,7 @@ app.post("/api/movements", (req, res) => {
                     res.status(500).json({ error: err.message })
                   );
                 console.log(
-                  `✅ Movimentação registada: SKU ${sku} | Qtd ${quantity} | Tipo ${type}`
+                  `✅ Movimentação: SKU ${sku} | Qtd ${quantity} | ${type}`
                 );
                 res.json({ success: true });
               });
@@ -210,9 +197,15 @@ app.get("/api/movements", (req, res) => {
   });
 });
 
+// --- ROTA FINAL (Fallback) ---
+// Garante que se aceder a uma rota desconhecida, volta ao index.html
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
 app.listen(PORT, () => {
   console.log("\n🟢 ===================================================");
   console.log(`🚀 SERVIDOR LIGADO EM: http://localhost:${PORT}`);
-  console.log("   MANTENHA ESTA JANELA ABERTA ENQUANTO USA O SITE");
+  console.log("   Agora você pode acessar o site pelo navegador.");
   console.log("===================================================\n");
 });

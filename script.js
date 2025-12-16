@@ -1,197 +1,6 @@
 // CONFIGURAÇÃO DA API
 const API_URL = "http://localhost:3000/api";
 
-// DADOS DE FALLBACK (Para quando não há conexão)
-const MOCK_DATA = [
-  {
-    id: 1001,
-    contractCode: "B.16.04.007",
-    sku: "39201",
-    name: "GÁS 13 KG",
-    category: "DEP. C4 - GÁS",
-    quantity: 27,
-    minQuantity: 5,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 1002,
-    contractCode: "B.16.04.006",
-    sku: "39633",
-    name: "BOTIJÁO DE GÁS P-13 (VASILHAME)",
-    category: "DEP. C4 - GÁS",
-    quantity: 30,
-    minQuantity: 5,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 1003,
-    contractCode: "***",
-    sku: "***",
-    name: "GÁS EM USO",
-    category: "DEP. C4 - GÁS",
-    quantity: 0,
-    minQuantity: 0,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 1004,
-    contractCode: "****",
-    sku: "****",
-    name: "GÁS VAZIO",
-    category: "DEP. C4 - GÁS",
-    quantity: 0,
-    minQuantity: 0,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2001,
-    contractCode: "B.02.05.009",
-    sku: "39630",
-    name: "BOCAL PARA ARREMATES EM RALOS, D=100MM",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 39,
-    minQuantity: 5,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2002,
-    contractCode: "B.02.05.010",
-    sku: "39631",
-    name: "BOCAL PARA ARREMATES EM RALOS, D=150MM",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 17,
-    minQuantity: 5,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2003,
-    contractCode: "B.02.05.008",
-    sku: "39632",
-    name: "BOCAL PARA ARREMATES EM RALOS, D=75MM",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 37,
-    minQuantity: 5,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2004,
-    contractCode: "B.02.04.002",
-    sku: "39787",
-    name: "EMULSÃO ASFÁLTICA PARA IMPRIMAÇÃO (BASE ÁGUA)",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 13,
-    minQuantity: 5,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2005,
-    contractCode: "B.02.03.001",
-    sku: "20827",
-    name: "IMPERMEABILIZANTE FLEXÍVEL BASE RESINA (5.000)",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 265,
-    minQuantity: 50,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2006,
-    contractCode: "B.02.03.002",
-    sku: "19437",
-    name: "IMPERMEABILIZANTE SEMIFLEXÍVEL (1.000)",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 264,
-    minQuantity: 50,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2007,
-    contractCode: "B.02.01.002",
-    sku: "18389",
-    name: "MANTA ANTIRAIZ",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2008,
-    contractCode: "B.02.05.003",
-    sku: "39789",
-    name: "PAPEL KRAFT PARA IMPERMEABILIZAÇÃO",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2009,
-    contractCode: "B.02.04.003",
-    sku: "16493",
-    name: "PRIMER ASFÁLTICO",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2010,
-    contractCode: "B.02.02.003",
-    sku: "27574",
-    name: "SELANTE BRANCO",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2011,
-    contractCode: "B.02.02.001",
-    sku: "30314",
-    name: "SELANTE CINZA",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2012,
-    contractCode: "B.02.02.002",
-    sku: "27575",
-    name: "SELANTE PRETO",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-  {
-    id: 2013,
-    contractCode: "B.02.04.006",
-    sku: "39685",
-    name: "TINTA ASFÁLTICA ANTIRRAIZ",
-    category: "DEP. 01 - IMPERMEABILIZAÇÃO",
-    quantity: 0,
-    minQuantity: 10,
-    alertPercentage: 40,
-    isArchived: false,
-  },
-];
-
 // USERS UI CONFIG
 const USERS_UI = [
   {
@@ -286,11 +95,11 @@ const app = {
       container.className =
         "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-emerald-900/50 transition-colors";
     } else {
-      dot.className = "w-1.5 h-1.5 rounded-full bg-amber-500";
-      text.textContent = "Offline (Teste)";
-      text.className = "text-[10px] text-amber-400 font-medium";
+      dot.className = "w-1.5 h-1.5 rounded-full bg-red-500";
+      text.textContent = "Offline";
+      text.className = "text-[10px] text-red-400 font-medium";
       container.className =
-        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-amber-900/50 transition-colors";
+        "inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-slate-800 border border-red-900/50 transition-colors";
     }
   },
 
@@ -372,14 +181,11 @@ const app = {
       }
     } catch (error) {
       console.error("Login Error:", error);
-      // FALLBACK PARA TESTE - Permitir login se servidor falhar
-      // Em produção real, remover isto
       this.showToast(
-        "Servidor inacessível. A entrar em modo de teste...",
-        "warning"
+        "Erro de conexão. Verifique se o servidor está a rodar.",
+        "error"
       );
       this.updateConnectionStatus(false);
-      this.completeLogin(this.tempLoginUser);
     }
   },
 
@@ -429,10 +235,10 @@ const app = {
         fetch(`${API_URL}/movements`),
       ]);
 
-      // Corrida entre o fetch e um timeout de 3 segundos
+      // Corrida entre o fetch e um timeout de 5 segundos
       const [matRes, movRes] = await Promise.race([
         fetchPromise,
-        timeout(3000),
+        timeout(5000), // Aumentei um pouco o timeout para redes lentas
       ]);
 
       if (!matRes.ok || !movRes.ok) throw new Error("Falha na resposta da API");
@@ -451,27 +257,16 @@ const app = {
       this.populateDatalist();
     } catch (e) {
       console.error("Erro de conexão:", e);
-      // FALLBACK PARA TESTE AQUI
-      this.loadMockData();
+      this.updateConnectionStatus(false);
+      this.showToast("Falha ao conectar com o servidor.", "error");
+
+      // Limpa os dados visuais se não conseguir conectar
+      this.data = [];
+      this.movements = [];
+      this.processData();
     } finally {
       this.showLoading(false);
     }
-  },
-
-  loadMockData() {
-    this.showToast("Servidor offline. A carregar dados de teste...", "warning");
-    this.updateConnectionStatus(false);
-
-    // Usar dados de fallback
-    this.data = [...MOCK_DATA];
-    // Calcular max quantity aproximado para UI
-    this.data.forEach((item) => {
-      if (!item.maxQuantity) item.maxQuantity = 100;
-    });
-    this.movements = [];
-
-    this.processData();
-    this.populateDatalist();
   },
 
   // --- CORE FUNCTIONS ---
@@ -877,29 +672,6 @@ const app = {
         const qtyToMove = Math.abs(diff);
 
         try {
-          // Se offline, atualiza local
-          if (
-            !this.data ||
-            this.data === MOCK_DATA ||
-            document
-              .getElementById("statusText")
-              .textContent.includes("Offline")
-          ) {
-            item.quantity = newQty;
-            this.movements.unshift({
-              id: Date.now(),
-              date: new Date(),
-              type: type,
-              quantity: qtyToMove,
-              itemName: item.name,
-              itemSku: item.sku,
-              user: this.currentUser?.name || "Offline User",
-            });
-            this.processData();
-            this.showToast(`Saldo corrigido (Offline).`, "success");
-            return;
-          }
-
           // Usa a mesma API de movimentação para registrar o ajuste
           const response = await fetch(`${API_URL}/movements`, {
             method: "POST",
@@ -925,19 +697,7 @@ const app = {
             this.showToast(result.message, "error");
           }
         } catch (e) {
-          // Fallback offline se erro
-          item.quantity = newQty;
-          this.movements.unshift({
-            id: Date.now(),
-            date: new Date(),
-            type: type,
-            quantity: qtyToMove,
-            itemName: item.name,
-            itemSku: item.sku,
-            user: this.currentUser?.name || "Offline User",
-          });
-          this.processData();
-          this.showToast(`Saldo corrigido (Offline Fallback).`, "warning");
+          this.showToast("Erro ao conectar com o servidor.", "error");
         }
       } else {
         this.showToast("Valor inválido.", "error");
@@ -1126,16 +886,6 @@ const app = {
     }
 
     try {
-      // Se já estiver em modo offline, não tenta fetch
-      if (
-        !this.data ||
-        this.data === MOCK_DATA ||
-        document.getElementById("statusText").textContent.includes("Offline")
-      ) {
-        this.saveMovementOffline(targetItem, type, qty);
-        return;
-      }
-
       const response = await fetch(`${API_URL}/movements`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -1157,34 +907,9 @@ const app = {
         this.showToast(result.message || "Erro no servidor", "error");
       }
     } catch (err) {
-      // Fallback se falhar durante a operação
       console.error(err);
-      if (targetItem) {
-        this.saveMovementOffline(targetItem, type, qty);
-      } else {
-        this.showToast("Erro: Item não encontrado localmente.", "error");
-      }
+      this.showToast("Erro ao conectar com o servidor.", "error");
     }
-  },
-
-  saveMovementOffline(item, type, qty) {
-    if (!item) return;
-    const newQty = type === "in" ? item.quantity + qty : item.quantity - qty;
-    item.quantity = newQty;
-
-    this.movements.unshift({
-      id: Date.now(),
-      date: new Date(),
-      type,
-      quantity: qty,
-      itemName: item.name,
-      itemSku: item.sku,
-      user: this.currentUser.name,
-    });
-
-    this.processData();
-    this.closeModal();
-    this.showToast("Movimentação salva (Modo Offline)", "warning");
   },
 
   toggleMovementFilter(type) {
@@ -1225,7 +950,7 @@ const app = {
 
     if (viewName === "dashboard") {
       document.getElementById("viewDashboard").classList.remove("hidden");
-      this.render();
+      this.clearSearch(); // Agora limpa a pesquisa ao entrar no dashboard
     } else if (viewName === "movements") {
       document.getElementById("viewMovements").classList.remove("hidden");
       document.getElementById("viewMovements").classList.add("flex");
