@@ -1,4 +1,4 @@
-// CONFIGURAÇÃO DA API (ATUALIZADA PARA PORTA 3001)
+// CONFIGURAÇÃO DA API
 const API_URL = "http://localhost:3001/api";
 
 // USERS UI CONFIG
